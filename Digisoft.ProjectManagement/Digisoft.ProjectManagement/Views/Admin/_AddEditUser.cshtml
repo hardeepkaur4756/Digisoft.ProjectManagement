@@ -1,0 +1,800 @@
+﻿@model Digisoft.ProjectManagement.Models.UserViewModel
+
+<div class="form-horizontal">
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.UserId)
+
+    @if (Model.ViewType == "Display")
+    {
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">First Name</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.FirstName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.FirstName, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Last Name</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.LastName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.LastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            @if (Model.UserId == null)
+            {
+                <label class="control-label col-sm-2">Role</label>
+                <div class="col-sm-4 text-break">
+                    @Html.DropDownListFor(modal => modal.RoleId, new SelectList(Model.Users, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlRoles" })
+                </div>
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4 text-break">
+                    @Html.TextBoxFor(modal => modal.Email, new { @class = "form-control", @type = "email", @onchange = "return validateEmail('Email');", })
+                    @Html.ValidationMessageFor(modal => modal.Email, "", new { @class = "text-danger" })
+                </div>
+            }
+
+        </div>
+        if (Model.UserId == null)
+        {
+            <div class="form-group d-flex">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4 text-break">
+                    @Html.TextBoxFor(modal => modal.Password, new { @class = "form-control", @type = "password", @onchange = "return CheckPassword();", @autocomplete = "new-password" })
+                    @Html.ValidationMessageFor(modal => modal.Password, "", new { @class = "text-danger" })
+                </div>
+                <label class="control-label col-sm-2">Confirm Password</label>
+                <div class="col-sm-4 text-break">
+                    @Html.TextBoxFor(modal => modal.ConfirmPassword, new { @class = "form-control", @type = "password", @onchange = "return validateConfirmPassword();" })
+                    @Html.ValidationMessageFor(modal => modal.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Date of Birth</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.DOB, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.DOB, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Experience When Joined</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.ExpWhenJoined, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.ExpWhenJoined, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Department</label>
+            <div class="col-sm-4 text-break">
+                @Html.DropDownListFor(modal => modal.DepartmentId, new SelectList(Model.Departments, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlDepartments" })
+                @Html.ValidationMessageFor(modal => modal.DepartmentId, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Skills</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.Skills, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.Skills, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Date of Joining</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.DateofJoining, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.DateofJoining, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Date of Releiving</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.DateofRelieving, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.DateofRelieving, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Phone Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.PhoneNumber, new { @class = "form-control", @onkeypress = "return validateNo('PhoneNumber');", @maxlength = "10" })
+                @Html.ValidationMessageFor(modal => modal.PhoneNumber, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Alternate Phone Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.AlternatePhoneNumber, new { @class = "form-control", @onkeypress = "return validateNo('AlternatePhoneNumber');", @maxlength = "10" })
+                @Html.ValidationMessageFor(modal => modal.AlternatePhoneNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Personal Email Address</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.PersonalEmailAddress, new { @class = "form-control", @onchange = "return validateEmail('PersonalEmailAddress');" })
+                @Html.ValidationMessageFor(modal => modal.PersonalEmailAddress, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Emergency Contact Name</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.EmergencyContactName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.EmergencyContactName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Emergency Contact Relation</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.EmergencyContactRelation, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.EmergencyContactRelation, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Emergency Contact Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @onkeypress = "return validateNo('PhoneNumber');", @maxlength = "10" })
+                @Html.ValidationMessageFor(modal => modal.EmergencyContactNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Aadhar Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.AadharNumber, new { @class = "form-control", @onkeypress = "return validateNo('AadharNumber');", @maxlength = "12" })
+                @Html.ValidationMessageFor(modal => modal.AadharNumber, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Pan Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.PanNumber, new { @class = "form-control", @onchange = "return validatePan();" })
+                @Html.ValidationMessageFor(modal => modal.PanNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Current City</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.CurrentCity, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.CurrentCity, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Current State</label>
+            <div class="col-sm-4 text-break">
+                @Html.DropDownListFor(modal => modal.CurrentStateId, new SelectList(Model.States, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlCState" })
+                @Html.ValidationMessageFor(modal => modal.CurrentStateId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Current Country</label>
+            <div class="col-sm-4 text-break">
+                @Html.DropDownListFor(modal => modal.CurrentCountryId, new SelectList(Model.Countries, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlCCountry" })
+                @Html.ValidationMessageFor(modal => modal.CurrentCountryId, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Permanent City</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.PermanentCity, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.PermanentCity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Permanent State</label>
+            <div class="col-sm-4 text-break">
+                @Html.DropDownListFor(modal => modal.PermanentStateId, new SelectList(Model.States, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlPState" })
+                @Html.ValidationMessageFor(modal => modal.PermanentStateId, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Permanent Country</label>
+            <div class="col-sm-4 text-break">
+                @Html.DropDownListFor(modal => modal.PermanentCountryId, new SelectList(Model.Countries, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlPCountry" })
+                @Html.ValidationMessageFor(modal => modal.PermanentCountryId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Permanent Address</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.PermanentAddress, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.PermanentAddress, "", new { @class = "text-danger" })
+            </div>
+            <label class="control-label col-sm-2">Salary</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.Salary, new { @class = "form-control", @onchange = "return IsNumeric();" })
+                @Html.ValidationMessageFor(modal => modal.Salary, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            @if (Model.UserId != null)
+            {
+                <label class="control-label col-sm-2">Active</label>
+                <div class="">
+                    @Html.CheckBoxFor(model => model.Exclude, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Exclude, "", new { @class = "text-danger" })
+                </div>
+            }
+        </div>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Close</a>
+                <input type="submit" value="Save" id="btnSave" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+    else if (Model.ViewType == "ChangePassword")
+    {
+        <div class="form-group d-flex">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @onchange = "return CheckPassword();" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Confirm Password</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", @onchange = "return validateConfirmPassword();" } })
+                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                <input type="submit" value="Change Password" id="btnChangePassword" class="btn btn-primary" />
+
+            </div>
+        </div>
+    }
+    else if (Model.ViewType == "UploadDocument")
+    {
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Upload PAN</label>
+            <div class="col-sm-4">
+                <input type="file" id="Aadhar" class="form-control" />
+            </div>
+            <label class="control-label col-sm-2">Upload Aadhar</label>
+            <div class="col-sm-4">
+                <input type="file" id="Pan" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Upload Certificates</label>
+            <div class="col-sm-4">
+                <input type="file" class="custom-file-input" name="postedImage" id="postedImage">
+                <input type="file" id="Certificate" class="form-control" multiple="multiple" />
+            </div>
+        </div>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                <input type="submit" value="Save" id="btnSave" class="btn btn-primary" />
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">First Name</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.FirstName, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-sm-2">Last Name</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.LastName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Active</label>
+            <div class="col-sm-4 text-break">
+                @if (Model.Exclude == true)
+                {
+                    <label class="control-label">true</label>
+                }
+                else
+                {
+                    <label class="control-label">false</label>
+                }
+            </div>
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.Email, new { @class = "form-control", @type = "email", @onchange = "return validateEmail('Email');", })
+            </div>
+
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Date of Birth</label>
+            <div class="col-sm-4 text-break">
+                @Html.HiddenFor(model => model.DOB)
+                <label class="control-label" id="date"></label>
+            </div>
+            <label class="control-label col-sm-2">Experience When Joined</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.ExpWhenJoined, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Department</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(model => model.DepartmentName, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <label class="control-label col-sm-2">Skills</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.Skills, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Date of Joining</label>
+            <div class="col-sm-4 text-break">
+                @Html.HiddenFor(model => model.DateofJoining)
+                <label class="control-label" id="dateJ"></label>
+            </div>
+            <label class="control-label col-sm-2">Date of Releiving</label>
+            <div class="col-sm-4 text-break">
+                @Html.HiddenFor(model => model.DateofRelieving)
+                <label class="control-label" id="dateR"></label>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Phone Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.PhoneNumber, new { @class = "form-control", @onkeypress = "return validateNo('PhoneNumber');", @maxlength = "10" })
+            </div>
+            <label class="control-label col-sm-2">Alternate Phone Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.AlternatePhoneNumber, new { @class = "form-control", @onkeypress = "return validateNo('AlternatePhoneNumber');", @maxlength = "10" })
+            </div>
+        </div>
+
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Personal Email Address</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.PersonalEmailAddress, new { @class = "form-control", @onchange = "return validateEmail('PersonalEmailAddress');" })
+            </div>
+            <label class="control-label col-sm-2">Emergency Contact Name</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.EmergencyContactName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Emergency Contact Relation</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.EmergencyContactRelation, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-sm-2">Emergency Contact Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @onkeypress = "return validateNo('PhoneNumber');", @maxlength = "10" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Aadhar Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.AadharNumber, new { @class = "form-control", @onkeypress = "return validateNo('AadharNumber');", @maxlength = "12" })
+            </div>
+            <label class="control-label col-sm-2">Pan Number</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.PanNumber, new { @class = "form-control", @onchange = "return validatePan();" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Current City</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.CurrentCity, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-sm-2">Current State</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.CurrentStateName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Current Country</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.CurrentCountryName, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-sm-2">Permanent City</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.PermanentCity, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Permanent State</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.PermanentStateName, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-sm-2">Permanent Country</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.PermanentCountryName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Permanent Address</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.PermanentAddress, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-sm-2">Salary</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.Salary, new { @class = "form-control", @onchange = "return IsNumeric();" })
+            </div>
+        </div>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Close</a>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        debugger;
+        var dateOfJoining = $("#DateofJoining").val();
+        dateOfJoining = dateOfJoining?.split(' ')[0];
+        $("#DateofJoining").val(dateOfJoining);
+        $("#dateR").text(dateofRelieving);
+        var dateofRelieving = $("#DateofRelieving").val();
+        dateofRelieving = dateofRelieving?.split(' ')[0];
+        $("#DateofRelieving").val(dateofRelieving);
+        $("#dateR").text(dateofRelieving);
+        var d = $("#DOB").val();
+        d = d?.split(' ')[0];
+        $("#date").text(d);
+        $("#DOB").val(d);
+        $("#DOB").datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "dd-mm-yyyy"
+        })
+        $("#DateofJoining").datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "dd-mm-yyyy"
+        })
+        $("#DateofRelieving").datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "dd-mm-yyyy"
+        })
+    });
+    $("#btnSave").click(function () {
+        var first = $("#FirstName").val();
+        var last = $("#LastName").val();
+        var Id = $("#UserId").val();
+        var password = $("#Password").val();
+        var cpass = $("#ConfirmPassword").val();
+        var emailAdress = $("#Email").val();
+        var roleId = $("#ddlRoles").val();
+        var dateOfJoining = $("#DateofJoining").val();
+        var personalEmailAddress = $("#PersonalEmailAddress").val();
+        var dateofRelieving = $("#DateofRelieving").val();
+        var dob = $("#DOB").val();
+        var departmentId = $("#ddlDepartments").val();
+        var aadharNumber = $("#AadharNumber").val();
+        var panNumber = $("#PanNumber").val();
+        var currentCity = $("#CurrentCity").val();
+        var currentStateId = $("#ddlCState").val();
+        var currentCountryId = $("#ddlCCountry").val();
+        var permanentCity = $("#PermanentCity").val();
+        var permanentStateId = $("#ddlPState").val();
+        var permanentCountryId = $("#ddlPCountry").val();
+        var phoneNumber = $("#PhoneNumber").val();
+        var alternatePhoneNumber = $("#AlternatePhoneNumber").val();
+        var exp = $("#ExpWhenJoined").val();
+        var salary = $("#Salary").val();
+        var permanentAddress = $("#PermanentAddress").val();
+        var skills = $("#Skills").val();
+        var emergencyContactName = $("#EmergencyContactName").val();
+        var emergencyContactRelation = $("#EmergencyContactRelation").val();
+        var emergencyContactNumber = $("#EmergencyContactNumber").val();
+        var exclude = false;
+        if ($("#Exclude").is(":checked")) {
+            exclude = true;
+        }
+        else {
+            exclude = false;
+        }
+        var vm = {};
+        vm.FirstName = first;
+        vm.LastName = last;
+        vm.Email = emailAdress;
+        vm.Password = password;
+        vm.Exclude = exclude;
+        vm.RoleId = $("#ddlRoles :selected").text();
+        vm.PhoneNumber = phoneNumber;
+        vm.AlternatePhoneNumber = alternatePhoneNumber;
+        vm.AadharNumber = aadharNumber;
+        vm.PanNumber = panNumber;
+        vm.EmergencyContactName = emergencyContactName;
+        vm.EmergencyContactNumber = emergencyContactNumber;
+        vm.EmergencyContactRelation = emergencyContactRelation;
+        vm.PermanentCity = permanentCity;
+        vm.PersonalEmailAddress = personalEmailAddress;
+        vm.PermanentStateId = $("#ddlPState :selected").val();
+        vm.PermanentCountryId = $("#ddlPCountry :selected").val();;
+        vm.CurrentCity = currentCity;
+        vm.CurrentStateId = $("#ddlCState :selected").val();
+        vm.CurrentCountryId = $("#ddlCCountry :selected").val();
+        vm.Salary = salary;
+        vm.Skills = skills;
+        vm.ExpWhenJoined = exp;
+        vm.DateofJoining = dateOfJoining;
+        vm.DateofRelieving = dateofRelieving;
+        vm.DOB = dob;
+        vm.DepartmentId = $("#ddlDepartments :selected").val();
+        vm.PermanentAddress = permanentAddress;
+        var validate = true;
+        if (first == undefined || first == "") {
+            validate = false;
+            $("#FirstName").addClass("error");
+        } else {
+            $("#FirstName").removeClass("error");
+        }
+
+        if (departmentId == undefined || departmentId == "") {
+            validate = false;
+            $("#ddlDepartments").addClass("error");
+        } else {
+            $("#ddlDepartments").removeClass("error");
+        }
+        if (permanentStateId == undefined || permanentStateId == "") {
+            validate = false;
+            $("#ddlPState").addClass("error");
+        } else {
+            $("#ddlPState").removeClass("error");
+        }
+        if (permanentCountryId == undefined || permanentCountryId == "") {
+            validate = false;
+            $("#ddlPCountry").addClass("error");
+        } else {
+            $("#ddlPCountry").removeClass("error");
+        }
+        if (currentStateId == undefined || currentStateId == "") {
+            validate = false;
+            $("#ddlCState").addClass("error");
+        } else {
+            $("#ddlCState").removeClass("error");
+        }
+        if (currentCountryId == undefined || currentCountryId == "") {
+            validate = false;
+            $("#ddlCCountry").addClass("error");
+        } else {
+            $("#ddlCCountry").removeClass("error");
+        }
+        if (dob == undefined || dob == "") {
+            validate = false;
+            $("#DOB").addClass("error");
+        } else {
+            $("#DOB").removeClass("error");
+        }
+        if (aadharNumber == undefined || aadharNumber == "") {
+            validate = false;
+            $("#AadharNumber").addClass("error");
+        } else {
+            $("#AadharNumber").removeClass("error");
+        }
+        if (panNumber == undefined || panNumber == "") {
+            validate = false;
+            $("#PanNumber").addClass("error");
+        } else {
+            $("#PanNumber").removeClass("error");
+        }
+        if (phoneNumber == undefined || phoneNumber == "") {
+            validate = false;
+            $("#PhoneNumber").addClass("error");
+        } else {
+            $("#PhoneNumber").removeClass("error");
+        }
+        if (emergencyContactName == undefined || emergencyContactName == "") {
+            validate = false;
+            $("#EmergencyContactName").addClass("error");
+        } else {
+            $("#EmergencyContactName").removeClass("error");
+        }
+        if (emergencyContactRelation == undefined || emergencyContactRelation == "") {
+            validate = false;
+            $("#EmergencyContactRelation").addClass("error");
+        } else {
+            $("#EmergencyContactRelation").removeClass("error");
+        }
+        if (emergencyContactNumber == undefined || emergencyContactNumber == "") {
+            validate = false;
+            $("#EmergencyContactNumber").addClass("error");
+        } else {
+            $("#EmergencyContactNumber").removeClass("error");
+        }
+        if (dateOfJoining == undefined || dateOfJoining == "") {
+            validate = false;
+            $("#DateofJoining").addClass("error");
+        } else {
+            $("#DateofJoining").removeClass("error");
+        }
+        if (salary == undefined || salary == "") {
+            validate = false;
+            $("#Salary").addClass("error");
+        } else {
+            $("#Salary").removeClass("error");
+        }
+        if (Id != null && Id != "") {
+            vm.UserId = Id;
+        }
+        else {
+            if (roleId == undefined || roleId == "") {
+                validate = false;
+                $("#ddlRoles").addClass("error");
+            } else {
+                $("#ddlRoles").removeClass("error");
+            }
+
+            if (password == undefined || password == "") {
+                validate = false;
+                $("#Password").addClass("error");
+            } else {
+                $("#Password").removeClass("error");
+            }
+            if (cpass == undefined || cpass == "") {
+                validate = false;
+                $("#ConfirmPassword").addClass("error");
+            } else {
+                $("#ConfirmPassword").removeClass("error");
+            }
+            if (emailAdress == undefined || emailAdress == "") {
+                validate = false;
+                $("#Email").addClass("error");
+            } else {
+                $("#Email").removeClass("error");
+            }
+        }
+        if (validate == true) {
+            loader();
+            $.ajax({
+                type: "Post",
+                url: "/Admin/AddUser",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(vm),
+                success: function (result) {
+                    if (result.Success == true) {
+                        $('#myModal').hide();
+                        removeLoader();
+                        notificationHelper.ShowSuccess(result.Message);
+                        setTimeout(function () {
+                            location.href = "/Admin/Index";
+                        }, 1000);
+                        removeLoader();
+                    }
+                    else if (result.Success == false) {
+                        removeLoader();
+                        notificationHelper.ShowError(result.Message);
+
+                    }
+                    else {
+                        removeLoader();
+                        notificationHelper.ShowError("Sorry, An error occurred!");
+                    }
+                },
+                failure: function (result) {
+                    removeLoader();
+                    notificationHelper.ShowError(result.responseText);
+                }
+            });
+        }
+    })
+    function validateEmail(name) {
+        var email = $("#" + name + "").val();
+        var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+        if (!emailReg.test(email)) {
+            $("#" + name + "").val('');
+            $("#" + name + "").addClass("error");
+            notificationHelper.ShowError("Invalid Email");
+            return false;
+        } else {
+            $("#" + name + "").removeClass("error");
+            return true;
+        }
+    }
+    function validateNo(name) {
+        debugger;
+        var mobileNum = $("#" + name + "").val();
+        var validateMobNum = /^\d*(?:\.\d{1,2})?$/;
+        if (validateMobNum.test(mobileNum)) {
+            return true;
+        }
+        else {
+            notificationHelper.ShowError("Invalid Number");
+            $("#" + name).addClass("error");
+            $("#" + name + "").val('');
+            return false;
+        }
+    }
+    function IsNumeric() {
+        debugger;
+        var salary = $("#Salary").val();
+        var RE = /^-{0,1}\d*\.{0,1}\d+$/;
+        if (RE.test(salary)) {
+            $("#Salary").removeClass("error");
+            return true;
+        }
+        else {
+            $("#Salary").val('');
+            $("#Salary").addClass("error");
+            notificationHelper.ShowError("Invalid salary amount");
+            return false;
+        }
+    }
+    function validatePan() {
+        var inputvalues = $("#PanNumber").val();
+        var regex = /[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+        if (!regex.test(inputvalues)) {
+            $("#PanNumber").val("");
+            $("#PanNumber").addClass("error");
+            notificationHelper.ShowError("Invalid PAN No.");
+            return false;
+        }
+        else {
+            $("#PanNumber").removeClass("error");
+            return true;
+        }
+    }
+    function validateConfirmPassword() {
+        var password = $("#Password").val();
+        var cpass = $("#ConfirmPassword").val();
+        if (cpass != password) {
+            validate = false;
+            $("#ConfirmPassword").addClass("error");
+            $("#Password").addClass("error");
+            $("#Password").val('');
+            $("#ConfirmPassword").val('');
+            notificationHelper.ShowError("Password and Confirm Password should be same.");
+        } else {
+            $("#ConfirmPassword").removeClass("error");
+            $("#Password").removeClass("error");
+        }
+    }
+    function CheckPassword() {
+        var inputtxt = $("#Password").val();
+        if (inputtxt.length >= 6) {
+            $("#Password").removeClass("error");
+            return true;
+        }
+        else {
+            $("#Password").val('');
+            $("#Password").addClass("error");
+            notificationHelper.ShowError("Password should be at least 6 characters.");
+            return false;
+        }
+    }
+    $("#btnChangePassword").click(function () {
+        debugger;
+        var Id = $("#UserId").val();
+        var password = $("#Password").val();
+        var cpass = $("#ConfirmPassword").val();
+        var vm = {};
+        vm.Password = password;
+        var validate = true;
+        if (password == undefined || password == "") {
+            validate = false;
+            $("#Password").addClass("error");
+        } else {
+            $("#Password").removeClass("error");
+        }
+        if (cpass == undefined || cpass == "") {
+            validate = false;
+            $("#ConfirmPassword").addClass("error");
+        } else {
+            $("#ConfirmPassword").removeClass("error");
+        }
+        if (Id != null && Id != "") {
+            vm.UserId = Id;
+        }
+        if (validate == true) {
+            loader();
+            $.ajax({
+                type: "Post",
+                url: "/Admin/ChangePasswordAsync",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(vm),
+                success: function (result) {
+                    if (result.Success == true) {
+                        $('#myModal').hide();
+                        removeLoader();
+                        notificationHelper.ShowSuccess(result.Message);
+                        setTimeout(function () {
+                            location.href = "/Admin/Index";
+                        }, 1000);
+                        removeLoader();
+                    }
+                    else if (result.Success == false) {
+                        removeLoader();
+                        notificationHelper.ShowError(result.Message);
+
+                    }
+                    else {
+                        removeLoader();
+                        notificationHelper.ShowError("Sorry, An error occurred!");
+                    }
+                },
+                failure: function (result) {
+                    removeLoader();
+                    notificationHelper.ShowError(result.responseText);
+                }
+            });
+        }
+    })
+</script>

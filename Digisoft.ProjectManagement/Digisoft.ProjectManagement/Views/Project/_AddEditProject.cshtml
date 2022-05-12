@@ -1,0 +1,99 @@
+﻿@model Digisoft.ProjectManagement.Models.ProjectViewModel
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+
+    @if (Model.ViewType == "Display")
+    {
+        <div class="form-group d-flex">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-9 text-break">
+                @Html.DisplayFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Client Name</label>
+            <div class="col-sm-9 text-break">
+                @Html.DisplayFor(model => model.ClientName, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Close</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
+            <div class="">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3">Client Name</label>
+            <div class="">
+                @Html.DropDownListFor(x => Model.ClientId, new SelectList(Model.Clients, "Value", "Text", ""), htmlAttributes: new { @class = "form-control client", id = "ddlClient" })
+                @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                <input type="submit" value="Save" id="btnSave" class="btn btn-primary" />
+
+            </div>
+        </div>
+    }
+</div>
+<script>
+
+    $("#btnSave").click(function () {
+        var name = $("#Name").val();
+        var vm = {};
+        vm.Id = $("#Id").val();
+        vm.ClientId = $("#ddlClient").val();
+        vm.Name = name;
+        var validate = true;
+        if (name == undefined || name == "") {
+            validate = false;
+            $("#Name").addClass("error");
+        } else {
+            $("#Name").removeClass("error");
+        }
+
+        if (validate == true) {
+            loader();
+            $.ajax({
+                type: "Post",
+                url: "/Project/InsertUpdate",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(vm),
+                success: function (result) {
+                    if (result.Success) {
+                        $('#myModal').hide();
+                        removeLoader();
+                        notificationHelper.ShowSuccess(result.Message);
+                        setTimeout(function () {
+                            location.href = "/Project/Index";
+                        }, 1000);
+                        removeLoader();
+                    } else {
+                        removeLoader();
+                        notificationHelper.ShowError("Sorry, An error occurred!");
+                    }
+                },
+                failure: function (result) {
+                    removeLoader();
+                    notificationHelper.ShowError(result.responseText);
+                }
+            });
+        }
+
+    })
+</script>

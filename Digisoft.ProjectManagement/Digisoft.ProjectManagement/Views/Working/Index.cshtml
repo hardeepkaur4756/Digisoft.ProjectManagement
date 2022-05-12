@@ -1,0 +1,312 @@
+﻿@model List<Digisoft.ProjectManagement.Models.WorkingViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4 class="panel-title">
+    Filters
+</h4>
+<div class="row">
+    <div class="col-sm-4">
+        <input type="text" class="form-control" id="startDate" autocomplete="off" placeholder="Select Start Date" />
+    </div>
+    <div class="col-sm-4">
+        <input type="text" class="form-control" id="endDate" autocomplete="off" placeholder="Select End Date" />
+    </div>
+    <div class="col-sm-1">
+        <input type="button" id="" class="btn btn-primary" value="Clear" data-isNew="true" onclick="clearFilters(this)" />
+    </div>
+</div>
+<input type="button" id="btnAddProject" class="btn btn-primary common-btn" value="Add" data-isNew="true" onclick="AddOrEdit(this)" />
+<table class="table table-responsive table-hover" id="MyTable">
+    <thead class="thead-dark">
+        <tr>
+            <th>Project</th>
+            <th>Hours Worked</th>
+            <th>Hours Billed</th>
+            <th>Date Worked</th>
+            <th>Description</th>
+            <th>Created By</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    $(document).ready(function () {
+        //date pickers
+        var isFirstTime = true;
+        var startDate = new Date();
+        var FromEndDate = new Date();
+
+        $("#startDate").datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "yyyy-mm-dd"
+        }).on('changeDate', function (selected) {
+            startDate = new Date(selected.date.valueOf());
+            startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())));
+            $('#endDate').datepicker('setStartDate', startDate);
+            var edate = $('#endDate').val()
+            if (edate == undefined || edate == "") {
+                $("#endDate").addClass("error");
+                $("#endDate").val("");
+                return false;
+            } else {
+                $("#endDate").removeClass("error");
+                _loadData();
+                isFirstTime = false;
+            }
+        });
+
+        $("#endDate").datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "yyyy-mm-dd"
+        }).on('changeDate', function (selected) {
+            var sdate = $('#startDate').val()
+            if (sdate == undefined || sdate == "") {
+                $("#startDate").addClass("error");
+                $("#endDate").val("");
+                return false;
+            } else {
+                $("#endDate").removeClass("error");
+                $("#startDate").removeClass("error");
+                FromEndDate = new Date(selected.date.valueOf());
+                FromEndDate.setDate(FromEndDate.getDate(new Date(selected.date.valueOf())));
+                $('#startDate').datepicker('setEndDate', FromEndDate);
+                _loadData();
+                isFirstTime = false;
+            }
+        });
+
+        loader();
+        if (isFirstTime) {
+            _loadData();
+        }
+        removeLoader();
+    });
+    var oTable;
+    var _loadData = function (response) {
+        if ($.fn.DataTable.isDataTable("#MyTable")) {
+            oTable.draw();
+        }
+        else {
+            oTable =
+                $('#MyTable').DataTable({
+                    "bServerSide": true,
+                    "sAjaxSource": "/Working/GetList",
+                    "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
+                        var colName = oSettings.aoColumns[oSettings.aaSorting[0][0]].mData;
+                        var sDir = oSettings.aaSorting[0][1];
+                        var sDate = $("#startDate").val();
+                        var eDate = $("#endDate").val();
+
+                        aoData.push({ "name": "sortCol", "value": colName });
+                        aoData.push({ "name": "sortDir", "value": sDir });
+                        aoData.push({ "name": "startDate", "value": sDate });
+                        aoData.push({ "name": "endDate", "value": eDate });
+
+                        $.ajax({
+                            type: "Get",
+                            data: aoData,
+                            url: sSource,
+                            success: fnCallback
+                        })
+                    },
+                    "aoColumns": [
+                        { "mData": "ProjectName" },
+                        { "mData": "HoursWorked" },
+                        { "mData": "HoursBilled" },
+                        {
+                            "mData": "DateWorked",
+                            "render": function (row, type, full) {
+                                var date = new Date(parseInt(full.DateWorked.substr(6)));
+                                var month = date.getMonth() + 1;
+                                var formattedDate = date.getDate() + "/" + month + "/" + date.getFullYear();
+                                return formattedDate;
+                            }
+                        },
+                        { "mData": "Description" },
+                        { "mData": "CreatedByName" },
+                        {
+                            "mData": "CreatedDate",
+                            "render": function (row, type, full) {
+                                var date = new Date(parseInt(full.CreatedDate.substr(6)));
+                                var month = date.getMonth() + 1;
+                                var formattedDate = date.getDate() + "/" + month + "/" + date.getFullYear();
+                                return formattedDate;
+                            }
+                        },
+                        {
+                            "mData": null,
+                            "render": function (row, type, full) {
+                                var buttons;
+                                if (full.IsAdmin) {
+                                    buttons = "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return ViewDetail(this)'><i class='fa fa-info-circle' aria-hidden='true'></i></a>";
+                                    return "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return AddOrEdit(this)'> <i class='fa fa-pencil' aria-hidden='true'></i></a><a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return Delete(this)'><i class='fa fa-trash' aria-hidden='true'></i></a>" + buttons;
+                                }
+                                else {
+                                    buttons = "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return ViewDetail(this)'><i class='fa fa-info-circle' aria-hidden='true'></i></a>";
+                                    if (full.IsCurrentUser) {
+                                        return "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return AddOrEdit(this)'> <i class='fa fa-pencil' aria-hidden='true'></i></a><a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return Delete(this)'><i class='fa fa-trash' aria-hidden='true'></i></a>" + buttons;
+                                    } else {
+                                        return buttons;
+                                    }
+                                }
+                                return buttons;
+                            },
+                        },
+                    ],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [4] }
+                    ],
+                    "order": [[3, "desc"]],
+                    bProcessing: true,
+                    pageLength: 10,
+                    "paging": true,
+                    bSearching: false,
+                    bLengthChange: false,
+                    "language": {
+                        "zeroRecords": "Not found - Sorry",
+                        "info": "Page _PAGE_ of _PAGES_",
+                        "infoEmpty": "No records",
+                        "processing": "Processing... Please wait",
+                    },
+                });
+        }
+        removeLoader(); 
+    };
+
+    var clearFilters = function () {
+        $("#startDate").val("");
+        $("#endDate").val("");
+        _loadData();
+    }
+
+    var AddOrEdit = function (event) {
+        var isNew = event.getAttribute("data-isNew");
+        var Id = parseInt(event.getAttribute("data-Id"));
+        if (Id == null || Id == undefined) {
+            notificationHelper.ShowError("Some thing went wrong!");
+        }
+        else {
+            if (isNew) {
+                Id = 0;
+            }
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Working/AddWorking",
+                data: { id: Id },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.Success) {
+                        if (Id > 0) {
+                            $('#myModal').find('#myModalLabel').html('Update Working');
+                        }
+                        else {
+                            $('#myModal').find('#myModalLabel').html('Add Working');
+                        }
+
+                        $('#myModal').find('.modal-body').html(response.Html);
+                        $('#myModal').find('.btn-primary').addClass('saveBid');
+                        $('#myModal').modal('show');
+                        removeLoader();
+                    }
+                    else {
+                        notificationHelper.ShowError("Some thing went wrong !");
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError(result.Message);
+                    removeLoader();
+                }
+            });
+        }
+    }
+    var ViewDetail = function (event) {
+        var Id = parseInt(event.getAttribute("data-Id"));
+        if (Id == null || Id == undefined) {
+            notificationHelper.ShowError("Some thing went wrong!");
+        }
+        else {
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Working/AddWorking",
+                data: { id: Id, "viewType": "Display" },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.Success) {
+                        if (Id > 0) {
+                            $('#myModal').find('#myModalLabel').html('Project View Detail');
+                        }
+                        else {
+                            $('#myModal').find('#myModalLabel').html('Project View Detail');
+                        }
+
+                        $('#myModal').find('.modal-body').html(response.Html);
+                        $('#myModal').find('.btn-primary').addClass('saveBid');
+                        $('#myModal').modal('show');
+                        removeLoader();
+                    }
+                    else {
+                        notificationHelper.ShowError("Some thing went wrong !");
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError(result.Message);
+                    removeLoader();
+                }
+            });
+        }
+    }
+    function Delete(event) {
+        var Id = parseInt(event.getAttribute("data-Id"));
+        if (Id == null || Id == undefined) {
+            notificationHelper.ShowError("Some thing went wrong!");
+        }
+        else {
+            if (confirm("Are you sure?")) {
+                loader();
+                $.ajax({
+                    type: "Get",
+                    url: "/Working/Delete",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: { Id: Id },
+                    success: function (result) {
+                        if (result.Success) {
+                            notificationHelper.ShowSuccess(result.Message);
+                            setTimeout(function () {
+                                location.href = "/Working/Index";
+                            }, 1000);
+                            removeLoader();
+                        }
+                        else {
+                            notificationHelper.ShowError(result.Message);
+                            removeLoader();
+                        }
+                    },
+                    error: function (result) {
+                        notificationHelper.ShowError('Error');
+                        removeLoader();
+                    }
+                });
+            }
+            else {
+                return false;
+            }
+        }
+    }
+</script>
+
+    

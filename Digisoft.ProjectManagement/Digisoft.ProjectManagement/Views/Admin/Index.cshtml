@@ -1,0 +1,249 @@
+﻿@model List<Digisoft.ProjectManagement.Models.UserViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .btn:not(:disabled):not(.disabled) {
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    @@media (min-width: 576px) {
+        .modal-dialog {
+            max-width: 1100px;
+            margin: 1.75rem auto;
+        }
+    }
+</style>
+<input type="button" id="btnAddClient" class="btn btn-primary common-btn" value="Add" data-isNew="true" onclick="AddOrEdit(this)" />
+<table class="table table-responsive table-hover" id="MyTable">
+    <thead class="thead-dark">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            @*<th>Role</th>*@
+            <th>Active</th>
+            <th>Action</th>
+            @*<th>Password</th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            int i = 1;
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.FirstName @item.LastName </td>
+                    <td>@item.Email</td>
+                    <td>@item.Exclude</td>
+                    @*@if (@item.IsActive == true)
+                        {
+                            <td><input type="checkbox" id="chk_@i" onchange="return ActiveOrInactiveId('@item.UserId',@i);" checked /></td>
+                        }
+                        else
+                        {
+                            <td><input type="checkbox" id="chk_@i" onchange="return ActiveOrInactiveId('@item.UserId',@i);" /></td>
+                        }*@
+                    <td>
+                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDetail(this,'@item.UserId')"><i class='fa fa-info-circle' aria-hidden='true'></i></a>
+                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="AddOrEdit(this,'@item.UserId')"><i class='fa fa-pencil' aria-hidden='true'></i></a>
+                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="UploadDocument(this,'@item.UserId')"><i class='fa fa-upload' aria-hidden='true'></i></a>
+                        <a class='icon-style' href='javascript:void(0)' onclick="return ChangePassword(this,'@item.UserId')"><i class='fa fa-key' aria-hidden='true'></i></a>
+                    </td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>
+<style>
+    /* #MyTable_filter label{
+        display:none
+    }*/
+</style>
+<script>
+    $(document).ready(function () {
+        _loadData();
+        $("input[type='search']").wrap("<form>");
+        $("input[type='search']").closest("form").attr("autocomplete", "off");
+
+    });
+    var AddOrEdit = function (event, Id) {
+        var isNew = event.getAttribute("data-isNew");
+        var Id = Id;
+        var viewType = "Display";
+
+        if (isNew) {
+            Id = 0;
+        }
+        loader();
+        $.ajax({
+            type: "Get",
+            url: "/Admin/AddUser",
+            data: { id: Id, viewType: viewType },
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response.Success) {
+                    debugger;
+                    if (Id != null && Id != "") {
+                        $('#myModal').find('#myModalLabel').html('Update User');
+                        //$("#FirstName").val(response.FirstName);
+                        //$("#LastName").val(response.LastName);
+                        //$("#IsActive").prop("checked", response.IsActive);
+                    }
+                    else {
+                        $('#myModal').find('#myModalLabel').html('Add User');
+                    }
+
+                    $('#myModal').find('.modal-body').html(response.Html);
+                    $('#myModal').find('.btn-primary').addClass('saveBid');
+                    $('#myModal').modal('show');
+                    removeLoader();
+                }
+                else {
+                    notificationHelper.ShowError("Some thing went wrong !");
+                    removeLoader();
+                }
+            },
+            error: function (result) {
+                notificationHelper.ShowError(result.Message);
+                removeLoader();
+            }
+        });
+
+    }
+    var ChangePassword = function (event, Id) {
+        debugger;
+        var Id = Id;
+        var viewType = "ChangePassword";
+        loader();
+        $.ajax({
+            type: "Get",
+            url: "/Admin/AddUser",
+            data: { id: Id, viewType: viewType },
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                debugger;
+                if (response.Success) {
+                    if (Id != null && Id != "") {
+                        $('#myModal').find('#myModalLabel').html('Change Password');
+                        $("#Password").val('');
+                    }
+                    $('#myModal').find('.modal-body').html(response.Html);
+                    $('#myModal').find('.btn-primary').addClass('saveBid');
+                    $('#myModal').modal('show');
+                    removeLoader();
+                }
+                else {
+                    notificationHelper.ShowError("Some thing went wrong !");
+                    removeLoader();
+                }
+            },
+            error: function (result) {
+                debugger;
+                notificationHelper.ShowError(result.Message);
+                removeLoader();
+            }
+        });
+
+    }
+    var _loadData = function (response) {
+        if ($.fn.DataTable.isDataTable("#MyTable")) {
+            oTable.draw();
+        }
+        else {
+            oTable =
+                $('#MyTable').DataTable({
+                    "ordering": true,
+                    columnDefs: [{
+                        orderable: false,
+                        targets: "no-sort"
+                    }],
+                });
+        }
+        removeLoader();
+    };
+    var ViewDetail = function (event, Id) {
+
+        if (Id == null || Id == undefined) {
+            notificationHelper.ShowError("Some thing went wrong!");
+        }
+        else {
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Admin/AddUser",
+                data: { id: Id, "viewType": "View" },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.Success) {
+                        if (Id > 0) {
+                            $('#myModal').find('#myModalLabel').html('Project View Detail');
+                        }
+                        else {
+                            $('#myModal').find('#myModalLabel').html('Project View Detail');
+                        }
+
+                        $('#myModal').find('.modal-body').html(response.Html);
+                        $('#myModal').find('.btn-primary').addClass('saveBid');
+                        $('#myModal').modal('show');
+                        removeLoader();
+                    }
+                    else {
+                        notificationHelper.ShowError("Some thing went wrong !");
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError(result.Message);
+                    removeLoader();
+                }
+            });
+        }
+    }
+    var UploadDocument = function (event, Id) {
+        if (Id == null || Id == undefined) {
+            notificationHelper.ShowError("Some thing went wrong!");
+        }
+        else {
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Admin/AddUser",
+                data: { id: Id, "viewType": "UploadDocument" },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.Success) {
+                        if (Id > 0) {
+                            $('#myModal').find('#myModalLabel').html('Upload User Document');
+                        }
+                        else {
+                            $('#myModal').find('#myModalLabel').html('Upload User Document');
+                        }
+
+                        $('#myModal').find('.modal-body').html(response.Html);
+                        $('#myModal').find('.btn-primary').addClass('saveBid');
+                        $('#myModal').modal('show');
+                        removeLoader();
+                    }
+                    else {
+                        notificationHelper.ShowError("Some thing went wrong !");
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError(result.Message);
+                    removeLoader();
+                }
+            });
+        }
+    }
+</script>
+
