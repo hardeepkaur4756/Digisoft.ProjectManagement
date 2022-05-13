@@ -60,7 +60,8 @@ namespace Digisoft.ProjectManagement.Controllers
                     ClientName = x.Client.Name,
                     CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
                     CreatedOn = x.CreatedOn,
-                    IsCurrentUser = user.Id == x.CreatedBy ? true : false
+                    IsCurrentUser = user.Id == x.CreatedBy ? true : false,
+                    IsUnderDeleteTime = ((DateTime.Now - x.CreatedOn).TotalDays < 7) ? true : false
                 }).ToList();
                 totalCount = projectsVm.Count();
             }
@@ -77,7 +78,8 @@ namespace Digisoft.ProjectManagement.Controllers
                          ClientName = x.Client.Name,
                          CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
                          CreatedOn = x.CreatedOn,
-                         IsCurrentUser = user.Id == x.CreatedBy ? true : false
+                         IsCurrentUser = user.Id == x.CreatedBy ? true : false,
+                         IsUnderDeleteTime = ((DateTime.Now - x.CreatedOn).TotalDays < 7) ? true : false
                      })
                 .ToList();
             }
@@ -95,7 +97,6 @@ namespace Digisoft.ProjectManagement.Controllers
         public ActionResult AddProject(int id, string viewType)
         {
             ProjectViewModel vm = id > 0 ? _projectService.GetByIDVM(id) : new ProjectViewModel();
-
             if (viewType == "Display")
             {
                 vm.ViewType = "Display";
@@ -124,7 +125,7 @@ namespace Digisoft.ProjectManagement.Controllers
             {
                 vm.CreatedBy = user.Id;
             }
-
+            vm.IsActive = true;
             _projectService.InsertUpdate(vm);
             if (vm.Id > 0)
             {
@@ -143,9 +144,12 @@ namespace Digisoft.ProjectManagement.Controllers
         /// <returns></returns>
         public ActionResult Delete(int Id)
         {
-            if (User.IsInRole("Admin"))
+            ProjectViewModel projectVM = new ProjectViewModel();
+            projectVM.Id = Id;
+            projectVM.IsActive = false;
+            if (User.IsInRole("Admin") || User.IsInRole("HR"))
             {
-                _projectService.Delete(Id);
+                _projectService.Delete(projectVM);
                 return Json(new { Message = "Project deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
             }
             else
@@ -154,7 +158,7 @@ namespace Digisoft.ProjectManagement.Controllers
                 //var billingCount = _billingService.GetBillingCount(ControllerTypeEnum.ControllerType.Client, Id);
                 //if (billingCount <= 0)
                 //{
-                _projectService.Delete(Id);
+                _projectService.Delete(projectVM);
                 return Json(new { Message = "Project deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
                 //}
                 //else

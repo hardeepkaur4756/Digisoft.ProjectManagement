@@ -20,11 +20,11 @@ namespace Digisoft.ProjectManagement.Repositories
         }
         public IEnumerable<Working> GetAll()
         {
-            return _context.Workings.Include(x => x.AspNetUser);
+            return _context.Workings.Include(x => x.AspNetUser).Where(x => x.IsActive == true);
         }
-        public IEnumerable<Working> GetAll(DateTime? startDate, DateTime? endDate)
+        public IEnumerable<Working> GetAll(DateTime? startDate, DateTime? endDate, int projectId)
         {
-            if (startDate.HasValue && endDate.HasValue)
+            if (startDate.HasValue && endDate.HasValue && projectId != 0)
             {
                 return _context.Workings.Where(x =>
                 (x.CreatedDate.Day >= ((DateTime)startDate).Day
@@ -34,15 +34,34 @@ namespace Digisoft.ProjectManagement.Repositories
                 (x.CreatedDate.Day <= ((DateTime)endDate).Day
                 && x.CreatedDate.Month <= ((DateTime)endDate).Month
                 && x.CreatedDate.Year <= ((DateTime)endDate).Year)
+                && x.IsActive == true
+                && x.ProjectId == projectId
                 );
+            }
+            else if (startDate.HasValue && endDate.HasValue && projectId == 0)
+            {
+                return _context.Workings.Where(x =>
+                (x.CreatedDate.Day >= ((DateTime)startDate).Day
+                && x.CreatedDate.Month >= ((DateTime)startDate).Month
+                && x.CreatedDate.Year >= ((DateTime)startDate).Year)
+                &&
+                (x.CreatedDate.Day <= ((DateTime)endDate).Day
+                && x.CreatedDate.Month <= ((DateTime)endDate).Month
+                && x.CreatedDate.Year <= ((DateTime)endDate).Year)
+                && x.IsActive == true
+                );
+            }
+            else if (projectId != 0)
+            {
+                return _context.Workings.Where(x => x.IsActive == true && x.ProjectId == projectId);
             }
             else
             {
-                return _context.Workings;
+                return _context.Workings.Where(x => x.IsActive == true);
             }
         }
 
-        public IEnumerable<Working> GetAllAfterSearch(DataTablesParam param, DateTime? startDate, DateTime? endDate)
+        public IEnumerable<Working> GetAllAfterSearch(DataTablesParam param, DateTime? startDate, DateTime? endDate, int projectId)
         {
             var sSearch = param.sSearch.ToLower();
             if (startDate.HasValue && endDate.HasValue)
@@ -53,13 +72,16 @@ namespace Digisoft.ProjectManagement.Repositories
                         (x.Description.Contains(sSearch)
                       || x.AspNetUser.UserName.ToLower().Contains(sSearch))
                       || x.CreatedDate.ToString().Contains(sSearch)
+                      || x.ProjectId == projectId
+                      && x.IsActive == true
                       );
             }
             else
             {
                 return _context.Workings.Where(x =>
                          x.Description.Contains(sSearch)
-                         || x.AspNetUser.UserName.ToLower().Contains(sSearch)
+                         || x.AspNetUser.UserName.ToLower().Contains(sSearch) && x.IsActive == true
+                         || x.ProjectId == projectId
                          );
             }
         }

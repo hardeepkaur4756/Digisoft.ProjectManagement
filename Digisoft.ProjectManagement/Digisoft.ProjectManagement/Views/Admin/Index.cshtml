@@ -23,10 +23,8 @@
         <tr>
             <th>Name</th>
             <th>Email</th>
-            @*<th>Role</th>*@
             <th>Active</th>
             <th>Action</th>
-            @*<th>Password</th>*@
         </tr>
     </thead>
     <tbody>
@@ -39,18 +37,10 @@
                     <td>@item.FirstName @item.LastName </td>
                     <td>@item.Email</td>
                     <td>@item.Exclude</td>
-                    @*@if (@item.IsActive == true)
-                        {
-                            <td><input type="checkbox" id="chk_@i" onchange="return ActiveOrInactiveId('@item.UserId',@i);" checked /></td>
-                        }
-                        else
-                        {
-                            <td><input type="checkbox" id="chk_@i" onchange="return ActiveOrInactiveId('@item.UserId',@i);" /></td>
-                        }*@
                     <td>
                         <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDetail(this,'@item.UserId')"><i class='fa fa-info-circle' aria-hidden='true'></i></a>
                         <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="AddOrEdit(this,'@item.UserId')"><i class='fa fa-pencil' aria-hidden='true'></i></a>
-                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="UploadDocument(this,'@item.UserId')"><i class='fa fa-upload' aria-hidden='true'></i></a>
+                        @*<a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="UploadDocument(this,'@item.UserId')"><i class='fa fa-upload' aria-hidden='true'></i></a>*@
                         <a class='icon-style' href='javascript:void(0)' onclick="return ChangePassword(this,'@item.UserId')"><i class='fa fa-key' aria-hidden='true'></i></a>
                     </td>
                 </tr>
@@ -59,11 +49,6 @@
         }
     </tbody>
 </table>
-<style>
-    /* #MyTable_filter label{
-        display:none
-    }*/
-</style>
 <script>
     $(document).ready(function () {
         _loadData();
@@ -88,7 +73,6 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.Success) {
-                    debugger;
                     if (Id != null && Id != "") {
                         $('#myModal').find('#myModalLabel').html('Update User');
                         //$("#FirstName").val(response.FirstName);
@@ -117,7 +101,6 @@
 
     }
     var ChangePassword = function (event, Id) {
-        debugger;
         var Id = Id;
         var viewType = "ChangePassword";
         loader();
@@ -128,7 +111,6 @@
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (response) {
-                debugger;
                 if (response.Success) {
                     if (Id != null && Id != "") {
                         $('#myModal').find('#myModalLabel').html('Change Password');
@@ -145,7 +127,6 @@
                 }
             },
             error: function (result) {
-                debugger;
                 notificationHelper.ShowError(result.Message);
                 removeLoader();
             }

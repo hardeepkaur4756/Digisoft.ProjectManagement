@@ -10,7 +10,7 @@ namespace Digisoft.ProjectManagement.Configuration
             CreateMap<AspNetUser, UserViewModel>()
                  .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
             CreateMap<ClientViewModel, Client>();
-
+            CreateMap<Client, ClientViewModel>();
             CreateMap<Project, ProjectViewModel>()
                  .ForMember(dest => dest.CreatedByName, opt => opt.MapFrom(src => src.AspNetUser.UserName))
                  .ForMember(dest => dest.ClientName, opt => opt.MapFrom(src => src.Client.Name));

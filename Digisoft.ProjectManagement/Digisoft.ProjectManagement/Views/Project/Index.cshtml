@@ -138,7 +138,9 @@
                                 else {
                                     buttons = "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return ViewDetail(this)'><i class='fa fa-info-circle' aria-hidden='true'></i></a>";
                                     if (full.IsCurrentUser) {
-                                        return "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return AddOrEdit(this)'> <i class='fa fa-pencil' aria-hidden='true'></i></a><a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return Delete(this)'><i class='fa fa-trash' aria-hidden='true'></i></a>" + buttons;
+                                        if (full.IsUnderDeleteTime) {
+                                            return "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return AddOrEdit(this)'> <i class='fa fa-pencil' aria-hidden='true'></i></a><a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return Delete(this)'><i class='fa fa-trash' aria-hidden='true'></i></a>" + buttons;
+                                        }
                                     } else {
                                         return buttons;
                                     }

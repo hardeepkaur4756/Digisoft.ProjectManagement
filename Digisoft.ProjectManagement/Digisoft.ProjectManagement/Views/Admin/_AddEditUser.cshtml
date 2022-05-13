@@ -20,19 +20,26 @@
             </div>
         </div>
         <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Role</label>
+            <div class="col-sm-4 text-break">
+                @Html.DropDownListFor(modal => modal.RoleId, new SelectList(Model.Users, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlRoles" })
+            </div>
             @if (Model.UserId == null)
             {
-                <label class="control-label col-sm-2">Role</label>
-                <div class="col-sm-4 text-break">
-                    @Html.DropDownListFor(modal => modal.RoleId, new SelectList(Model.Users, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlRoles" })
-                </div>
                 @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-sm-2" })
                 <div class="col-sm-4 text-break">
                     @Html.TextBoxFor(modal => modal.Email, new { @class = "form-control", @type = "email", @onchange = "return validateEmail('Email');", })
                     @Html.ValidationMessageFor(modal => modal.Email, "", new { @class = "text-danger" })
                 </div>
             }
-
+            else
+            {
+                <label class="control-label col-sm-2">Active</label>
+                <div class="col-sm-4 text-break">
+                    @Html.CheckBoxFor(model => model.Exclude, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Exclude, "", new { @class = "text-danger" })
+                </div>
+            }
         </div>
         if (Model.UserId == null)
         {
@@ -76,7 +83,7 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Date of Joining</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.DateofJoining, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.DateofJoining, new { @class = "form-control non-time-date" })
                 @Html.ValidationMessageFor(modal => modal.DateofJoining, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Date of Releiving</label>
@@ -118,7 +125,7 @@
             </div>
             <label class="control-label col-sm-2">Emergency Contact Number</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @onkeypress = "return validateNo('PhoneNumber');", @maxlength = "10" })
+                @Html.TextBoxFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @onkeypress = "return validateNo('EmergencyContactNumber');", @maxlength = "10" })
                 @Html.ValidationMessageFor(modal => modal.EmergencyContactNumber, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -152,45 +159,42 @@
                 @Html.DropDownListFor(modal => modal.CurrentCountryId, new SelectList(Model.Countries, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlCCountry" })
                 @Html.ValidationMessageFor(modal => modal.CurrentCountryId, "", new { @class = "text-danger" })
             </div>
+            <label class="control-label col-sm-2">Current Address</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.CurrentAddress, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.CurrentAddress, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent City</label>
             <div class="col-sm-4 text-break">
                 @Html.TextBoxFor(modal => modal.PermanentCity, new { @class = "form-control" })
                 @Html.ValidationMessageFor(modal => modal.PermanentCity, "", new { @class = "text-danger" })
             </div>
-        </div>
-        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent State</label>
             <div class="col-sm-4 text-break">
                 @Html.DropDownListFor(modal => modal.PermanentStateId, new SelectList(Model.States, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlPState" })
                 @Html.ValidationMessageFor(modal => modal.PermanentStateId, "", new { @class = "text-danger" })
             </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent Country</label>
             <div class="col-sm-4 text-break">
                 @Html.DropDownListFor(modal => modal.PermanentCountryId, new SelectList(Model.Countries, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlPCountry" })
                 @Html.ValidationMessageFor(modal => modal.PermanentCountryId, "", new { @class = "text-danger" })
             </div>
-        </div>
-        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent Address</label>
             <div class="col-sm-4 text-break">
                 @Html.TextBoxFor(modal => modal.PermanentAddress, new { @class = "form-control" })
                 @Html.ValidationMessageFor(modal => modal.PermanentAddress, "", new { @class = "text-danger" })
             </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Salary</label>
             <div class="col-sm-4 text-break">
                 @Html.TextBoxFor(modal => modal.Salary, new { @class = "form-control", @onchange = "return IsNumeric();" })
                 @Html.ValidationMessageFor(modal => modal.Salary, "", new { @class = "text-danger" })
             </div>
-        </div>
-        <div class="form-group d-flex">
-            @if (Model.UserId != null)
-            {
-                <label class="control-label col-sm-2">Active</label>
-                <div class="">
-                    @Html.CheckBoxFor(model => model.Exclude, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Exclude, "", new { @class = "text-danger" })
-                </div>
-            }
         </div>
         <div class="text-right mt-2">
             <div class="">
@@ -263,20 +267,14 @@
             </div>
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-2">Active</label>
+
+            <label class="control-label col-sm-2">Role</label>
             <div class="col-sm-4 text-break">
-                @if (Model.Exclude == true)
-                {
-                    <label class="control-label">true</label>
-                }
-                else
-                {
-                    <label class="control-label">false</label>
-                }
+                @Html.DisplayFor(modal => modal.RoleName, new { @class = "form-control" })
             </div>
             @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-sm-2" })
             <div class="col-sm-4 text-break">
-                @Html.DisplayFor(modal => modal.Email, new { @class = "form-control", @type = "email", @onchange = "return validateEmail('Email');", })
+                @Html.DisplayFor(modal => modal.Email, new { @class = "form-control" })
             </div>
 
         </div>
@@ -341,7 +339,7 @@
             </div>
             <label class="control-label col-sm-2">Emergency Contact Number</label>
             <div class="col-sm-4 text-break">
-                @Html.DisplayFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @onkeypress = "return validateNo('PhoneNumber');", @maxlength = "10" })
+                @Html.DisplayFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @onkeypress = "return validateNo('EmergencyContactNumber');", @maxlength = "10" })
             </div>
         </div>
         <div class="form-group d-flex">
@@ -369,29 +367,46 @@
             <div class="col-sm-4 text-break">
                 @Html.DisplayFor(modal => modal.CurrentCountryName, new { @class = "form-control" })
             </div>
+            <label class="control-label col-sm-2">Current Address</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.CurrentAddress, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent City</label>
             <div class="col-sm-4 text-break">
                 @Html.DisplayFor(modal => modal.PermanentCity, new { @class = "form-control" })
             </div>
-        </div>
-        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent State</label>
             <div class="col-sm-4 text-break">
                 @Html.DisplayFor(modal => modal.PermanentStateName, new { @class = "form-control" })
             </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent Country</label>
             <div class="col-sm-4 text-break">
                 @Html.DisplayFor(modal => modal.PermanentCountryName, new { @class = "form-control" })
             </div>
-        </div>
-        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent Address</label>
             <div class="col-sm-4 text-break">
                 @Html.DisplayFor(modal => modal.PermanentAddress, new { @class = "form-control" })
             </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Salary</label>
             <div class="col-sm-4 text-break">
                 @Html.DisplayFor(modal => modal.Salary, new { @class = "form-control", @onchange = "return IsNumeric();" })
+            </div>
+            <label class="control-label col-sm-2">Active</label>
+            <div class="col-sm-4 text-break">
+                @if (Model.Exclude == true)
+                {
+                    <label class="control-label">true</label>
+                }
+                else
+                {
+                    <label class="control-label">false</label>
+                }
             </div>
         </div>
         <div class="text-right mt-2">
@@ -403,7 +418,6 @@
 </div>
 <script>
     $(document).ready(function () {
-        debugger;
         var dateOfJoining = $("#DateofJoining").val();
         dateOfJoining = dateOfJoining?.split(' ')[0];
         $("#DateofJoining").val(dateOfJoining);
@@ -419,7 +433,8 @@
         $("#DOB").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy"
+            format: "dd-mm-yyyy",
+            endDate: "today"
         })
         $("#DateofJoining").datepicker({
             autoclose: true,
@@ -450,14 +465,15 @@
         var currentCity = $("#CurrentCity").val();
         var currentStateId = $("#ddlCState").val();
         var currentCountryId = $("#ddlCCountry").val();
+        var currentAddress = $("#CurrentAddress").val();
         var permanentCity = $("#PermanentCity").val();
         var permanentStateId = $("#ddlPState").val();
         var permanentCountryId = $("#ddlPCountry").val();
+        var permanentAddress = $("#PermanentAddress").val();
         var phoneNumber = $("#PhoneNumber").val();
         var alternatePhoneNumber = $("#AlternatePhoneNumber").val();
         var exp = $("#ExpWhenJoined").val();
         var salary = $("#Salary").val();
-        var permanentAddress = $("#PermanentAddress").val();
         var skills = $("#Skills").val();
         var emergencyContactName = $("#EmergencyContactName").val();
         var emergencyContactRelation = $("#EmergencyContactRelation").val();
@@ -486,10 +502,12 @@
         vm.PermanentCity = permanentCity;
         vm.PersonalEmailAddress = personalEmailAddress;
         vm.PermanentStateId = $("#ddlPState :selected").val();
-        vm.PermanentCountryId = $("#ddlPCountry :selected").val();;
+        vm.PermanentCountryId = $("#ddlPCountry :selected").val();
+        vm.PermanentAddress = permanentAddress;
         vm.CurrentCity = currentCity;
         vm.CurrentStateId = $("#ddlCState :selected").val();
         vm.CurrentCountryId = $("#ddlCCountry :selected").val();
+        vm.CurrentAddress = currentAddress;
         vm.Salary = salary;
         vm.Skills = skills;
         vm.ExpWhenJoined = exp;
@@ -497,7 +515,7 @@
         vm.DateofRelieving = dateofRelieving;
         vm.DOB = dob;
         vm.DepartmentId = $("#ddlDepartments :selected").val();
-        vm.PermanentAddress = permanentAddress;
+
         var validate = true;
         if (first == undefined || first == "") {
             validate = false;
@@ -524,6 +542,12 @@
         } else {
             $("#ddlPCountry").removeClass("error");
         }
+        if (permanentAddress == undefined || permanentAddress == "") {
+            validate = false;
+            $("#PermanentAddress").addClass("error");
+        } else {
+            $("#PermanentAddress").removeClass("error");
+        }
         if (currentStateId == undefined || currentStateId == "") {
             validate = false;
             $("#ddlCState").addClass("error");
@@ -535,6 +559,12 @@
             $("#ddlCCountry").addClass("error");
         } else {
             $("#ddlCCountry").removeClass("error");
+        }
+        if (currentAddress == undefined || currentAddress == "") {
+            validate = false;
+            $("#CurrentAddress").addClass("error");
+        } else {
+            $("#CurrentAddress").removeClass("error");
         }
         if (dob == undefined || dob == "") {
             validate = false;
@@ -669,21 +699,20 @@
         }
     }
     function validateNo(name) {
-        debugger;
         var mobileNum = $("#" + name + "").val();
         var validateMobNum = /^\d*(?:\.\d{1,2})?$/;
         if (validateMobNum.test(mobileNum)) {
+            $("#" + name + "").removeClass("error");
             return true;
         }
         else {
             notificationHelper.ShowError("Invalid Number");
-            $("#" + name).addClass("error");
+            $("#" + name + "").addClass("error");
             $("#" + name + "").val('');
             return false;
         }
     }
     function IsNumeric() {
-        debugger;
         var salary = $("#Salary").val();
         var RE = /^-{0,1}\d*\.{0,1}\d+$/;
         if (RE.test(salary)) {
@@ -740,7 +769,6 @@
         }
     }
     $("#btnChangePassword").click(function () {
-        debugger;
         var Id = $("#UserId").val();
         var password = $("#Password").val();
         var cpass = $("#ConfirmPassword").val();

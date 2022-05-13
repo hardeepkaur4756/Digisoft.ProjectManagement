@@ -24,7 +24,7 @@ namespace Digisoft.ProjectManagement.Controllers
             _userService = new UserService();
             UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,HR")]
         public ActionResult Index()
         {
             try
@@ -52,7 +52,7 @@ namespace Digisoft.ProjectManagement.Controllers
                     model.Exclude = Convert.ToBoolean(item.IsActive);
                     lst.Add(model);
                 }
-                if (User.IsInRole("Admin"))
+                if (User.IsInRole("Admin") || User.IsInRole("HR"))
                 {
                     return View(lst);
                 }
@@ -72,6 +72,7 @@ namespace Digisoft.ProjectManagement.Controllers
         {
             try
             {
+                string role = UserManager.GetRoles(id).FirstOrDefault();
                 var vm = new UserViewModel();
                 vm.ViewType = viewType;
                 vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Text).ToList();
@@ -102,19 +103,21 @@ namespace Digisoft.ProjectManagement.Controllers
                     vm.ViewType = viewType;
                     vm.UserId = id;
                 }
-                else if(viewType =="View")
+                else if (viewType == "View")
                 {
                     vm = id != null ? _userService.GetByIDVM(id) : new UserViewModel();
+                    vm.RoleName = role;
                     vm.ViewType = viewType;
                 }
                 else if (viewType == "UploadDocument")
                 {
                     vm.ViewType = viewType;
-                    vm.UserId= id;  
+                    vm.UserId = id;
                 }
-                else if(id!="0" && viewType=="Display")
+                else if (id != "0" && viewType == "Display")
                 {
                     vm = id != null ? _userService.GetByIDVM(id) : new UserViewModel();
+                    vm.RoleId = _context.AspNetRoles.Where(x => x.Name == role).Select(x => x.Id).FirstOrDefault();
                     vm.ViewType = viewType;
                     vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Text).ToList();
                     vm.States = _context.States.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
@@ -168,29 +171,35 @@ namespace Digisoft.ProjectManagement.Controllers
                         m.FirstName = u.FirstName;
                         m.LastName = u.LastName;
                         m.UserId = u.UserId;
-                        m.DepartmentId=u.DepartmentId;
-                        m.DOB=u.DOB;
-                        m.DateofJoining=u.DateofJoining;
+                        string OldRoleName = UserManager.GetRoles(u.UserId).FirstOrDefault();
+                        if (OldRoleName != u.RoleId)
+                        {
+                            UserManager.RemoveFromRole(m.UserId, u.RoleId);
+                            var r= UserManager.AddToRole(m.UserId, u.RoleId);
+                        }
+                        m.ExpWhenJoined = u.ExpWhenJoined;
+                        m.PhoneNumber = u.PhoneNumber;
+                        m.AlternatePhoneNumber = u.AlternatePhoneNumber;
+                        m.PersonalEmailAddress = u.PersonalEmailAddress;
+                        m.DepartmentId = u.DepartmentId;
+                        m.DOB = u.DOB;
+                        m.DateofJoining = u.DateofJoining;
                         m.DateofRelieving = u.DateofRelieving;
                         m.CurrentCity = u.CurrentCity;
                         m.PermanentCity = u.PermanentCity;
-                        m.CurrentStateId= u.CurrentStateId;
-                        m.PermanentStateId= u.PermanentStateId;
-                        m.AadharNumber = u.AadharNumber;
-                        m.PanNumber = u.PanNumber;
+                        m.CurrentStateId = u.CurrentStateId;
+                        m.PermanentStateId = u.PermanentStateId;
                         m.PermanentCountryId = u.PermanentCountryId;
-                        m.PersonalEmailAddress = u.PersonalEmailAddress;
-                        m.Salary  = u.Salary;
-                        m.Skills = u.Skills;
-                        m.EmergencyContactName= u.EmergencyContactName;
-                        m.EmergencyContactNumber = u.EmergencyContactNumber;
-                        m.EmergencyContactRelation  = u.EmergencyContactRelation;
-                        m.ExpWhenJoined = u.ExpWhenJoined;
-                        m.PhoneNumber = u.PhoneNumber;
-                        m.AlternatePhoneNumber = u.AlternatePhoneNumber;    
                         m.PermanentAddress = u.PermanentAddress;
                         m.CurrentCountryId = u.CurrentCountryId;
-                        m.PermanentAddress= u.PermanentAddress;
+                        m.CurrentAddress = u.CurrentAddress;
+                        m.AadharNumber = u.AadharNumber;
+                        m.PanNumber = u.PanNumber;
+                        m.Skills = u.Skills;
+                        m.EmergencyContactName = u.EmergencyContactName;
+                        m.EmergencyContactNumber = u.EmergencyContactNumber;
+                        m.EmergencyContactRelation = u.EmergencyContactRelation;
+                        m.Salary = u.Salary;
                     }
                     using (var dbCtx = new ProjectManagementEntities())
                     {

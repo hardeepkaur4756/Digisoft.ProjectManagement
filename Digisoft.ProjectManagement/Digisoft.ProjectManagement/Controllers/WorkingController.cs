@@ -37,10 +37,11 @@ namespace Digisoft.ProjectManagement.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetList(DataTablesParam param, string sortDir, string sortCol, DateTime? startDate, DateTime? endDate)
+        public JsonResult GetList(DataTablesParam param, string sortDir, string sortCol, DateTime? startDate, DateTime? endDate,string projectId)
         {
             var workingsVM = new List<WorkingViewModel>();
             int pageNo = 1;
+            int project = int.Parse(projectId);
             var user = UserManager.FindById(User.Identity.GetUserId());
 
             if (param.iDisplayStart >= param.iDisplayLength)
@@ -50,7 +51,7 @@ namespace Digisoft.ProjectManagement.Controllers
             if (param.sSearch != null)
             {
                 sortCol = sortCol == "CreatedByName" ? "CreatedBy" : sortCol;
-                workingsVM = _workingService.GetAllAfterSearch(param, startDate, endDate)
+                workingsVM = _workingService.GetAllAfterSearch(param, startDate, endDate, project)
                 .OrderBy(x => x.Id).OrderBy(sortCol + " " + sortDir).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength)
                 .Select(x => new WorkingViewModel
                 {
@@ -62,15 +63,16 @@ namespace Digisoft.ProjectManagement.Controllers
                     DateWorked=x.DateWorked,
                     CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
                     CreatedDate = x.CreatedDate,
-                    IsCurrentUser = user.Id == x.CreatedBy ? true : false
+                    IsCurrentUser = user.Id == x.CreatedBy ? true : false,
+                    IsUnderDeleteTime = ((DateTime.Now - x.CreatedDate).TotalDays < 7) ? true : false
                 }).ToList();
                 totalCount = workingsVM.Count();
             }
             else
             {
                 sortCol = sortCol == "CreatedByName" ? "CreatedBy" : sortCol;
-                totalCount = _workingService.GetAll(startDate, endDate).Count();
-                workingsVM = _workingService.GetAll(startDate, endDate).OrderBy(x => x.Id).OrderBy(sortCol + " " + sortDir)
+                totalCount = _workingService.GetAll(startDate, endDate, project).Count();
+                workingsVM = _workingService.GetAll(startDate, endDate, project).OrderBy(x => x.Id).OrderBy(sortCol + " " + sortDir)
                     .Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength)
                      .Select(x => new WorkingViewModel
                      {
@@ -82,7 +84,8 @@ namespace Digisoft.ProjectManagement.Controllers
                          DateWorked = x.DateWorked,
                          CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
                          CreatedDate = x.CreatedDate,
-                         IsCurrentUser = user.Id == x.CreatedBy ? true : false
+                         IsCurrentUser = user.Id == x.CreatedBy ? true : false,
+                         IsUnderDeleteTime = ((DateTime.Now - x.CreatedDate).TotalDays < 7) ? true : false
                      })
                 .ToList();
             }
@@ -106,7 +109,7 @@ namespace Digisoft.ProjectManagement.Controllers
             }
             else
             {
-                var projects = _projectService.GetAll();
+                var projects = _projectService.GetAllForFilter();
                 vm.Projects = projects
                     .Select(x => new SelectListItem { Text = string.Format("{0}", x.Name), Value = x.Id.ToString() })
                     .OrderBy(x => x.Text)
@@ -128,7 +131,7 @@ namespace Digisoft.ProjectManagement.Controllers
             {
                 vm.CreatedBy = user.Id;
             }
-
+            vm.IsActive = true;
             _workingService.InsertUpdate(vm);
             if (vm.Id > 0)
             {
@@ -147,9 +150,12 @@ namespace Digisoft.ProjectManagement.Controllers
         /// <returns></returns>
         public ActionResult Delete(int Id)
         {
-            if (User.IsInRole("Admin"))
+            WorkingViewModel workingVM = new WorkingViewModel();
+            workingVM.Id = Id;
+            workingVM.IsActive = false;
+            if (User.IsInRole("Admin") || User.IsInRole("HR"))
             {
-                _workingService.Delete(Id);
+                _workingService.Delete(workingVM);
                 return Json(new { Message = "Working deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
             }
             else
@@ -158,7 +164,7 @@ namespace Digisoft.ProjectManagement.Controllers
                 //var billingCount = _billingService.GetBillingCount(ControllerTypeEnum.ControllerType.Client, Id);
                 //if (billingCount <= 0)
                 //{
-                _workingService.Delete(Id);
+                _workingService.Delete(workingVM);
                 return Json(new { Message = "Working deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
                 //}
                 //else
@@ -166,6 +172,16 @@ namespace Digisoft.ProjectManagement.Controllers
                 //    return Json(new { Message = "Sorry! You can't delete this record!", Success = false }, JsonRequestBehavior.AllowGet);
                 //}
             }
+        }
+        public ActionResult GetProject()
+        {
+            WorkingViewModel vm= new WorkingViewModel();
+            var projects = _projectService.GetAllForFilter();
+            vm.Projects = projects
+                   .Select(x => new SelectListItem { Text = string.Format("{0}", x.Name), Value = x.Id.ToString() })
+                   .OrderBy(x => x.Text)
+                   .ToList();
+            return Json(vm.Projects, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -17,5 +17,6 @@ namespace Digisoft.ProjectManagement.Models
         public int ClientId { get; set; }
         public List<SelectListItem> Clients { get; set; }
         public string ClientName { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

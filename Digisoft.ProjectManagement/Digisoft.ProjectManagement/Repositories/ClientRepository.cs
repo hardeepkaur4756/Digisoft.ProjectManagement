@@ -1,5 +1,6 @@
 ﻿using Digisoft.ProjectManagement.Models;
 using Digisoft.ProjectManagement.Repositories.Interface;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -20,30 +21,31 @@ namespace Digisoft.ProjectManagement.Repositories
         }
         public IEnumerable<Client> GetAll()
         {
-            return _context.Clients.Include(x=>x.AspNetUser);
+            return _context.Clients.Include(x => x.AspNetUser).Where(x => x.IsActive == true);
         }
         public IEnumerable<Client> GetAll(DateTime? startDate, DateTime? endDate)
         {
             if (startDate.HasValue && endDate.HasValue)
             {
-                return _context.Clients.Where(x => 
-                (x.CreatedOn.Day >= ((DateTime)startDate).Day 
+                return _context.Clients.Where(x =>
+                (x.CreatedOn.Day >= ((DateTime)startDate).Day
                 && x.CreatedOn.Month >= ((DateTime)startDate).Month
                 && x.CreatedOn.Year >= ((DateTime)startDate).Year)
                 &&
                 (x.CreatedOn.Day <= ((DateTime)endDate).Day
                 && x.CreatedOn.Month <= ((DateTime)endDate).Month
                 && x.CreatedOn.Year <= ((DateTime)endDate).Year)
+                && x.IsActive == true
                 );
                 //return _context.Clients.Where(x => x.CreatedOn >= startDate && x.CreatedOn <= endDate);
             }
             else
             {
-                return _context.Clients;
+                return _context.Clients.Where(x => x.IsActive == true);
             }
         }
 
-        public IEnumerable<Client> GetAllAfterSearch(DataTablesParam param,DateTime? startDate, DateTime? endDate)
+        public IEnumerable<Client> GetAllAfterSearch(DataTablesParam param, DateTime? startDate, DateTime? endDate)
         {
             var sSearch = param.sSearch.ToLower();
             if (startDate.HasValue && endDate.HasValue)
@@ -51,16 +53,16 @@ namespace Digisoft.ProjectManagement.Repositories
                 return _context.Clients
                       .Where(x =>
                       (x.CreatedOn >= startDate && x.CreatedOn <= endDate) &&
-                        (x.Name.ToLower().Contains(sSearch)
+                        (x.Name.ToLower().Contains(sSearch) 
                       || x.AspNetUser.UserName.ToLower().Contains(sSearch))
-                      || x.CreatedOn.ToString().Contains(sSearch)
+                      || x.CreatedOn.ToString().Contains(sSearch) && x.IsActive == true
                       );
             }
             else
             {
-                return _context.Clients.Where(x => 
-                         x.Name.ToLower().Contains(sSearch)
-                         || x.AspNetUser.UserName.ToLower().Contains(sSearch)
+                return _context.Clients.Where(x =>
+                         x.Name.ToLower().Contains(sSearch) 
+                         || x.AspNetUser.UserName.ToLower().Contains(sSearch) && x.IsActive == true
                          //|| x.CreatedOn.ToString().Contains(sSearch)
                          );
             }
@@ -89,5 +91,6 @@ namespace Digisoft.ProjectManagement.Repositories
             _context.SaveChanges();
             return client;
         }
+        
     }
 }

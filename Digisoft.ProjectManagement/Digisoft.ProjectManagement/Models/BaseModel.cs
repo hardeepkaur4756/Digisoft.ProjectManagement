@@ -9,6 +9,7 @@ namespace Digisoft.ProjectManagement.Models
     {
         public bool IsCurrentUser { get; set; }
         public string ViewType { get; set; }
-        public bool IsAdmin { get; } = Utility.StaticMethods.isAdmin();
+        public bool IsAdmin { get; } = Utility.StaticMethods.isAdminOrHr();
+        public bool IsUnderDeleteTime { get; set; }
     }
 }

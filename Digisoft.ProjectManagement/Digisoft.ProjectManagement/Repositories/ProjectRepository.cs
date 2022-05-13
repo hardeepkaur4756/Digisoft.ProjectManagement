@@ -20,6 +20,10 @@ namespace Digisoft.ProjectManagement.Repositories
         }
         public IEnumerable<Project> GetAll()
         {
+            return _context.Projects.Include(x => x.AspNetUser).Where(x=>x.IsActive==true);
+        }
+        public IEnumerable<Project> GetAllForFilter()
+        {
             return _context.Projects.Include(x => x.AspNetUser);
         }
         public IEnumerable<Project> GetAll(DateTime? startDate, DateTime? endDate)
@@ -34,11 +38,12 @@ namespace Digisoft.ProjectManagement.Repositories
                 (x.CreatedOn.Day <= ((DateTime)endDate).Day
                 && x.CreatedOn.Month <= ((DateTime)endDate).Month
                 && x.CreatedOn.Year <= ((DateTime)endDate).Year)
+                && x.IsActive == true
                 );
             }
             else
             {
-                return _context.Projects;
+                return _context.Projects.Where(x => x.IsActive == true);
             }
         }
 
@@ -52,14 +57,14 @@ namespace Digisoft.ProjectManagement.Repositories
                       (x.CreatedOn >= startDate && x.CreatedOn <= endDate) &&
                         (x.Name.ToLower().Contains(sSearch)
                       || x.AspNetUser.UserName.ToLower().Contains(sSearch))
-                      || x.CreatedOn.ToString().Contains(sSearch)
+                      || x.CreatedOn.ToString().Contains(sSearch) && x.IsActive == true
                       );
             }
             else
             {
                 return _context.Projects.Where(x =>
                          x.Name.ToLower().Contains(sSearch)
-                         || x.AspNetUser.UserName.ToLower().Contains(sSearch)
+                         || x.AspNetUser.UserName.ToLower().Contains(sSearch) && x.IsActive == true
                          );
             }
         }

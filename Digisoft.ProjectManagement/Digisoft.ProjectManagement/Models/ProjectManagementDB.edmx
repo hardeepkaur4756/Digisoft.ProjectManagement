@@ -154,6 +154,7 @@
           <Property Name="PermanentStateId" Type="int" />
           <Property Name="PermanentCountryId" Type="int" />
           <Property Name="DepartmentId" Type="int" />
+          <Property Name="CurrentAddress" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="UserDocument">
           <Key>
@@ -654,6 +655,7 @@
           <NavigationProperty Name="Department" Relationship="ProjectManagementModel.FK_UserDetail_Department" FromRole="UserDetail" ToRole="Department" />
           <NavigationProperty Name="State" Relationship="ProjectManagementModel.FK_UserDetail_State" FromRole="UserDetail" ToRole="State" />
           <NavigationProperty Name="State1" Relationship="ProjectManagementModel.FK_UserDetail_State2" FromRole="UserDetail" ToRole="State" />
+          <Property Name="CurrentAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Working">
           <Key>
@@ -1114,6 +1116,7 @@
           <EntitySetMapping Name="UserDetails">
             <EntityTypeMapping TypeName="ProjectManagementModel.UserDetail">
               <MappingFragment StoreEntitySet="UserDetail">
+                <ScalarProperty Name="CurrentAddress" ColumnName="CurrentAddress" />
                 <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
                 <ScalarProperty Name="PermanentCountryId" ColumnName="PermanentCountryId" />
                 <ScalarProperty Name="PermanentStateId" ColumnName="PermanentStateId" />

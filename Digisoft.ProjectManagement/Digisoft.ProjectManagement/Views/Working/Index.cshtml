@@ -8,11 +8,16 @@
     Filters
 </h4>
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <input type="text" class="form-control" id="startDate" autocomplete="off" placeholder="Select Start Date" />
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <input type="text" class="form-control" id="endDate" autocomplete="off" placeholder="Select End Date" />
+    </div>
+    <div class="col-sm-3">
+        <select id="projectId" class="form-control">
+            <option value="0">Select Project</option>
+        </select>
     </div>
     <div class="col-sm-1">
         <input type="button" id="" class="btn btn-primary" value="Clear" data-isNew="true" onclick="clearFilters(this)" />
@@ -41,7 +46,7 @@
         var isFirstTime = true;
         var startDate = new Date();
         var FromEndDate = new Date();
-
+        BindProject();
         $("#startDate").datepicker({
             autoclose: true,
             minViewMode: 0,
@@ -82,7 +87,10 @@
                 isFirstTime = false;
             }
         });
+        $("#projectId").change(function () {
 
+            _loadData();
+        })
         loader();
         if (isFirstTime) {
             _loadData();
@@ -104,12 +112,12 @@
                         var sDir = oSettings.aaSorting[0][1];
                         var sDate = $("#startDate").val();
                         var eDate = $("#endDate").val();
-
+                        var project = $("#projectId").val();
                         aoData.push({ "name": "sortCol", "value": colName });
                         aoData.push({ "name": "sortDir", "value": sDir });
                         aoData.push({ "name": "startDate", "value": sDate });
                         aoData.push({ "name": "endDate", "value": eDate });
-
+                        aoData.push({ "name": "projectId", "value": project });
                         $.ajax({
                             type: "Get",
                             data: aoData,
@@ -152,7 +160,9 @@
                                 else {
                                     buttons = "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return ViewDetail(this)'><i class='fa fa-info-circle' aria-hidden='true'></i></a>";
                                     if (full.IsCurrentUser) {
-                                        return "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return AddOrEdit(this)'> <i class='fa fa-pencil' aria-hidden='true'></i></a><a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return Delete(this)'><i class='fa fa-trash' aria-hidden='true'></i></a>" + buttons;
+                                        if (full.IsUnderDeleteTime) {
+                                            return "<a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return AddOrEdit(this)'> <i class='fa fa-pencil' aria-hidden='true'></i></a><a class='icon-style' href='#' id='' data-id='" + full.Id + "' onclick='return Delete(this)'><i class='fa fa-trash' aria-hidden='true'></i></a>" + buttons;
+                                        }
                                     } else {
                                         return buttons;
                                     }
@@ -178,12 +188,13 @@
                     },
                 });
         }
-        removeLoader(); 
+        removeLoader();
     };
 
     var clearFilters = function () {
         $("#startDate").val("");
         $("#endDate").val("");
+        $("#projectId").val("0");
         _loadData();
     }
 
@@ -307,6 +318,26 @@
             }
         }
     }
+    function BindProject() {
+        $.ajax({
+            type: "Get",
+            url: "/Working/GetProject",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                var project = $("#projectId");
+                if (result.length > 0) {
+                    $.each(result, function () {
+                        project.append($("<option></option>").val(this['Value']).html(this['Text']));
+                    });
+
+                }
+            },
+            error: function (result) {
+                notificationHelper.ShowError('Error');
+                removeLoader();
+            }
+        });
+    }
 </script>
 
-    

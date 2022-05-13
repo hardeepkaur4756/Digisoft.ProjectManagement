@@ -19,19 +19,30 @@ namespace Digisoft.ProjectManagement.Service
         {
             _workingRepository.Delete(id);
         }
-
+        public void Delete(WorkingViewModel workingVM)
+        {
+            Working workingEntity = _workingRepository.GetbyId(workingVM.Id);
+            workingVM.HoursBilled = workingEntity.HoursBilled;
+            workingVM.HoursWorked = workingEntity.HoursWorked;
+            workingVM.DateWorked = workingEntity.DateWorked;
+            workingVM.CreatedBy = workingEntity.CreatedBy;
+            workingVM.CreatedDate = workingEntity.CreatedDate;
+            workingVM.ProjectId = workingEntity.ProjectId;
+            AutoMapper.Mapper.Map(workingVM, workingEntity);
+            _workingRepository.Update(workingEntity);
+        }
         public IEnumerable<Working> GetAll()
         {
             return _workingRepository.GetAll();
         }
-        public IEnumerable<Working> GetAll(DateTime? startDate, DateTime? endDate)
+        public IEnumerable<Working> GetAll(DateTime? startDate, DateTime? endDate, int projectId)
         {
-            return _workingRepository.GetAll(startDate, endDate);
+            return _workingRepository.GetAll(startDate, endDate,projectId);
         }
 
-        public IEnumerable<Working> GetAllAfterSearch(DataTablesParam param, DateTime? startDate, DateTime? endDate)
+        public IEnumerable<Working> GetAllAfterSearch(DataTablesParam param, DateTime? startDate, DateTime? endDate, int projectId)
         {
-            return _workingRepository.GetAllAfterSearch(param, startDate, endDate);
+            return _workingRepository.GetAllAfterSearch(param, startDate, endDate, projectId);
         }
 
         /// <summary>
@@ -70,7 +81,6 @@ namespace Digisoft.ProjectManagement.Service
                     {  // insert project 
                         workingVM.CreatedDate = DateTime.Now;
                         Working workingEntity = new Working();
-
                         AutoMapper.Mapper.Map(workingVM, workingEntity);
                         _workingRepository.Insert(workingEntity);
                         return workingEntity;

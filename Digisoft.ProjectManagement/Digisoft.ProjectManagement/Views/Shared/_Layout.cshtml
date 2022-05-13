@@ -70,7 +70,7 @@
                         <li class='@Html.IsActive("Project", "Index")'>
                             @Html.ActionLink("Project", "Index", "Project", new { area = "" }, new { @class = "text-black-50 nav-link" })
                         </li>
-                        if (User.IsInRole("Admin"))
+                        if (User.IsInRole("Admin") || User.IsInRole("HR"))
                         {
                             <li class='@Html.IsActive("Admin", "Index")'>
                                 @Html.ActionLink("User", "Index", "Admin", new { area = "" }, new { @class = "text-black-50 nav-link" })

@@ -50,6 +50,7 @@ namespace Digisoft.ProjectManagement.Models
         public string CurrentCity { get; set; }
         public int CurrentStateId { get; set; }
         public int CurrentCountryId { get; set; }
+        public string CurrentAddress { get; set; }
         public string PermanentAddress { get; set; }
         public string PermanentCity { get; set; }
         public int PermanentStateId { get; set; }
@@ -65,6 +66,7 @@ namespace Digisoft.ProjectManagement.Models
         public string PermanentCountryName { get; set; }
         public string CurrentStateName { get; set; }
         public string CurrentCountryName { get; set; }
+        
     }
     public class UserList
     {

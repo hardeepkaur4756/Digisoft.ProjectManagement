@@ -1,6 +1,7 @@
 ﻿using Digisoft.ProjectManagement.Models;
 using Digisoft.ProjectManagement.Repositories;
 using Digisoft.ProjectManagement.Service.Interface;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 
@@ -9,29 +10,33 @@ namespace Digisoft.ProjectManagement.Service
     public class ClientService : IClientService
     {
         private readonly ClientRepository _clientRepository;
-
         public ClientService()
         {
             _clientRepository = new ClientRepository();
         }
 
-        public void Delete(int id)
+        public void Delete(ClientViewModel clientVM)
         {
-            _clientRepository.Delete(id);
+            Client clientEntity = _clientRepository.GetbyId(clientVM.Id);
+            clientVM.Name = clientEntity.Name;
+            clientVM.CreatedOn = clientEntity.CreatedOn;
+            clientVM.CreatedBy = clientEntity.CreatedBy;
+            AutoMapper.Mapper.Map(clientVM, clientEntity);
+            _clientRepository.Update(clientEntity);
         }
 
         public IEnumerable<Client> GetAll()
         {
             return _clientRepository.GetAll();
         }
-         public IEnumerable<Client> GetAll(DateTime? startDate, DateTime? endDate)
+        public IEnumerable<Client> GetAll(DateTime? startDate, DateTime? endDate)
         {
             return _clientRepository.GetAll(startDate, endDate);
         }
 
         public IEnumerable<Client> GetAllAfterSearch(DataTablesParam param, DateTime? startDate, DateTime? endDate)
         {
-            return _clientRepository.GetAllAfterSearch(param, startDate, endDate); 
+            return _clientRepository.GetAllAfterSearch(param, startDate, endDate);
         }
 
         /// <summary>
@@ -52,7 +57,7 @@ namespace Digisoft.ProjectManagement.Service
         public Client InsertUpdate(ClientViewModel clientVM)
         {
             try
-            {    
+            {
                 if (clientVM != null)
                 {
                     // Get  exitting client by Id
@@ -115,6 +120,9 @@ namespace Digisoft.ProjectManagement.Service
             throw new NotImplementedException();
         }
 
-      
+        public void Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

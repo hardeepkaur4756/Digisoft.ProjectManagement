@@ -8,11 +8,11 @@ namespace Digisoft.ProjectManagement.Utility
 {
     public class StaticMethods
     {
-        public static int GetAverage(int numberOfUsers,int Total)
+        public static int GetAverage(int numberOfUsers, int Total)
         {
             var toReturn = 0;
             if (numberOfUsers != 0 && Total != 0)
-            toReturn = Total/numberOfUsers;
+                toReturn = Total / numberOfUsers;
             return toReturn;
         }
         //get the List of days of the month
@@ -23,8 +23,8 @@ namespace Digisoft.ProjectManagement.Utility
             var year = date.Year;
 
             int days = DateTime.DaysInMonth(year, month);
-            
-            for(var i = 1; i <= days; i++)
+
+            for (var i = 1; i <= days; i++)
             {
                 toReturn.Add(string.Format("{0}", i));
             }
@@ -34,12 +34,19 @@ namespace Digisoft.ProjectManagement.Utility
         public static List<string> GetListOfMonths()
         {
             string[] toReturn = DateTimeFormatInfo.CurrentInfo.MonthNames;
-            return toReturn.Take(toReturn.Length-1).ToList();
+            return toReturn.Take(toReturn.Length - 1).ToList();
         }
-       
-        public static bool isAdmin()
+
+        public static bool isAdminOrHr()
         {
-            return HttpContext.Current.User.IsInRole("Admin"); 
+            if (HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("HR"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Digisoft.ProjectManagement.Models
         public List<SelectListItem> Projects { get; set; }
         public string Working { get; set; }
         public string ProjectName { get; set; }
+        public bool? IsActive { get; set; }
     }
 
 }

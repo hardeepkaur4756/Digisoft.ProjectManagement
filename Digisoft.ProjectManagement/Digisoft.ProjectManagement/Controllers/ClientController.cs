@@ -49,15 +49,17 @@ namespace Digisoft.ProjectManagement.Controllers
             if (param.sSearch != null)
             {
                 sortCol = sortCol == "CreatedByName" ? "CreatedBy" : sortCol;
-                clientsVm = _clientService.GetAllAfterSearch(param,startDate,endDate)
+                clientsVm = _clientService.GetAllAfterSearch(param, startDate, endDate)
                 .OrderBy(x => x.Id).OrderBy(sortCol + " " + sortDir).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength)
                 .Select(x => new ClientViewModel
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    CreatedBy = x.CreatedBy,
                     CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
-                    CreatedOn =x.CreatedOn,
-                    IsCurrentUser = user.Id == x.CreatedBy ? true : false
+                    CreatedOn = x.CreatedOn,
+                    IsCurrentUser = user.Id == x.CreatedBy ? true : false,
+                    IsUnderDeleteTime = ((DateTime.Now - x.CreatedOn).TotalDays < 7) ? true : false
                 })
                 .ToList();
                 totalCount = clientsVm.Count();
@@ -72,9 +74,11 @@ namespace Digisoft.ProjectManagement.Controllers
                      {
                          Id = x.Id,
                          Name = x.Name,
+                         CreatedBy = x.CreatedBy,
                          CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
                          CreatedOn = x.CreatedOn,
-                         IsCurrentUser = user.Id == x.CreatedBy ? true : false
+                         IsCurrentUser = user.Id == x.CreatedBy ? true : false,
+                         IsUnderDeleteTime = ((DateTime.Now - x.CreatedOn).TotalDays < 7) ? true : false
                      })
                 .ToList();
             }
@@ -89,7 +93,7 @@ namespace Digisoft.ProjectManagement.Controllers
         }
 
         [HttpGet]
-        public ActionResult AddClient(int id,string viewType)
+        public ActionResult AddClient(int id, string viewType)
         {
             ClientViewModel vm = id > 0 ? _clientService.GetByIDVM(id) : new ClientViewModel();
 
@@ -97,7 +101,7 @@ namespace Digisoft.ProjectManagement.Controllers
             {
                 vm.ViewType = "Display";
             }
-            
+
             return Json(new { Success = true, Html = this.RenderPartialViewToString("_AddEditClient", vm) }, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -113,7 +117,7 @@ namespace Digisoft.ProjectManagement.Controllers
             {
                 vm.CreatedBy = user.Id;
             }
-            
+            vm.IsActive = true;
             _clientService.InsertUpdate(vm);
             if (vm.Id > 0)
             {
@@ -132,9 +136,12 @@ namespace Digisoft.ProjectManagement.Controllers
         /// <returns></returns>
         public ActionResult Delete(int Id)
         {
-            if (User.IsInRole("Admin"))
+            ClientViewModel clientVM = new ClientViewModel();
+            clientVM.Id = Id;
+            clientVM.IsActive = false;
+            if (User.IsInRole("Admin") || User.IsInRole("HR"))
             {
-                _clientService.Delete(Id);
+                _clientService.Delete(clientVM);
                 return Json(new { Message = "Client deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
             }
             else
@@ -143,8 +150,8 @@ namespace Digisoft.ProjectManagement.Controllers
                 //var billingCount = _billingService.GetBillingCount(ControllerTypeEnum.ControllerType.Client, Id);
                 //if (billingCount <= 0)
                 //{
-                    _clientService.Delete(Id);
-                    return Json(new { Message = "Client deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
+                _clientService.Delete(clientVM);
+                return Json(new { Message = "Client deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
                 //}
                 //else
                 //{

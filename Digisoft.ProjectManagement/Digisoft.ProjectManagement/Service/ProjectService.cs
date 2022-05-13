@@ -19,10 +19,23 @@ namespace Digisoft.ProjectManagement.Service
         {
             _projectRepository.Delete(id);
         }
-
+        public void Delete(ProjectViewModel projectVM)
+        {
+            Project projectEntity = _projectRepository.GetbyId(projectVM.Id);
+            projectVM.Name = projectEntity.Name;
+            projectVM.CreatedOn = projectEntity.CreatedOn;
+            projectVM.CreatedBy = projectEntity.CreatedBy;
+            projectVM.ClientId = projectEntity.ClientId;
+            AutoMapper.Mapper.Map(projectVM, projectEntity);
+            _projectRepository.Update(projectEntity);
+        }
         public IEnumerable<Project> GetAll()
         {
             return _projectRepository.GetAll();
+        }
+        public IEnumerable<Project> GetAllForFilter()
+        {
+            return _projectRepository.GetAllForFilter();
         }
         public IEnumerable<Project> GetAll(DateTime? startDate, DateTime? endDate)
         {

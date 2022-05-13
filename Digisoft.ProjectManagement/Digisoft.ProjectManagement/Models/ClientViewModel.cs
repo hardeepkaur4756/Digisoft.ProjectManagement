@@ -11,5 +11,6 @@ namespace Digisoft.ProjectManagement.Models
         public string CreatedBy { get; set; }
         [Display(Name = "Created By")]
         public string CreatedByName { get; set; }
+        public bool? IsActive { get;  set; }
     }
 }
