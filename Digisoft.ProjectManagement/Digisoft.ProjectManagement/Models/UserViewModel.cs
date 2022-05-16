@@ -66,7 +66,10 @@ namespace Digisoft.ProjectManagement.Models
         public string PermanentCountryName { get; set; }
         public string CurrentStateName { get; set; }
         public string CurrentCountryName { get; set; }
-        
+        public string Type { get; set; }
+        public string Name { get; set; }
+        public List<UserDocument> Documents { get; set; }
+
     }
     public class UserList
     {

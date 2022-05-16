@@ -16,6 +16,11 @@
             margin: 1.75rem auto;
         }
     }
+
+    .divdoc {
+        width: 60%;
+        margin: 0 auto;
+    }
 </style>
 <input type="button" id="btnAddClient" class="btn btn-primary common-btn" value="Add" data-isNew="true" onclick="AddOrEdit(this)" />
 <table class="table table-responsive table-hover" id="MyTable">
@@ -40,7 +45,7 @@
                     <td>
                         <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDetail(this,'@item.UserId')"><i class='fa fa-info-circle' aria-hidden='true'></i></a>
                         <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="AddOrEdit(this,'@item.UserId')"><i class='fa fa-pencil' aria-hidden='true'></i></a>
-                        @*<a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="UploadDocument(this,'@item.UserId')"><i class='fa fa-upload' aria-hidden='true'></i></a>*@
+                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDocument(this,'@item.UserId')"><i class='fa fa-upload' aria-hidden='true'></i></a>
                         <a class='icon-style' href='javascript:void(0)' onclick="return ChangePassword(this,'@item.UserId')"><i class='fa fa-key' aria-hidden='true'></i></a>
                     </td>
                 </tr>
@@ -82,7 +87,7 @@
                     else {
                         $('#myModal').find('#myModalLabel').html('Add User');
                     }
-
+                    $('#myModal').find('.modal-content').removeClass('divdoc');
                     $('#myModal').find('.modal-body').html(response.Html);
                     $('#myModal').find('.btn-primary').addClass('saveBid');
                     $('#myModal').modal('show');
@@ -101,6 +106,7 @@
 
     }
     var ChangePassword = function (event, Id) {
+        debugger;
         var Id = Id;
         var viewType = "ChangePassword";
         loader();
@@ -113,12 +119,13 @@
             success: function (response) {
                 if (response.Success) {
                     if (Id != null && Id != "") {
-                        $('#myModal').find('#myModalLabel').html('Change Password');
+                        $('#myModal').find('#myModalLabel').html(response.UserName+"'s Change Password");
                         $("#Password").val('');
                     }
                     $('#myModal').find('.modal-body').html(response.Html);
                     $('#myModal').find('.btn-primary').addClass('saveBid');
                     $('#myModal').modal('show');
+                    $('#myModal').find('.modal-content').addClass('divdoc');
                     removeLoader();
                 }
                 else {
@@ -164,13 +171,8 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
                     if (response.Success) {
-                        if (Id > 0) {
-                            $('#myModal').find('#myModalLabel').html('Project View Detail');
-                        }
-                        else {
-                            $('#myModal').find('#myModalLabel').html('Project View Detail');
-                        }
-
+                        $('#myModal').find('#myModalLabel').html('View Detail');
+                        $('#myModal').find('.modal-content').removeClass('divdoc');
                         $('#myModal').find('.modal-body').html(response.Html);
                         $('#myModal').find('.btn-primary').addClass('saveBid');
                         $('#myModal').modal('show');
@@ -188,7 +190,7 @@
             });
         }
     }
-    var UploadDocument = function (event, Id) {
+    var ViewDocument = function (event, Id) {
         if (Id == null || Id == undefined) {
             notificationHelper.ShowError("Some thing went wrong!");
         }
@@ -197,21 +199,18 @@
             $.ajax({
                 type: "Get",
                 url: "/Admin/AddUser",
-                data: { id: Id, "viewType": "UploadDocument" },
+                data: { id: Id, "viewType": "ViewDocument" },
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
+                    debugger;
                     if (response.Success) {
-                        if (Id > 0) {
-                            $('#myModal').find('#myModalLabel').html('Upload User Document');
-                        }
-                        else {
-                            $('#myModal').find('#myModalLabel').html('Upload User Document');
-                        }
-
+                        $('#myModal')
+                        $('#myModal').find('#myModalLabel').html(response.UserName + "'s Document");
                         $('#myModal').find('.modal-body').html(response.Html);
                         $('#myModal').find('.btn-primary').addClass('saveBid');
                         $('#myModal').modal('show');
+                        $('#myModal').find('.modal-content').addClass('divdoc');
                         removeLoader();
                     }
                     else {

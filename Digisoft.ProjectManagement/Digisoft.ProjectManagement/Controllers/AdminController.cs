@@ -5,6 +5,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -72,7 +74,11 @@ namespace Digisoft.ProjectManagement.Controllers
         {
             try
             {
-                string role = UserManager.GetRoles(id).FirstOrDefault();
+                string role = "";
+                if (id != "0")
+                {
+                    role = UserManager.GetRoles(id).FirstOrDefault();
+                }
                 var vm = new UserViewModel();
                 vm.ViewType = viewType;
                 vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Text).ToList();
@@ -102,6 +108,7 @@ namespace Digisoft.ProjectManagement.Controllers
                 {
                     vm.ViewType = viewType;
                     vm.UserId = id;
+                    vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
                 }
                 else if (viewType == "View")
                 {
@@ -113,6 +120,33 @@ namespace Digisoft.ProjectManagement.Controllers
                 {
                     vm.ViewType = viewType;
                     vm.UserId = id;
+                    vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
+                }
+                else if (viewType == "ViewDocument")
+                {
+                    List<UserDocument> lst = new List<UserDocument>();
+                    vm.UserId = id;
+                    vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
+                    vm.ViewType = viewType;
+                    var Documents = (from a in _context.UserDocuments
+                                     where a.UserId == id
+                                     select new
+                                     {
+                                         UserId = a.UserId,
+                                         Id = a.Id,
+                                         Type = a.Type,
+                                         Name = "/Documents/" + a.Name,
+                                     }).ToList();
+                    foreach (var item in Documents)
+                    {
+                        UserDocument model = new UserDocument();
+                        model.UserId = item.Name;
+                        model.Name = item.Name;
+                        model.Id = item.Id;
+                        model.Type = item.Type;
+                        lst.Add(model);
+                    }
+                    vm.Documents = lst;
                 }
                 else if (id != "0" && viewType == "Display")
                 {
@@ -124,7 +158,7 @@ namespace Digisoft.ProjectManagement.Controllers
                     vm.Countries = _context.Countries.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
                     vm.Departments = _context.Departments.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
                 }
-                return Json(new { Success = true, Html = this.RenderPartialViewToString("_AddEditUser", vm) }, JsonRequestBehavior.AllowGet);
+                return Json(new { Success = true, UserName = vm.FirstName, Html = this.RenderPartialViewToString("_AddEditUser", vm) }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -175,7 +209,7 @@ namespace Digisoft.ProjectManagement.Controllers
                         if (OldRoleName != u.RoleId)
                         {
                             UserManager.RemoveFromRole(m.UserId, u.RoleId);
-                            var r= UserManager.AddToRole(m.UserId, u.RoleId);
+                            var r = UserManager.AddToRole(m.UserId, u.RoleId);
                         }
                         m.ExpWhenJoined = u.ExpWhenJoined;
                         m.PhoneNumber = u.PhoneNumber;
@@ -203,7 +237,7 @@ namespace Digisoft.ProjectManagement.Controllers
                     }
                     using (var dbCtx = new ProjectManagementEntities())
                     {
-                        dbCtx.Entry(m).State = System.Data.Entity.EntityState.Modified;
+                        dbCtx.Entry(m).State = EntityState.Modified;
                         dbCtx.SaveChanges();
                     }
                     return Json(new { Message = "User updated successfully!", Success = true }, JsonRequestBehavior.AllowGet);
@@ -244,6 +278,57 @@ namespace Digisoft.ProjectManagement.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        [HttpPost]
+        public ActionResult UploadDocument(UserViewModel userViewModel)
+        {
+            try
+            {
+                var Success = false;
+                var Message = "";
+                if (Request.Files.Count > 0)
+                {
+                    for (int i = 0; i < Request.Files.Count; i++)
+                    {
+                        var file = Request.Files[i];
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            var fileName = Path.GetFileName(file.FileName);
+                            UserDocument ud = new UserDocument()
+                            {
+                                UserId = userViewModel.UserId,
+                                Name = fileName,
+                                Type = userViewModel.Type
+                            };
+                            var path = Path.Combine(Server.MapPath("~/Documents"), ud.Name);
+                            file.SaveAs(path);
+                            using (var dbCtx = new ProjectManagementEntities())
+                            {
 
+
+                                dbCtx.Entry(ud).State = EntityState.Added;
+                                dbCtx.SaveChanges();
+                                Success = true;
+                                Message = "Document Uploaded Successfully";
+                            }
+                        }
+                    }
+                }
+                return Json(new { Message = Message, Success = Success }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public ActionResult DeleteDocument(int Id)
+        {
+            var d = _context.UserDocuments.SingleOrDefault(x => x.Id == Id); //returns a single item.
+            if (d != null)
+            {
+                _context.UserDocuments.Remove(d);
+                _context.SaveChanges();
+            }
+            return Json(new { Message = "Document deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

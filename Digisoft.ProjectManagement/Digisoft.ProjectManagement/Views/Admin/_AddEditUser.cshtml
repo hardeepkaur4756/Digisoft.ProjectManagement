@@ -230,29 +230,65 @@
     else if (Model.ViewType == "UploadDocument")
     {
         <div class="form-group d-flex">
-            <label class="control-label col-sm-2">Upload PAN</label>
-            <div class="col-sm-4">
-                <input type="file" id="Aadhar" class="form-control" />
-            </div>
-            <label class="control-label col-sm-2">Upload Aadhar</label>
-            <div class="col-sm-4">
-                <input type="file" id="Pan" class="form-control" />
+            <label class="control-label col-sm-3">Type</label>
+            <div class="col-sm-9">
+                <select class="form-control" id="ddlType">
+                    <option value="">Select</option>
+                    <option value="PAN Card">PAN Card</option>
+                    <option value="Aadhar Card">Aadhar Card</option>
+                    <option value="Photo">Photo</option>
+                    <option value="Experience Letter">Experience Letter</option>
+                    <option value="Releiving Letter">Releiving Letter</option>
+                    <option value="Offer Letter">Offer Letter</option>
+                    <option value="Joining Letter">Joining Letter</option>
+                    <option value="Other">Other</option>
+                </select>
             </div>
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-2">Upload Certificates</label>
-            <div class="col-sm-4">
-                <input type="file" class="custom-file-input" name="postedImage" id="postedImage">
-                <input type="file" id="Certificate" class="form-control" multiple="multiple" />
+            <label class="control-label col-sm-3">Upload File</label>
+            <div class="col-sm-9">
+                <input type="file" id="FileName" multiple />
             </div>
         </div>
         <div class="text-right mt-2">
             <div class="">
                 <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</a>
-                <input type="submit" value="Save" id="btnSave" class="btn btn-primary" />
+                <input type="submit" value="Upload" id="btnUpload" class="btn btn-primary" />
 
             </div>
         </div>
+    }
+    else if (Model.ViewType == "ViewDocument")
+    {
+        <input type="button" id="btnAddDocument" class="btn btn-primary common-btn" value="Add" data-isNew="false" onclick="AddDocument(this,'@Model.UserId')" />
+        <table class="table table-responsive table-hover" id="MyTable">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Type</th>
+                    <th>Image</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var item in Model.Documents)
+                    {
+                        <tr>
+                            <td>@item.Type</td>
+                            <td><img src="@item.Name" height="50" width="50"></td>
+                            <td>
+                                <a class='icon-style' href='javascript:void(0)' onclick="DeleteDocument(this,'@item.Id')"><i class='fa fa-trash-o' aria-hidden='true'></i></a>
+                                <a class='icon-style' href='@item.Name' download>
+                                    <i class='fa fa-download' aria-hidden='true'></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
     }
     else
     {
@@ -416,6 +452,12 @@
         </div>
     }
 </div>
+<style>
+    .divdoc {
+        width: 50%;
+        margin: 0 auto;
+    }
+</style>
 <script>
     $(document).ready(function () {
         var dateOfJoining = $("#DateofJoining").val();
@@ -630,7 +672,6 @@
             } else {
                 $("#ddlRoles").removeClass("error");
             }
-
             if (password == undefined || password == "") {
                 validate = false;
                 $("#Password").addClass("error");
@@ -825,4 +866,144 @@
             });
         }
     })
+    $("#btnUpload").click(function () {
+        debugger;
+        var Id = $("#UserId").val();
+        var type = $("#ddlType :selected").val();
+        var fileInput = document.getElementById('FileName');
+        var vm = new FormData();
+        vm.append("UserId", Id);
+        vm.append("Type", type);
+        if (fileInput.files.length > 0) {
+            for (i = 0; i < fileInput.files.length; i++) {
+                vm.append("file", fileInput.files[i]);
+            }
+        }
+        else {
+            validate = false;
+            $("#FileName").addClass("error");
+        }
+        var filePath = fileInput.value;
+        var allowedExtensions =
+            /(\.jpg|\.jpeg|\.png|\.gif|\.pdf|\.docx)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            validate = false;
+            notificationHelper.ShowError('Invalid file type');
+            fileInput.value = '';
+            $("#FileName").addClass("error");
+        }
+        var validate = true;
+        if (type == undefined || type == "") {
+            validate = false;
+            $("#ddlType").addClass("error");
+        } else {
+            $("#ddlType").removeClass("error");
+        }
+        if (validate == true) {
+            loader();
+            $.ajax({
+                type: "Post",
+                url: "/Admin/UploadDocument",
+                enctype: 'multipart/form-data',
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                cache: false,
+                data: vm,
+                success: function (result) {
+                    debugger;
+                    if (result.Success == true) {
+                        $('#myModal').modal('hide');
+                        removeLoader();
+                        notificationHelper.ShowSuccess(result.Message);
+                        removeLoader();
+                        ViewDocument(event, Id);
+                    }
+                    else if (result.Success == false) {
+                        removeLoader();
+                        notificationHelper.ShowError(result.Message);
+
+                    }
+                    else {
+                        removeLoader();
+                        notificationHelper.ShowError("Sorry, An error occurred!");
+                    }
+                },
+                failure: function (result) {
+                    removeLoader();
+                    notificationHelper.ShowError(result.responseText);
+                    notificationHelper.ShowError(result.responseText);
+                }
+            });
+        }
+    })
+    var AddDocument = function (event, Id) {
+        debugger;
+        var Id = Id;
+        var viewType = "UploadDocument";
+        loader();
+        $.ajax({
+            type: "Get",
+            url: "/Admin/AddUser",
+            data: { id: Id, viewType: viewType },
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response.Success) {
+                    debugger;
+                    if (Id != null && Id != "") {
+                        $('#myModal').find('#myModalLabel').html("Upload " + response.UserName + "'s Document");
+                    }
+                    $('#myModal').find('.modal-body').html(response.Html);
+                    $('#myModal').find('.btn-primary').addClass('saveBid');
+                    $('#myModal').modal('show');
+                    $('#myModal').find('.modal-content').addClass('divdoc');
+                    removeLoader();
+                }
+                else {
+                    notificationHelper.ShowError("Some thing went wrong !");
+                    removeLoader();
+                }
+            },
+            error: function (result) {
+                notificationHelper.ShowError(result.Message);
+                removeLoader();
+            }
+        });
+
+    }
+    function DeleteDocument(event, Id) {
+        var UserId = $("#UserId").val();
+        if (confirm("Are you sure?")) {
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Admin/DeleteDocument",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: { Id: Id },
+                success: function (result) {
+                    if (result.Success) {
+                        notificationHelper.ShowSuccess(result.Message);
+                        removeLoader();
+                        if (UserId != null && UserId != undefined) {
+                            ViewDocument(event, UserId);
+                        }
+                    }
+                    else {
+                        notificationHelper.ShowError(result.Message);
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError('Error');
+                    removeLoader();
+                }
+            });
+        }
+        else {
+            return false;
+        }
+    }
 </script>

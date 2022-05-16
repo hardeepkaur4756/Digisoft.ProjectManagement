@@ -16,9 +16,8 @@ namespace Digisoft.ProjectManagement.Models
     {
         public int Id { get; set; }
         public string UserId { get; set; }
-        public string DocumentName { get; set; }
-        public string ContentType { get; set; }
-        public string Document { get; set; }
+        public string Type { get; set; }
+        public string Name { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
     }

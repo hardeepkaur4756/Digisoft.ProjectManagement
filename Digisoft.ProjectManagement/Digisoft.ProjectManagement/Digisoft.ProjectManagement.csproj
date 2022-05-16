@@ -462,6 +462,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Documents\" />
     <Folder Include="Views\NewFolder1\" />
   </ItemGroup>
   <ItemGroup>

@@ -162,9 +162,8 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="DocumentName" Type="nvarchar" MaxLength="50" />
-          <Property Name="ContentType" Type="nvarchar" MaxLength="200" />
-          <Property Name="Document" Type="nvarchar(max)" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Working">
           <Key>
@@ -999,10 +998,9 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="DocumentName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ContentType" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Document" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetUser" Relationship="ProjectManagementModel.FK_UserDocument_AspNetUsers" FromRole="UserDocument" ToRole="AspNetUser" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_UserDocument_AspNetUsers">
           <End Type="ProjectManagementModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
@@ -1200,9 +1198,8 @@
           <EntitySetMapping Name="UserDocuments">
             <EntityTypeMapping TypeName="ProjectManagementModel.UserDocument">
               <MappingFragment StoreEntitySet="UserDocument">
-                <ScalarProperty Name="Document" ColumnName="Document" />
-                <ScalarProperty Name="ContentType" ColumnName="ContentType" />
-                <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
