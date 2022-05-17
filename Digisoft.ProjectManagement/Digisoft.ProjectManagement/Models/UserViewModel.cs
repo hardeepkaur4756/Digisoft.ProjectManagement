@@ -68,8 +68,13 @@ namespace Digisoft.ProjectManagement.Models
         public string CurrentCountryName { get; set; }
         public string Type { get; set; }
         public string Name { get; set; }
+        public string BloodGroup { get; set; }
+        public string FatherName { get; set; }
+        public string MotherName { get; set; }
+        public string MarritalStatus { get; set; }
+        public System.DateTime? Vaccination1stDoseDate { get; set; }
+        public System.DateTime? Vaccination2ndDoseDate { get; set; }
         public List<UserDocument> Documents { get; set; }
-
     }
     public class UserList
     {

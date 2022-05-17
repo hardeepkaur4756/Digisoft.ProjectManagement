@@ -41,7 +41,7 @@ namespace Digisoft.ProjectManagement.Controllers
                                   FirstName = c.FirstName,
                                   LastName = c.LastName,
                                   Email = a.Email,
-                                  IsActive = c.Exclude
+                                  IsActive = c.Exclude,
                               }).ToList();
                 List<UserViewModel> lst = new List<UserViewModel>();
                 foreach (var item in result)
@@ -52,8 +52,10 @@ namespace Digisoft.ProjectManagement.Controllers
                     model.FirstName = item.FirstName;
                     model.LastName = item.LastName;
                     model.Exclude = Convert.ToBoolean(item.IsActive);
+                    model.RoleName = UserManager.GetRoles(item.UserId).FirstOrDefault();
                     lst.Add(model);
                 }
+
                 if (User.IsInRole("Admin") || User.IsInRole("HR"))
                 {
                     return View(lst);
@@ -75,6 +77,7 @@ namespace Digisoft.ProjectManagement.Controllers
             try
             {
                 string role = "";
+                string UserName = "";
                 if (id != "0")
                 {
                     role = UserManager.GetRoles(id).FirstOrDefault();
@@ -109,6 +112,7 @@ namespace Digisoft.ProjectManagement.Controllers
                     vm.ViewType = viewType;
                     vm.UserId = id;
                     vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
+                    vm.LastName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.LastName).FirstOrDefault();
                 }
                 else if (viewType == "View")
                 {
@@ -121,12 +125,15 @@ namespace Digisoft.ProjectManagement.Controllers
                     vm.ViewType = viewType;
                     vm.UserId = id;
                     vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
+                    vm.LastName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.LastName).FirstOrDefault();
                 }
                 else if (viewType == "ViewDocument")
                 {
                     List<UserDocument> lst = new List<UserDocument>();
                     vm.UserId = id;
                     vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
+                    vm.LastName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.LastName).FirstOrDefault();
+
                     vm.ViewType = viewType;
                     var Documents = (from a in _context.UserDocuments
                                      where a.UserId == id
@@ -158,7 +165,8 @@ namespace Digisoft.ProjectManagement.Controllers
                     vm.Countries = _context.Countries.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
                     vm.Departments = _context.Departments.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
                 }
-                return Json(new { Success = true, UserName = vm.FirstName, Html = this.RenderPartialViewToString("_AddEditUser", vm) }, JsonRequestBehavior.AllowGet);
+                UserName = vm.FirstName + " " + vm.LastName;
+                return Json(new { Success = true, UserName = UserName, Html = this.RenderPartialViewToString("_AddEditUser", vm) }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -208,7 +216,7 @@ namespace Digisoft.ProjectManagement.Controllers
                         string OldRoleName = UserManager.GetRoles(u.UserId).FirstOrDefault();
                         if (OldRoleName != u.RoleId)
                         {
-                            UserManager.RemoveFromRole(m.UserId, u.RoleId);
+                            UserManager.RemoveFromRole(m.UserId, OldRoleName);
                             var r = UserManager.AddToRole(m.UserId, u.RoleId);
                         }
                         m.ExpWhenJoined = u.ExpWhenJoined;
@@ -234,6 +242,12 @@ namespace Digisoft.ProjectManagement.Controllers
                         m.EmergencyContactNumber = u.EmergencyContactNumber;
                         m.EmergencyContactRelation = u.EmergencyContactRelation;
                         m.Salary = u.Salary;
+                        m.FatherName = u.FatherName;
+                        m.MotherName = u.MotherName;
+                        m.MarritalStatus = u.MarritalStatus;
+                        m.BloodGroup = u.BloodGroup;
+                        m.Vaccination1stDoseDate = u.Vaccination1stDoseDate;
+                        m.Vaccination2ndDoseDate = u.Vaccination2ndDoseDate;
                     }
                     using (var dbCtx = new ProjectManagementEntities())
                     {
@@ -290,9 +304,11 @@ namespace Digisoft.ProjectManagement.Controllers
                     for (int i = 0; i < Request.Files.Count; i++)
                     {
                         var file = Request.Files[i];
+                        //var random = new Random();
+                        //random.Next();
                         if (file != null && file.ContentLength > 0)
                         {
-                            var fileName = Path.GetFileName(file.FileName);
+                            var fileName = Path.GetFileNameWithoutExtension(file.FileName) + "_" + Guid.NewGuid() + Path.GetExtension(file.FileName);
                             UserDocument ud = new UserDocument()
                             {
                                 UserId = userViewModel.UserId,
@@ -303,8 +319,6 @@ namespace Digisoft.ProjectManagement.Controllers
                             file.SaveAs(path);
                             using (var dbCtx = new ProjectManagementEntities())
                             {
-
-
                                 dbCtx.Entry(ud).State = EntityState.Added;
                                 dbCtx.SaveChanges();
                                 Success = true;
@@ -329,6 +343,53 @@ namespace Digisoft.ProjectManagement.Controllers
                 _context.SaveChanges();
             }
             return Json(new { Message = "Document deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult DeleteUser(string UserId)
+        {
+            var ud = _context.UserDetails.Where(x => x.UserId == UserId).ToList();
+            var cl = _context.Clients.Where(x => x.CreatedBy == UserId).ToList();
+            var pr = _context.Projects.Where(x => x.CreatedBy == UserId).ToList();
+            var w = _context.Workings.Where(x => x.CreatedBy == UserId).ToList();
+            var doc = _context.UserDocuments.Where(x => x.UserId == UserId).ToList();
+            var er = _context.ErrorLogs.Where(x => x.CreatedBy == UserId).ToList();
+            var d = _context.AspNetUsers.Where(x => x.Id == UserId).ToList();
+
+            if (ud != null)
+            {
+                _context.UserDetails.RemoveRange(ud);
+                _context.SaveChanges();
+            }
+            if (w != null)
+            {
+                _context.Workings.RemoveRange(w);
+                _context.SaveChanges();
+            }
+            if (pr != null)
+            {
+                _context.Projects.RemoveRange(pr);
+                _context.SaveChanges();
+            }
+            if (cl != null)
+            {
+                _context.Clients.RemoveRange(cl);
+                _context.SaveChanges();
+            }
+            if (doc != null)
+            {
+                _context.UserDocuments.RemoveRange(doc);
+                _context.SaveChanges();
+            }
+            if (er != null)
+            {
+                _context.ErrorLogs.RemoveRange(er);
+                _context.SaveChanges();
+            }
+            if (d != null)
+            {
+                _context.AspNetUsers.RemoveRange(d);
+                _context.SaveChanges();
+            }
+            return Json(new { Message = "User deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
         }
     }
 }

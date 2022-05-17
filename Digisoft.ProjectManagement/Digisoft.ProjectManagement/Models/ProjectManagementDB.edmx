@@ -155,6 +155,12 @@
           <Property Name="PermanentCountryId" Type="int" />
           <Property Name="DepartmentId" Type="int" />
           <Property Name="CurrentAddress" Type="nvarchar(max)" />
+          <Property Name="FatherName" Type="nvarchar" MaxLength="120" />
+          <Property Name="MotherName" Type="nvarchar" MaxLength="120" />
+          <Property Name="MarritalStatus" Type="nvarchar" MaxLength="20" />
+          <Property Name="BloodGroup" Type="nvarchar" MaxLength="10" />
+          <Property Name="Vaccination1stDoseDate" Type="date" />
+          <Property Name="Vaccination2ndDoseDate" Type="date" />
         </EntityType>
         <EntityType Name="UserDocument">
           <Key>
@@ -655,6 +661,12 @@
           <NavigationProperty Name="State" Relationship="ProjectManagementModel.FK_UserDetail_State" FromRole="UserDetail" ToRole="State" />
           <NavigationProperty Name="State1" Relationship="ProjectManagementModel.FK_UserDetail_State2" FromRole="UserDetail" ToRole="State" />
           <Property Name="CurrentAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FatherName" Type="String" MaxLength="120" FixedLength="false" Unicode="true" />
+          <Property Name="MotherName" Type="String" MaxLength="120" FixedLength="false" Unicode="true" />
+          <Property Name="MarritalStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="BloodGroup" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Vaccination1stDoseDate" Type="DateTime" Precision="0" />
+          <Property Name="Vaccination2ndDoseDate" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="Working">
           <Key>
@@ -1114,6 +1126,12 @@
           <EntitySetMapping Name="UserDetails">
             <EntityTypeMapping TypeName="ProjectManagementModel.UserDetail">
               <MappingFragment StoreEntitySet="UserDetail">
+                <ScalarProperty Name="Vaccination2ndDoseDate" ColumnName="Vaccination2ndDoseDate" />
+                <ScalarProperty Name="Vaccination1stDoseDate" ColumnName="Vaccination1stDoseDate" />
+                <ScalarProperty Name="BloodGroup" ColumnName="BloodGroup" />
+                <ScalarProperty Name="MarritalStatus" ColumnName="MarritalStatus" />
+                <ScalarProperty Name="MotherName" ColumnName="MotherName" />
+                <ScalarProperty Name="FatherName" ColumnName="FatherName" />
                 <ScalarProperty Name="CurrentAddress" ColumnName="CurrentAddress" />
                 <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
                 <ScalarProperty Name="PermanentCountryId" ColumnName="PermanentCountryId" />

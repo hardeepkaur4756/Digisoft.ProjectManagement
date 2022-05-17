@@ -42,6 +42,12 @@ namespace Digisoft.ProjectManagement.Models
         public Nullable<int> PermanentCountryId { get; set; }
         public Nullable<int> DepartmentId { get; set; }
         public string CurrentAddress { get; set; }
+        public string FatherName { get; set; }
+        public string MotherName { get; set; }
+        public string MarritalStatus { get; set; }
+        public string BloodGroup { get; set; }
+        public Nullable<System.DateTime> Vaccination1stDoseDate { get; set; }
+        public Nullable<System.DateTime> Vaccination2ndDoseDate { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual Country Country { get; set; }
