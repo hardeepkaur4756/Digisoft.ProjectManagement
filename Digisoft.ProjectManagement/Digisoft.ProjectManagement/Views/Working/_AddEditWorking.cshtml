@@ -9,6 +9,7 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Project Name</label>
             <div class="col-sm-9 text-break">
+                
                 @Html.DisplayFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
@@ -27,7 +28,8 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Date Worked</label>
             <div class="col-sm-9 text-break">
-                @Html.DisplayFor(model => model.DateWorked, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.HiddenFor(model => model.DateWorked, new { htmlAttributes = new { @class = "form-control" } })
+                <label class="control-label" id="dateWork"></label>
             </div>
         </div>
         <div class="form-group d-flex">
@@ -48,14 +50,15 @@
             <label class="control-label col-sm-3">Project</label>
             @if (Model.Id != 0)
             {
-                <div class="col-sm-9 text-break">
-                    @Html.DisplayFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
+        <div class="col-sm-9 text-break">
+            @Html.HiddenFor(m => m.ProjectId)
+            @Html.DisplayFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
             }
             else
             {
                 <div class="col-sm-9 text-break">
-                    @Html.DropDownListFor(x => Model.ProjectId, new SelectList(Model.Projects, "Value", "Text", ""), htmlAttributes: new { @class = "form-control client", id = "ddlProject" })
+                    @Html.DropDownListFor(x => Model.ProjectId, new SelectList(Model.Projects, "Value", "Text", ""), htmlAttributes: new { @class = "form-control", id = "ddlProject" })
                     @Html.ValidationMessageFor(model => model.ProjectId, "", new { @class = "text-danger" })
                 </div>
             }
@@ -63,25 +66,25 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Hours Worked</label>
             <div class="col-sm-9 text-break">
-                @Html.EditorFor(model => model.HoursWorked, new { htmlAttributes = new { @class = "form-control non-zero-num" } })
+                @Html.EditorFor(model => model.HoursWorked, new { htmlAttributes = new { @class = "form-control non-zero-num" , @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Hours Billed</label>
             <div class="col-sm-9 text-break">
-                @Html.EditorFor(model => model.HoursBilled, new { htmlAttributes = new { @class = "form-control non-zero-num" } })
+                @Html.EditorFor(model => model.HoursBilled, new { htmlAttributes = new { @class = "form-control non-zero-num", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Date Worked</label>
             <div class="col-sm-9 text-break">
-                @Html.EditorFor(model => model.DateWorked, new { htmlAttributes = new { @class = "form-control", @id = "datew" } })
+                @Html.EditorFor(model => model.DateWorked, new { htmlAttributes = new { @class = "form-control", @id = "datew", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-sm-3" })
             <div class="col-sm-9 text-break">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
             </div>
         </div>
 
@@ -96,9 +99,13 @@
 </div>
 <script>
     $(document).ready(function () {
+        debugger;
         var d = $("#datew").val();
-        d = d.split(' ')[0];
+        d = d?.split(' ')[0];
         $("#datew").val(d);
+        var date = $("#DateWorked").val();
+        date = date?.split(' ')[0];
+        $("#dateWork").text(date);
         $("#datew").datepicker({
             autoclose: true,
             minViewMode: 0,
@@ -106,8 +113,15 @@
             format: "dd-mm-yyyy",
             endDate: "today"
         })
+        var id = $("#Id").val();
+        if (id == undefined || id == "" || id == "0") {
+            $("#HoursWorked").val('');
+            $("#HoursBilled").val('');
+        }
+
     })
     $("#btnSave").click(function () {
+        debugger;
         var ProjectId = $("#ddlProject").val();
         var HoursWorked = $("#HoursWorked").val();
         var HoursBilled = $("#HoursBilled").val();
@@ -121,12 +135,18 @@
         vm.DateWorked = DateWorked;
         vm.Description = Description;
         var validate = true;
-        if (ProjectId == undefined || ProjectId == "") {
-            validate = false;
-            $("#ddlProject").addClass("error");
-        } else {
-            $("#ddlProject").removeClass("error");
+        if (vm.Id == "0" || vm.Id == undefined || vm.Id == "" || vm.Id == null) {
+            if (ProjectId == undefined || ProjectId == "") {
+                validate = false;
+                $("#ddlProject").addClass("error");
+            } else {
+                $("#ddlProject").removeClass("error");
+            }
         }
+        else {
+            vm.ProjectId = $("#ProjectId").val();
+        }
+
         if (HoursBilled == undefined || HoursBilled == "") {
             validate = false;
             $("#HoursBilled").addClass("error");

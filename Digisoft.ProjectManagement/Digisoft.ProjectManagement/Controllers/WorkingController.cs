@@ -119,7 +119,7 @@ namespace Digisoft.ProjectManagement.Controllers
             }
             else
             {
-                var projects = _projectService.GetAllForFilter();
+                var projects = _projectService.GetAll();
                 vm.Projects = projects
                     .Select(x => new SelectListItem { Text = string.Format("{0}", x.Name), Value = x.Id.ToString() })
                     .OrderBy(x => x.Text)

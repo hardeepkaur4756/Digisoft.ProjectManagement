@@ -327,8 +327,19 @@ namespace Digisoft.ProjectManagement.Controllers
                         {
                             result = UserManager.AddToRole(user.Id, u.RoleId);
                         }
-                        u.UserId = user.Id;
-                        _userService.Insert(u);
+                        try
+                        {
+                            u.UserId = user.Id;
+                            _userService.Insert(u);
+                        }
+                        catch(Exception ex)
+                        {
+                            var us = _context.AspNetUsers.Where(x => x.Id == u.UserId).FirstOrDefault();
+                            UserManager.RemoveFromRole(u.UserId, u.RoleId);
+                            _context.AspNetUsers.Remove(us);
+                            _context.SaveChanges();
+                            return Json(new { Message = "Some error occurred!", Success = false });
+                        }
                         return Json(new { Message = "User added successfully!", Success = true });
                     }
                     else
@@ -487,62 +498,72 @@ namespace Digisoft.ProjectManagement.Controllers
         }
         public ActionResult DeleteUser(string UserId)
         {
-            var ud = _context.UserDetails.Where(x => x.UserId == UserId).ToList();
-            var cl = _context.Clients.Where(x => x.CreatedBy == UserId).ToList();
-            var pr = _context.Projects.Where(x => x.CreatedBy == UserId).ToList();
-            var w = _context.Workings.Where(x => x.CreatedBy == UserId).ToList();
-            var doc = _context.UserDocuments.Where(x => x.UserId == UserId).ToList();
-            var er = _context.ErrorLogs.Where(x => x.CreatedBy == UserId).ToList();
-            var edu = _context.UserEducations.Where(x => x.UserId == UserId).ToList();
-            var inc = _context.UserIncrements.Where(x => x.UserId == UserId).ToList();
-            var d = _context.AspNetUsers.Where(x => x.Id == UserId).ToList();
-
-            if (ud != null)
+            try
             {
-                _context.UserDetails.RemoveRange(ud);
-                _context.SaveChanges();
+                var ud = _context.UserDetails.Where(x => x.UserId == UserId).ToList();
+                var cl = _context.Clients.Where(x => x.CreatedBy == UserId).ToList();
+                var pr = _context.Projects.Where(x => x.CreatedBy == UserId).ToList();
+                var w = _context.Workings.Where(x => x.CreatedBy == UserId).ToList();
+                var doc = _context.UserDocuments.Where(x => x.UserId == UserId).ToList();
+                var er = _context.ErrorLogs.Where(x => x.CreatedBy == UserId).ToList();
+                var edu = _context.UserEducations.Where(x => x.UserId == UserId).ToList();
+                var inc = _context.UserIncrements.Where(x => x.UserId == UserId).ToList();
+                var d = _context.AspNetUsers.Where(x => x.Id == UserId).ToList();
+                if (UserId == "62ab2752-d0c8-4be7-ba16-59806c303cc2")
+                {
+                    return Json(new { Message = "You cant'delete this id!", Success = true }, JsonRequestBehavior.AllowGet);
+                }
+                if (ud != null)
+                {
+                    _context.UserDetails.RemoveRange(ud);
+                    _context.SaveChanges();
+                }
+                if (w != null)
+                {
+                    _context.Workings.RemoveRange(w);
+                    _context.SaveChanges();
+                }
+                if (pr != null)
+                {
+                    _context.Projects.RemoveRange(pr);
+                    _context.SaveChanges();
+                }
+                if (cl != null)
+                {
+                    _context.Clients.RemoveRange(cl);
+                    _context.SaveChanges();
+                }
+                if (doc != null)
+                {
+                    _context.UserDocuments.RemoveRange(doc);
+                    _context.SaveChanges();
+                }
+                if (er != null)
+                {
+                    _context.ErrorLogs.RemoveRange(er);
+                    _context.SaveChanges();
+                }
+                if (edu != null)
+                {
+                    _context.UserEducations.RemoveRange(edu);
+                    _context.SaveChanges();
+                }
+                if (inc != null)
+                {
+                    _context.UserIncrements.RemoveRange(inc);
+                    _context.SaveChanges();
+                }
+                if (d != null)
+                {
+                    _context.AspNetUsers.RemoveRange(d);
+                    _context.SaveChanges();
+                }
+                return Json(new { Message = "User deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
             }
-            if (w != null)
+            catch(Exception ex)
             {
-                _context.Workings.RemoveRange(w);
-                _context.SaveChanges();
+                throw new Exception(ex.Message);
             }
-            if (pr != null)
-            {
-                _context.Projects.RemoveRange(pr);
-                _context.SaveChanges();
-            }
-            if (cl != null)
-            {
-                _context.Clients.RemoveRange(cl);
-                _context.SaveChanges();
-            }
-            if (doc != null)
-            {
-                _context.UserDocuments.RemoveRange(doc);
-                _context.SaveChanges();
-            }
-            if (er != null)
-            {
-                _context.ErrorLogs.RemoveRange(er);
-                _context.SaveChanges();
-            }
-            if (edu != null)
-            {
-                _context.UserEducations.RemoveRange(edu);
-                _context.SaveChanges();
-            }
-            if (inc != null)
-            {
-                _context.UserIncrements.RemoveRange(inc);
-                _context.SaveChanges();
-            }
-            if (d != null)
-            {
-                _context.AspNetUsers.RemoveRange(d);
-                _context.SaveChanges();
-            }
-            return Json(new { Message = "User deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult SaveEducation(UserViewModel userViewModel)
@@ -650,7 +671,7 @@ namespace Digisoft.ProjectManagement.Controllers
                         {
                             return Json(new { Message = "Date of Increment should be less than next increment date", Success = false }, JsonRequestBehavior.AllowGet);
                         }
-                        if(nextSalary <= userViewModel.Salary)
+                        if (nextSalary <= userViewModel.Salary)
                         {
                             return Json(new { Message = "Current Salary should be less than next increment salary", Success = false }, JsonRequestBehavior.AllowGet);
                         }

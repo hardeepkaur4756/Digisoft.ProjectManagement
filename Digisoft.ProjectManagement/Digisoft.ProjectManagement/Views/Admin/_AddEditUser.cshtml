@@ -10,12 +10,12 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">First Name</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.FirstName, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.FirstName, new { @class = "form-control",@autocomplete="off" })
                 @Html.ValidationMessageFor(modal => modal.FirstName, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Last Name</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.LastName, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.LastName, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
@@ -27,7 +27,7 @@
             {
                 @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-sm-2" })
                 <div class="col-sm-4 text-break">
-                    @Html.TextBoxFor(modal => modal.Email, new { @class = "form-control", @type = "email", @onchange = "return validateEmail('Email');", })
+                    @Html.TextBoxFor(modal => modal.Email, new { @class = "form-control", @type = "email", @onchange = "return validateEmail('Email');", @autocomplete = "off" })
                 </div>
             }
             else
@@ -47,18 +47,18 @@
                 </div>
                 <label class="control-label col-sm-2">Confirm Password</label>
                 <div class="col-sm-4 text-break">
-                    @Html.TextBoxFor(modal => modal.ConfirmPassword, new { @class = "form-control", @type = "password", @onchange = "return validateConfirmPassword();" })
+                    @Html.TextBoxFor(modal => modal.ConfirmPassword, new { @class = "form-control", @type = "password", @onchange = "return validateConfirmPassword();", @autocomplete = "off" })
                 </div>
             </div>
         }
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Father Name</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.FatherName, new { @class = "form-control", @type = "email", @onchange = "return validateEmail('Email');", })
+                @Html.TextBoxFor(modal => modal.FatherName, new { @class = "form-control", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Mother Name</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.MotherName, new { @class = "form-control", @type = "email", @onchange = "return validateEmail('Email');", })
+                @Html.TextBoxFor(modal => modal.MotherName, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
@@ -73,27 +73,27 @@
             </div>
             <label class="control-label col-sm-2">Spouse Name</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.SpouseName, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.SpouseName, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Anniversary Date</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.AnniversaryDate, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.AnniversaryDate, new { @class = "form-control", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Celebrated DOB</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.DOB, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.DOB, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Documented DOB</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.DocumentDOB, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.DocumentDOB, new { @class = "form-control", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Blood Group</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.BloodGroup, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.BloodGroup, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
@@ -103,38 +103,38 @@
             </div>
             <label class="control-label col-sm-2">Skills</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.Skills, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.Skills, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Date of Joining</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.DateofJoining, new { @class = "form-control non-time-date" })
+                @Html.TextBoxFor(modal => modal.DateofJoining, new { @class = "form-control non-time-date", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Date of Releiving</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.DateofRelieving, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.DateofRelieving, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Vaccination Date(1st Dose)</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.Vaccination1stDoseDate, new { @class = "form-control non-time-date" })
+                @Html.TextBoxFor(modal => modal.Vaccination1stDoseDate, new { @class = "form-control non-time-date", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Vaccination Date(2nd Dose)</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.Vaccination2ndDoseDate, new { @class = "form-control non-time-date" })
+                @Html.TextBoxFor(modal => modal.Vaccination2ndDoseDate, new { @class = "form-control non-time-date", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Phone Number</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.PhoneNumber, new { @class = "form-control", @onkeypress = "return validateNo('PhoneNumber');", @maxlength = "10" })
+                @Html.TextBoxFor(modal => modal.PhoneNumber, new { @class = "form-control", @onchange = "return validateNo('PhoneNumber');", @maxlength = "10", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.PhoneNumber, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Alternate Phone Number</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.AlternatePhoneNumber, new { @class = "form-control", @onkeypress = "return validateNo('AlternatePhoneNumber');", @maxlength = "10" })
+                @Html.TextBoxFor(modal => modal.AlternatePhoneNumber, new { @class = "form-control", @onchange = "return validateNo('AlternatePhoneNumber');", @maxlength = "10", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.AlternatePhoneNumber, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -142,48 +142,48 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Personal Email Address</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.PersonalEmailAddress, new { @class = "form-control", @onchange = "return validateEmail('PersonalEmailAddress');" })
+                @Html.TextBoxFor(modal => modal.PersonalEmailAddress, new { @class = "form-control", @onchange = "return validateEmail('PersonalEmailAddress');", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.PersonalEmailAddress, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Emergency Contact Name</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.EmergencyContactName, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.EmergencyContactName, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.EmergencyContactName, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Emergency Contact Relation</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.EmergencyContactRelation, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.EmergencyContactRelation, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.EmergencyContactRelation, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Emergency Contact Number</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @onkeypress = "return validateNo('EmergencyContactNumber');", @maxlength = "10" })
+                @Html.TextBoxFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @onchange = "return validateNo('EmergencyContactNumber');", @maxlength = "10", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.EmergencyContactNumber, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Aadhar Number</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.AadharNumber, new { @class = "form-control", @onkeypress = "return validateNo('AadharNumber');", @maxlength = "12" })
+                @Html.TextBoxFor(modal => modal.AadharNumber, new { @class = "form-control", @onchange = "return validateNo('AadharNumber');", @maxlength = "12", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.AadharNumber, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Pan Number</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.PanNumber, new { @class = "form-control", @onchange = "return validatePan();" })
+                @Html.TextBoxFor(modal => modal.PanNumber, new { @class = "form-control", @onchange = "return validatePan();", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.PanNumber, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Current Address</label>
             <div class="col-sm-4 text-break">
-                @Html.TextAreaFor(modal => modal.CurrentAddress, new { @class = "form-control" })
+                @Html.TextAreaFor(modal => modal.CurrentAddress, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.CurrentAddress, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Current City</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.CurrentCity, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.CurrentCity, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.CurrentCity, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -202,12 +202,12 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent Address</label>
             <div class="col-sm-4 text-break">
-                @Html.TextAreaFor(modal => modal.PermanentAddress, new { @class = "form-control" })
+                @Html.TextAreaFor(modal => modal.PermanentAddress, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.PermanentAddress, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Permanent City</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.PermanentCity, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.PermanentCity, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.PermanentCity, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -226,21 +226,21 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Previous Salary</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.PreviousSalary, new { @class = "form-control", @onchange = "return IsNumberOrDecimal('PreviousSalary');" })
+                @Html.TextBoxFor(modal => modal.PreviousSalary, new { @class = "form-control", @onchange = "return IsNumberOrDecimal('PreviousSalary');", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Increment</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.Increment, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.Increment, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Salary</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.Salary, new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Salary');" })
+                @Html.TextBoxFor(modal => modal.Salary, new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Salary');", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Experience When Joined</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.ExpWhenJoined, new { @class = "form-control" })
+                @Html.TextBoxFor(modal => modal.ExpWhenJoined, new { @class = "form-control", @autocomplete = "off" })
             </div>
 
         </div>
@@ -256,15 +256,14 @@
         <div class="form-group d-flex">
             @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-sm-3" })
             <div class="col-sm-9">
-                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @onchange = "return CheckPassword();" } })
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @onchange = "return CheckPassword();", @autocomplete = "off" } })
                 @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Confirm Password</label>
             <div class="col-sm-9">
-                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", @onchange = "return validateConfirmPassword();" } })
-                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", @onchange = "return validateConfirmPassword();", @autocomplete = "off" } })
             </div>
         </div>
         <div class="text-right mt-2">
@@ -365,19 +364,19 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Percentage</label>
             <div class="col-sm-9">
-                @Html.EditorFor(model => model.Percentage, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Percentage')" } })
+                @Html.EditorFor(model => model.Percentage, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Percentage')", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Year Passed</label>
             <div class="col-sm-9">
-                @Html.EditorFor(model => model.YearPassed, new { htmlAttributes = new { @class = "form-control", @maxlength = "4", @onchange = "return IsNumber()" } })
+                @Html.EditorFor(model => model.YearPassed, new { htmlAttributes = new { @class = "form-control", @maxlength = "4", @onchange = "return IsNumber()", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Comment</label>
             <div class="col-sm-9">
-                @Html.TextAreaFor(model => model.Comment, new { @class = "form-control" })
+                @Html.TextAreaFor(model => model.Comment, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="text-right mt-2">
@@ -399,19 +398,19 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Percentage</label>
             <div class="col-sm-9">
-                @Html.EditorFor(model => model.Percentage, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Percentage')" } })
+                @Html.EditorFor(model => model.Percentage, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Percentage')", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Year Passed</label>
             <div class="col-sm-9">
-                @Html.EditorFor(model => model.YearPassed, new { htmlAttributes = new { @class = "form-control", @maxlength = "4", @onchange = "return IsNumber()" } })
+                @Html.EditorFor(model => model.YearPassed, new { htmlAttributes = new { @class = "form-control", @maxlength = "4", @onchange = "return IsNumber()", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Comment</label>
             <div class="col-sm-9">
-                @Html.TextAreaFor(model => model.Comment, new { @class = "form-control" })
+                @Html.TextAreaFor(model => model.Comment, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="text-right mt-2">
@@ -426,13 +425,13 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Date Of Increment</label>
             <div class="col-sm-9">
-                @Html.EditorFor(model => model.DateOfIncrement, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.DateOfIncrement, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Salary</label>
             <div class="col-sm-9">
-                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Salary');" } })
+                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Salary');", @autocomplete = "off" } })
             </div>
         </div>
         <div class="text-right mt-2">
@@ -448,13 +447,13 @@
             <label class="control-label col-sm-3">Date of Increment</label>
             <div class="col-sm-9">
                 @Html.HiddenFor(model => model.Id)
-                @Html.EditorFor(model => model.DateOfIncrement, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.DateOfIncrement, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Salary</label>
             <div class="col-sm-9">
-                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Salary');" } })
+                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Salary');", @autocomplete = "off" } })
             </div>
         </div>
         <div class="text-right mt-2">
@@ -666,11 +665,11 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Phone Number</label>
             <div class="col-sm-4 text-break">
-                @Html.DisplayFor(modal => modal.PhoneNumber, new { @class = "form-control", @onkeypress = "return validateNo('PhoneNumber');", @maxlength = "10" })
+                @Html.DisplayFor(modal => modal.PhoneNumber, new { @class = "form-control" })
             </div>
             <label class="control-label col-sm-2">Alternate Phone Number</label>
             <div class="col-sm-4 text-break">
-                @Html.DisplayFor(modal => modal.AlternatePhoneNumber, new { @class = "form-control", @onkeypress = "return validateNo('AlternatePhoneNumber');", @maxlength = "10" })
+                @Html.DisplayFor(modal => modal.AlternatePhoneNumber, new { @class = "form-control" })
             </div>
         </div>
 
@@ -691,13 +690,13 @@
             </div>
             <label class="control-label col-sm-2">Emergency Contact Number</label>
             <div class="col-sm-4 text-break">
-                @Html.DisplayFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @onkeypress = "return validateNo('EmergencyContactNumber');", @maxlength = "10" })
+                @Html.DisplayFor(modal => modal.EmergencyContactNumber, new { @class = "form-control", @maxlength = "10" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Aadhar Number</label>
             <div class="col-sm-4 text-break">
-                @Html.DisplayFor(modal => modal.AadharNumber, new { @class = "form-control", @onkeypress = "return validateNo('AadharNumber');", @maxlength = "12" })
+                @Html.DisplayFor(modal => modal.AadharNumber, new { @class = "form-control", @maxlength = "12" })
             </div>
             <label class="control-label col-sm-2">Pan Number</label>
             <div class="col-sm-4 text-break">
@@ -805,6 +804,7 @@
         var dateOfJoining = $("#DateofJoining").val();
         dateOfJoining = dateOfJoining?.split(' ')[0];
         $("#DateofJoining").val(dateOfJoining);
+        $("#dateJ").text(dateOfJoining);
         $("#dateR").text(dateofRelieving);
         var dateofRelieving = $("#DateofRelieving").val();
         dateofRelieving = dateofRelieving?.split(' ')[0];
@@ -836,12 +836,14 @@
         $("#DOB").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy"
+            format: "dd-mm-yyyy",
+             endDate: "today"
         })
         $("#DocumentDOB").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy"
+            format: "dd-mm-yyyy",
+            endDate: "today"
         })
         $("#AnniversaryDate").datepicker({
             autoclose: true,
@@ -1212,7 +1214,7 @@
         if (!regex.test(inputvalues)) {
             $("#PanNumber").val("");
             $("#PanNumber").addClass("error");
-            notificationHelper.ShowError("Invalid PAN No.");
+            notificationHelper.ShowError("Invalid format");
             return false;
         }
         else {
