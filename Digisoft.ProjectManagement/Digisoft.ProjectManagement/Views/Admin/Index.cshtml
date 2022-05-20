@@ -21,13 +21,15 @@
         width: 60%;
         margin: 0 auto;
     }
+
     .common-btn {
         margin-bottom: -56px !important;
         z-index: 1;
         position: relative;
     }
-    #MyTable_filter form{
-        display:inline-block;
+
+    #MyTable_filter form {
+        display: inline-block;
     }
 </style>
 <input type="button" id="btnAddClient" class="btn btn-primary common-btn" value="Add" data-isNew="true" onclick="AddOrEdit(this)" />
@@ -47,30 +49,31 @@
             int i = 1;
             foreach (var item in Model)
             {
-        <tr>
-            <td>@item.FirstName @item.LastName </td>
-            <td>@item.Email</td>
-            <td>@item.RoleName</td>
-            @if (item.Exclude == true)
-            {
-                <td>Yes</td>
-            }
-            else
-            {
-                <td>No</td>
-            }
-            <td>
-                <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDetail(this,'@item.UserId')"><i class='fa fa-info-circle' aria-hidden='true'></i></a>
-                <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="AddOrEdit(this,'@item.UserId')"><i class='fa fa-pencil' aria-hidden='true'></i></a>
-                <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDocument(this,'@item.UserId')"><i class='fa fa-upload' aria-hidden='true'></i></a>
-                <a class='icon-style' href='javascript:void(0)' onclick="return ChangePassword(this,'@item.UserId')"><i class='fa fa-key' aria-hidden='true'></i></a>
-                @if (User.Identity.Name == "parampreet@digisoftsolution.net")
-                {
-                    <a class='icon-style' href='javascript:void(0)' onclick="return DeleteUser(this,'@item.UserId')"><i class='fa fa-trash-o' aria-hidden='true'></i></a>
-                }
-
-            </td>
-        </tr>
+                <tr>
+                    <td>@item.FirstName @item.LastName </td>
+                    <td>@item.Email</td>
+                    <td>@item.RoleName</td>
+                    @if (item.Exclude == true)
+                    {
+                        <td>Yes</td>
+                    }
+                    else
+                    {
+                        <td>No</td>
+                    }
+                    <td>
+                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDetail(this,'@item.UserId')" title="View"><i class='fa fa-info-circle' aria-hidden='true'></i></a>
+                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="AddOrEdit(this,'@item.UserId')" title="Edit"><i class='fa fa-pencil' aria-hidden='true'></i></a>
+                        <a class='icon-style' href='javascript:void(0)' onclick="return ChangePassword(this,'@item.UserId')" title="Change Password"><i class='fa fa-key' aria-hidden='true'></i></a>
+                        @if (User.Identity.Name == "parampreet@digisoftsolution.net")
+                        {
+                            <a class='icon-style' href='javascript:void(0)' onclick="return DeleteUser(this,'@item.UserId')"><i class='fa fa-trash-o' aria-hidden='true' title="Delete"></i></a>
+                        }
+                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDocument('@item.UserId')" title="Document"><i class='fa fa-upload' aria-hidden='true'></i></a>
+                        <a class='icon-style' href='javascript:void(0)' onclick="return ViewEducation('@item.UserId')" title="Education"><i class='fa fa-graduation-cap' aria-hidden='true'></i></a>
+                        <a class='icon-style' href='javascript:void(0)' onclick="return ViewIncrement('@item.UserId')" title="Increment"><i class='fa fa-money' aria-hidden='true'></i></a>
+                    </td>
+                </tr>
                 i++;
                 i++;
             }
@@ -101,13 +104,13 @@
             success: function (response) {
                 if (response.Success) {
                     if (Id != null && Id != "") {
-                        $('#myModal').find('#myModalLabel').html('Update User');
+                        $('#myModal').find('#myModalLabel').html('Update Employee');
                         //$("#FirstName").val(response.FirstName);
                         //$("#LastName").val(response.LastName);
                         //$("#IsActive").prop("checked", response.IsActive);
                     }
                     else {
-                        $('#myModal').find('#myModalLabel').html('Add User');
+                        $('#myModal').find('#myModalLabel').html('Add Employee');
                     }
                     $('#myModal').find('.modal-content').removeClass('divdoc');
                     $('#myModal').find('.modal-body').html(response.Html);
@@ -161,6 +164,7 @@
         });
 
     }
+
     var _loadData = function (response) {
         if ($.fn.DataTable.isDataTable("#MyTable")) {
             oTable.draw();
@@ -211,7 +215,8 @@
             });
         }
     }
-    var ViewDocument = function (event, Id) {
+    var ViewDocument = function (Id) {
+        debugger;
         if (Id == null || Id == undefined) {
             notificationHelper.ShowError("Some thing went wrong!");
         }
@@ -224,12 +229,83 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
+                    debugger;
                     if (response.Success) {
                         $('#myModal').find('#myModalLabel').html(response.UserName + "'s Document");
                         $('#myModal').find('.modal-body').html(response.Html);
                         $('#myModal').find('.btn-primary').addClass('saveBid');
                         $('#myModal').modal('show');
                         $('#myModal').find('.modal-content').addClass('divdoc');
+                        removeLoader();
+                    }
+                    else {
+                        notificationHelper.ShowError("Some thing went wrong !");
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError(result.Message);
+                    removeLoader();
+                }
+            });
+        }
+    }
+    var ViewEducation = function (Id) {
+        debugger;
+        if (Id == null || Id == undefined) {
+            notificationHelper.ShowError("Some thing went wrong!");
+        }
+        else {
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Admin/AddUser",
+                data: { id: Id, "viewType": "ViewEducation" },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    debugger;
+                    if (response.Success) {
+                        $('#myModal').modal('show');
+                        $('#myModal').find('#myModalLabel').html("View " + response.UserName + "'s Education Details");
+                        $('#myModal').find('.modal-body').html(response.Html);
+                        $('#myModal').find('.btn-primary').addClass('saveBid');
+                        $('#myModal').find('.modal-content').removeClass('divdoc');
+                        removeLoader();
+                    }
+                    else {
+                        notificationHelper.ShowError("Some thing went wrong !");
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError(result.Message);
+                    removeLoader();
+                }
+            });
+        }
+    }
+    var ViewIncrement = function (Id) {
+        debugger;
+        if (Id == null || Id == undefined) {
+            notificationHelper.ShowError("Some thing went wrong!");
+        }
+        else {
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Admin/AddUser",
+                data: { id: Id, "viewType": "ViewIncrement" },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    debugger;
+                    if (response.Success) {
+                        $('#myModal').modal('show');
+                        $('#myModal').find('#myModalLabel').html("View " + response.UserName + "'s Increment");
+                        $('#myModal').find('.modal-body').html(response.Html);
+                        $('#myModal').find('.btn-primary').addClass('saveBid');
+                        $('#myModal').find('.modal-content').removeClass('divdoc');
                         removeLoader();
                     }
                     else {

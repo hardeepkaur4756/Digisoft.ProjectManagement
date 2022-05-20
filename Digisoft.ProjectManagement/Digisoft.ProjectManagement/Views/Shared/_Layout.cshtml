@@ -73,7 +73,7 @@
                         if (User.IsInRole("Admin") || User.IsInRole("HR"))
                         {
                             <li class='@Html.IsActive("Admin", "Index")'>
-                                @Html.ActionLink("User", "Index", "Admin", new { area = "" }, new { @class = "text-black-50 nav-link" })
+                                @Html.ActionLink("Employee", "Index", "Admin", new { area = "" }, new { @class = "text-black-50 nav-link" })
                             </li>
                         }
                         <li class='@Html.IsActive("Working", "Index")'>

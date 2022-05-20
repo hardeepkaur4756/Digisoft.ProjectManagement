@@ -226,6 +226,9 @@
     <Compile Include="Models\Country.cs">
       <DependentUpon>ProjectManagementDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Course.cs">
+      <DependentUpon>ProjectManagementDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\C__MigrationHistory.cs">
       <DependentUpon>ProjectManagementDB.tt</DependentUpon>
     </Compile>
@@ -266,7 +269,12 @@
     <Compile Include="Models\UserDocument.cs">
       <DependentUpon>ProjectManagementDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\UserDocumentViewModel.cs" />
+    <Compile Include="Models\UserEducation.cs">
+      <DependentUpon>ProjectManagementDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserIncrement.cs">
+      <DependentUpon>ProjectManagementDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\WorkingViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\Working.cs">
@@ -305,6 +313,7 @@
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\img\color-logo.png" />
     <Content Include="Content\img\login.jpg" />
+    <Content Include="Content\img\tick.png" />
     <Content Include="Content\js\bootstrap.bundle.min.js" />
     <Content Include="Content\js\chart-area-demo.js" />
     <Content Include="Content\js\chart-pie-demo.js" />

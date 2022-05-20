@@ -34,6 +34,7 @@ namespace Digisoft.ProjectManagement.Models
         public string UserId { get; set; }
         public bool Exclude { get; set; }
         public System.DateTime? DOB { get; set; }
+        public System.DateTime? DocumentDOB { get; set; }
         public System.DateTime? DateofJoining { get; set; }
         public System.DateTime? DateofRelieving { get; set; }
         public string Skills { get; set; }
@@ -75,9 +76,47 @@ namespace Digisoft.ProjectManagement.Models
         public System.DateTime? Vaccination1stDoseDate { get; set; }
         public System.DateTime? Vaccination2ndDoseDate { get; set; }
         public List<UserDocument> Documents { get; set; }
+        public List<UserEducationViewModel> Educations { get; set; }
+        public List<UserIncrementViewModel> Increments { get; set; }
+        public List<SelectListItem> Courses { get; set; }
+        public string SpouseName { get; set; }
+        public System.DateTime? AnniversaryDate { get; set; }
+        public string Increment { get; set; }
+        public decimal? PreviousSalary { get; set; }
+        public int Id { get; set; }
+        #region Course
+        public int CourseId { get; set; }
+        public string CourseName { get; set; }
+        public decimal? Percentage { get; set; }
+        public string YearPassed { get; set; }
+        public string Comment { get; set; }
+        #endregion
+        #region Increment
+        public System.DateTime? DateOfIncrement { get; set; }
+        #endregion
     }
     public class UserList
     {
         public List<UserViewModel> lst { get; set; }
+    }
+    public class UserEducationViewModel
+    {
+        public string UserId { get; set; }
+        public int Id { get; set; }
+        public decimal? Percentage { get; set; }
+        public string YearPassed { get; set; }
+        public string Comment { get; set; }
+        public string CourseName { get; set; }
+        public bool IsDocumentUploaded { get; set; }
+    }
+    public class UserIncrementViewModel
+    {
+        public string UserId { get; set;}
+        public int Id { get; set; }
+        public string DateOfIncrement { get; set; }
+        public decimal? PreviousSalary { get; set; }
+        public decimal? CurrentSalary { get; set; }
+        public double Percentage { get; set; }
+        public decimal? Amount { get; set; }
     }
 }

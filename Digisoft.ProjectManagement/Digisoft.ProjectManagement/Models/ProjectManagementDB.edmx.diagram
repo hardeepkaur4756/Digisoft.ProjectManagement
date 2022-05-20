@@ -37,6 +37,13 @@
         <AssociationConnector Association="ProjectManagementModel.FK_UserDetail_State2" />
         <EntityTypeShape EntityType="ProjectManagementModel.UserDocument" Width="1.5" PointX="5.25" PointY="21.625" />
         <AssociationConnector Association="ProjectManagementModel.FK_UserDocument_AspNetUsers" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Course" Width="1.5" PointX="5.25" PointY="24.75" />
+        <EntityTypeShape EntityType="ProjectManagementModel.UserEducation" Width="1.5" PointX="7.5" PointY="15.375" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Course_AspNetUsers" />
+        <AssociationConnector Association="ProjectManagementModel.FK_UserEducation_AspNetUsers" />
+        <AssociationConnector Association="ProjectManagementModel.FK_UserEducation_Course" />
+        <EntityTypeShape EntityType="ProjectManagementModel.UserIncrement" Width="1.5" PointX="5.25" PointY="0.75" />
+        <AssociationConnector Association="ProjectManagementModel.FK_UserIncrement_AspNetUsers" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -35,6 +35,7 @@ namespace Digisoft.ProjectManagement.Repositories
         {
             return _context.UserDetails.FirstOrDefault(x => x.UserId == id);
         }
+        
         public void Delete(int id)
         {
             AspNetUser model = _context.AspNetUsers.FirstOrDefault(x => x.Id == id.ToString());

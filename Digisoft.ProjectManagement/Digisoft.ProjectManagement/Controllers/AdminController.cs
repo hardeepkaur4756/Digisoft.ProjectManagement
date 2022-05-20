@@ -78,7 +78,7 @@ namespace Digisoft.ProjectManagement.Controllers
             {
                 string role = "";
                 string UserName = "";
-                if (id != "0")
+                if (id != "0" && viewType != "AddEducation" && viewType != "EditEducation" && viewType != "AddIncrement" && viewType != "EditIncrement")
                 {
                     role = UserManager.GetRoles(id).FirstOrDefault();
                 }
@@ -113,6 +113,68 @@ namespace Digisoft.ProjectManagement.Controllers
                     vm.UserId = id;
                     vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
                     vm.LastName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.LastName).FirstOrDefault();
+                }
+                else if (viewType == "AddEducation")
+                {
+                    vm.ViewType = viewType;
+                    vm.UserId = id;
+                    vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
+                    vm.LastName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.LastName).FirstOrDefault();
+                    vm.Courses = _context.Courses.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
+                }
+                else if (viewType == "EditEducation")
+                {
+                    vm.ViewType = viewType;
+                    vm.Id = int.Parse(id);
+                    var result = (from a in _context.UserEducations
+                                  where a.Id == vm.Id
+                                  select new
+                                  {
+                                      UserId = a.UserId,
+                                      Id = a.Id,
+                                      CourseId = a.CourseId,
+                                      Percentage = a.Percentage,
+                                      YearPassed = a.YearPassed,
+                                      Comment = a.Comment
+                                  }).FirstOrDefault();
+
+                    vm.UserId = result.UserId;
+                    vm.Id = result.Id;
+                    vm.CourseId = result.CourseId;
+                    vm.Percentage = result.Percentage;
+                    vm.YearPassed = result.YearPassed;
+                    vm.Comment = result.Comment;
+                    vm.FirstName = _context.UserDetails.Where(x => x.UserId == result.UserId).Select(x => x.FirstName).FirstOrDefault();
+                    vm.LastName = _context.UserDetails.Where(x => x.UserId == result.UserId).Select(x => x.LastName).FirstOrDefault();
+                    vm.Courses = _context.Courses.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
+                }
+                else if (viewType == "AddIncrement")
+                {
+                    vm.ViewType = viewType;
+                    vm.UserId = id;
+                    vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
+                    vm.LastName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.LastName).FirstOrDefault();
+                }
+                else if (viewType == "EditIncrement")
+                {
+                    vm.ViewType = viewType;
+                    vm.Id = int.Parse(id);
+                    var result = (from a in _context.UserIncrements
+                                  where a.Id == vm.Id
+                                  select new
+                                  {
+                                      UserId = a.UserId,
+                                      Id = a.Id,
+                                      DateOfIncrement = a.DateOfIncrement,
+                                      Salary = a.Salary
+                                  }).FirstOrDefault();
+
+                    vm.UserId = result.UserId;
+                    vm.Id = result.Id;
+                    vm.DateOfIncrement = result.DateOfIncrement;
+                    vm.Salary = result.Salary;
+                    vm.FirstName = _context.UserDetails.Where(x => x.UserId == result.UserId).Select(x => x.FirstName).FirstOrDefault();
+                    vm.LastName = _context.UserDetails.Where(x => x.UserId == result.UserId).Select(x => x.LastName).FirstOrDefault();
                 }
                 else if (viewType == "View")
                 {
@@ -154,6 +216,80 @@ namespace Digisoft.ProjectManagement.Controllers
                         lst.Add(model);
                     }
                     vm.Documents = lst;
+                }
+                else if (viewType == "ViewEducation")
+                {
+                    List<UserEducationViewModel> lst = new List<UserEducationViewModel>();
+                    vm.UserId = id;
+                    vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
+                    vm.LastName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.LastName).FirstOrDefault();
+
+                    vm.ViewType = viewType;
+                    var Educations = (from a in _context.UserEducations
+                                      where a.UserId == id
+                                      select new
+                                      {
+                                          UserId = a.UserId,
+                                          Id = a.Id,
+                                          Percentage = a.Percentage,
+                                          YearPassed = a.YearPassed,
+                                          Comment = a.Comment,
+                                          CourseName = a.Course.Name,
+                                      }).ToList();
+                    foreach (var item in Educations)
+                    {
+                        UserEducationViewModel model = new UserEducationViewModel();
+                        model.UserId = item.UserId;
+                        model.Id = item.Id;
+                        model.Percentage = item.Percentage;
+                        model.YearPassed = item.YearPassed;
+                        model.Comment = item.Comment;
+                        model.CourseName = item.CourseName;
+                        string isU = _context.UserDocuments.Where(x => x.UserId == item.UserId && x.Type == model.CourseName).Select(x => x.Id).FirstOrDefault().ToString();
+                        model.IsDocumentUploaded = isU != "0" ? true : false;
+                        lst.Add(model);
+                    }
+                    vm.Educations = lst;
+                }
+                else if (viewType == "ViewIncrement")
+                {
+                    List<UserIncrementViewModel> lst = new List<UserIncrementViewModel>();
+                    vm.UserId = id;
+                    vm.FirstName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.FirstName).FirstOrDefault();
+                    vm.LastName = _context.UserDetails.Where(x => x.UserId == id).Select(x => x.LastName).FirstOrDefault();
+
+                    vm.ViewType = viewType;
+                    var Increments = (from a in _context.UserIncrements
+                                      where a.UserId == id
+                                      select new
+                                      {
+                                          UserId = a.UserId,
+                                          Id = a.Id,
+                                          DateOfIncrement = a.DateOfIncrement,
+                                          CurrentSalary = a.Salary,
+                                      }).ToList();
+                    int i = 1;
+                    foreach (var item in Increments)
+                    {
+                        UserIncrementViewModel model = new UserIncrementViewModel();
+                        model.UserId = item.UserId;
+                        model.Id = item.Id;
+                        model.DateOfIncrement = item.DateOfIncrement == null ? null : item.DateOfIncrement.Value.ToString("dd-MM-yyyy");
+                        model.CurrentSalary = item.CurrentSalary;
+                        if (i == 1)
+                        {
+                            model.PreviousSalary = _context.UserDetails.Where(x => x.UserId == model.UserId).Select(x => x.Salary).FirstOrDefault();
+                        }
+                        else
+                        {
+                            model.PreviousSalary = Increments.TakeWhile(x => x.Id != item.Id).Select(x => x.CurrentSalary).LastOrDefault();
+                        }
+                        model.Amount = model.CurrentSalary - model.PreviousSalary;
+                        model.Percentage = Math.Round(Convert.ToDouble(model.Amount / model.PreviousSalary * 100), 2);
+                        lst.Add(model);
+                        i++;
+                    }
+                    vm.Increments = lst;
                 }
                 else if (id != "0" && viewType == "Display")
                 {
@@ -223,8 +359,15 @@ namespace Digisoft.ProjectManagement.Controllers
                         m.PhoneNumber = u.PhoneNumber;
                         m.AlternatePhoneNumber = u.AlternatePhoneNumber;
                         m.PersonalEmailAddress = u.PersonalEmailAddress;
+                        m.FatherName = u.FatherName;
+                        m.MotherName = u.MotherName;
+                        m.MarritalStatus = u.MarritalStatus;
+                        m.SpouseName = u.SpouseName;
+                        m.BloodGroup = u.BloodGroup;
                         m.DepartmentId = u.DepartmentId;
                         m.DOB = u.DOB;
+                        m.AnniversaryDate = u.AnniversaryDate;
+                        m.DocumentDOB = u.DocumentDOB;
                         m.DateofJoining = u.DateofJoining;
                         m.DateofRelieving = u.DateofRelieving;
                         m.CurrentCity = u.CurrentCity;
@@ -241,11 +384,9 @@ namespace Digisoft.ProjectManagement.Controllers
                         m.EmergencyContactName = u.EmergencyContactName;
                         m.EmergencyContactNumber = u.EmergencyContactNumber;
                         m.EmergencyContactRelation = u.EmergencyContactRelation;
+                        m.PreviousSalary = u.PreviousSalary;
                         m.Salary = u.Salary;
-                        m.FatherName = u.FatherName;
-                        m.MotherName = u.MotherName;
-                        m.MarritalStatus = u.MarritalStatus;
-                        m.BloodGroup = u.BloodGroup;
+                        m.Increment = u.Increment;
                         m.Vaccination1stDoseDate = u.Vaccination1stDoseDate;
                         m.Vaccination2ndDoseDate = u.Vaccination2ndDoseDate;
                     }
@@ -352,6 +493,8 @@ namespace Digisoft.ProjectManagement.Controllers
             var w = _context.Workings.Where(x => x.CreatedBy == UserId).ToList();
             var doc = _context.UserDocuments.Where(x => x.UserId == UserId).ToList();
             var er = _context.ErrorLogs.Where(x => x.CreatedBy == UserId).ToList();
+            var edu = _context.UserEducations.Where(x => x.UserId == UserId).ToList();
+            var inc = _context.UserIncrements.Where(x => x.UserId == UserId).ToList();
             var d = _context.AspNetUsers.Where(x => x.Id == UserId).ToList();
 
             if (ud != null)
@@ -384,12 +527,236 @@ namespace Digisoft.ProjectManagement.Controllers
                 _context.ErrorLogs.RemoveRange(er);
                 _context.SaveChanges();
             }
+            if (edu != null)
+            {
+                _context.UserEducations.RemoveRange(edu);
+                _context.SaveChanges();
+            }
+            if (inc != null)
+            {
+                _context.UserIncrements.RemoveRange(inc);
+                _context.SaveChanges();
+            }
             if (d != null)
             {
                 _context.AspNetUsers.RemoveRange(d);
                 _context.SaveChanges();
             }
             return Json(new { Message = "User deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult SaveEducation(UserViewModel userViewModel)
+        {
+            try
+            {
+                var Success = false;
+                var Message = "";
+                UserEducation ud = new UserEducation()
+                {
+                    UserId = userViewModel.UserId,
+                    CourseId = userViewModel.CourseId,
+                    Percentage = userViewModel.Percentage,
+                    YearPassed = userViewModel.YearPassed,
+                    Comment = userViewModel.Comment,
+                    Id = userViewModel.Id,
+                };
+                if (userViewModel.Id == 0)
+                {
+                    var exists = _context.UserEducations.Where(x => x.UserId == userViewModel.UserId && x.CourseId == userViewModel.CourseId).FirstOrDefault();
+                    if (exists == null)
+                    {
+                        using (var dbCtx = new ProjectManagementEntities())
+                        {
+                            dbCtx.Entry(ud).State = EntityState.Added;
+                            dbCtx.SaveChanges();
+                            Success = true;
+                            Message = "Education added successfully";
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { Message = "Already exist", Success = false }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    var exists = _context.UserEducations.Where(x => x.UserId == userViewModel.UserId && x.CourseId == userViewModel.CourseId && x.Id != userViewModel.Id).FirstOrDefault();
+                    if (exists == null)
+                    {
+                        using (var dbCtx = new ProjectManagementEntities())
+                        {
+
+                            dbCtx.Entry(ud).State = EntityState.Modified;
+                            dbCtx.SaveChanges();
+                            Success = true;
+                            Message = "Education updated successfully";
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { Message = "Already exist", Success = false }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                return Json(new { Message = Message, Success = Success }, JsonRequestBehavior.AllowGet);
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        [HttpPost]
+        public ActionResult SaveIncrement(UserViewModel userViewModel)
+        {
+            try
+            {
+                var Success = false;
+                var Message = "";
+                UserIncrement ud = new UserIncrement()
+                {
+                    UserId = userViewModel.UserId,
+                    DateOfIncrement = userViewModel.DateOfIncrement,
+                    Salary = userViewModel.Salary,
+                    Id = userViewModel.Id,
+                };
+                var salary = 0;
+                var date = new DateTime();
+
+                var count = 0;
+                if (userViewModel.Id == 0)
+                {
+                    count = _context.UserIncrements.Where(x => x.UserId == userViewModel.UserId).Count();
+                }
+                else
+                {
+                    count = _context.UserIncrements.Where(x => x.UserId == userViewModel.UserId && x.Id != userViewModel.Id).Count();
+                }
+                if (count > 0)
+                {
+                    var i = _context.UserIncrements.Where(x => x.UserId == userViewModel.UserId).ToList();
+                    var s = i.TakeWhile(x => x.Id != userViewModel.Id).Select(x => x.Salary).LastOrDefault();
+                    var d = i.TakeWhile(x => x.Id != userViewModel.Id).Select(x => x.DateOfIncrement).LastOrDefault();
+                    if (s == null)
+                    {
+                        var i1 = _context.UserDetails.Where(x => x.UserId == userViewModel.UserId).ToList();
+                        var s1 = i1.Select(x => x.Salary).FirstOrDefault();
+                        var d1 = i.SkipWhile(x => x.Id != userViewModel.Id).Skip(1).Select(x => x.DateOfIncrement).FirstOrDefault();
+                        var next = i.SkipWhile(x => x.Id != userViewModel.Id).Skip(1).Select(x => x.Salary).FirstOrDefault();
+                        salary = Convert.ToInt32(s1);
+                        var date1 = Convert.ToDateTime(d1);
+                        var nextSalary = Convert.ToInt32(next);
+                        if (date1 < userViewModel.DateOfIncrement)
+                        {
+                            return Json(new { Message = "Date of Increment should be less than next increment date", Success = false }, JsonRequestBehavior.AllowGet);
+                        }
+                        if(nextSalary <= userViewModel.Salary)
+                        {
+                            return Json(new { Message = "Current Salary should be less than next increment salary", Success = false }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                    else
+                    {
+                        date = Convert.ToDateTime(d);
+                        salary = Convert.ToInt32(s);
+                    }
+                }
+                else
+                {
+                    var i = _context.UserDetails.Where(x => x.UserId == userViewModel.UserId).ToList();
+                    var s = i.Select(x => x.Salary).FirstOrDefault();
+                    salary = Convert.ToInt32(s);
+                }
+                if (userViewModel.Id == 0)
+                {
+                    var exists = _context.UserIncrements.Where(x => x.UserId == userViewModel.UserId && x.DateOfIncrement == userViewModel.DateOfIncrement).FirstOrDefault();
+                    if (exists == null)
+                    {
+                        if (salary < userViewModel.Salary)
+                        {
+                            if (count > 0)
+                            {
+                                if (date > userViewModel.DateOfIncrement)
+                                {
+                                    return Json(new { Message = "Date of Increment should be greater than previous date of increment", Success = false }, JsonRequestBehavior.AllowGet);
+                                }
+                            }
+                            using (var dbCtx = new ProjectManagementEntities())
+                            {
+                                dbCtx.Entry(ud).State = EntityState.Added;
+                                dbCtx.SaveChanges();
+                                Success = true;
+                                Message = "Increment added successfully";
+                            }
+                        }
+                        else
+                        {
+                            return Json(new { Message = "Current salary should be greater than previous salary", Success = false }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { Message = "Already exist", Success = false }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    var exists = _context.UserIncrements.Where(x => x.UserId == userViewModel.UserId && x.DateOfIncrement == userViewModel.DateOfIncrement && x.Id != userViewModel.Id).FirstOrDefault();
+                    if (exists == null)
+                    {
+                        if (salary < userViewModel.Salary)
+                        {
+                            if (count > 0)
+                            {
+                                if (date > userViewModel.DateOfIncrement)
+                                {
+                                    return Json(new { Message = "Date of Increment should be greater than previous date of increment", Success = false }, JsonRequestBehavior.AllowGet);
+                                }
+                            }
+                            using (var dbCtx = new ProjectManagementEntities())
+                            {
+                                dbCtx.Entry(ud).State = EntityState.Modified;
+                                dbCtx.SaveChanges();
+                                Success = true;
+                                Message = "Increment updated successfully";
+                            }
+                        }
+                        else
+                        {
+                            return Json(new { Message = "Current salary should be greater than previous salary", Success = false }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { Message = "Already exist", Success = false }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                return Json(new { Message = Message, Success = Success }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public ActionResult DeleteEducation(int Id)
+        {
+            var d = _context.UserEducations.SingleOrDefault(x => x.Id == Id); //returns a single item.
+            if (d != null)
+            {
+                _context.UserEducations.Remove(d);
+                _context.SaveChanges();
+            }
+            return Json(new { Message = "Education deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult DeleteIncrement(int Id)
+        {
+            var d = _context.UserIncrements.SingleOrDefault(x => x.Id == Id); //returns a single item.
+            if (d != null)
+            {
+                _context.UserIncrements.Remove(d);
+                _context.SaveChanges();
+            }
+            return Json(new { Message = "Increment deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
         }
     }
 }

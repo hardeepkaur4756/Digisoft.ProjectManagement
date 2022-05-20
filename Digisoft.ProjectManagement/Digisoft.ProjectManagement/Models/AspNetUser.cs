@@ -27,6 +27,9 @@ namespace Digisoft.ProjectManagement.Models
             this.AspNetRoles = new HashSet<AspNetRole>();
             this.Departments = new HashSet<Department>();
             this.UserDocuments = new HashSet<UserDocument>();
+            this.Courses = new HashSet<Course>();
+            this.UserEducations = new HashSet<UserEducation>();
+            this.UserIncrements = new HashSet<UserIncrement>();
         }
     
         public string Id { get; set; }
@@ -62,5 +65,11 @@ namespace Digisoft.ProjectManagement.Models
         public virtual ICollection<Department> Departments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserDocument> UserDocuments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Course> Courses { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserEducation> UserEducations { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserIncrement> UserIncrements { get; set; }
     }
 }

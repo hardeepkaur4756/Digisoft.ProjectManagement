@@ -19,11 +19,17 @@
             <option value="0">Select Project</option>
         </select>
     </div>
-    <div class="col-sm-1">
-        <input type="button" id="" class="btn btn-primary" value="Clear" data-isNew="true" onclick="clearFilters(this)" />
+    <div class="col-sm-3">
+        <select id="userId" class="form-control">
+            <option value="">Select Employee</option>
+        </select>
     </div>
 </div>
+
+<input type="button" id="" class="btn btn-primary common-btn" value="Clear" data-isNew="true" onclick="clearFilters(this)" />
 <input type="button" id="btnAddProject" class="btn btn-primary common-btn" value="Add" data-isNew="true" onclick="AddOrEdit(this)" />
+<label class="btn common-label">Total Hours Worked: </label><label class="btn common-value" id="hWorked">36</label>
+<label class="btn common-label1">Total Hours Billed: </label><label class="btn common-value" id="hBilled">36</label>
 <table class="table table-responsive table-hover" id="MyTable">
     <thead class="thead-dark">
         <tr>
@@ -40,18 +46,66 @@
     <tbody>
     </tbody>
 </table>
+<style>
+    .common-label {
+        margin-bottom: -56px;
+        margin-left: 200px;
+        z-index: 1;
+        position: relative;
+        cursor: none;
+        outline: none;
+        font-weight: bold;
+    }
+    .common-label1 {
+        margin-bottom: -56px;
+        z-index: 1;
+        position: relative;
+        cursor: none;
+        outline: none;
+        font-weight: bold;
+    }
+    .common-value {
+        margin-bottom: -56px;
+        z-index: 1;
+        position: relative;
+        cursor: none;
+        outline: none;
+    }
+
+    .common-label:not(:disabled):not(.disabled) {
+        cursor: none;
+    }
+    .common-label1:not(:disabled):not(.disabled) {
+        cursor: none;
+    }
+    .common-value:not(:disabled):not(.disabled) {
+        cursor: none;
+    }
+</style>
 <script>
     $(document).ready(function () {
         //date pickers
         var isFirstTime = true;
-        var startDate = new Date();
-        var FromEndDate = new Date();
+        var startDate = new Date(),
+            sYear = startDate.getFullYear(),
+            sMonth = startDate.getMonth() + 1,
+            sDate = 1;
+        var FromEndDate = new Date(),
+            eYear = FromEndDate.getFullYear(),
+            eMonth = FromEndDate.getMonth() + 2,
+            eDate = 0;
         BindProject();
+        BindUser();
+        $('#endDate').datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "yyyy-mm-dd"
+        }).datepicker('setDate', eYear + '-' + eMonth + '-' + eDate);
         $("#startDate").datepicker({
             autoclose: true,
             minViewMode: 0,
             format: "yyyy-mm-dd"
-        }).on('changeDate', function (selected) {
+        }).datepicker('setDate', sYear + '-' + sMonth + '-' + sDate).on('changeDate', function (selected) {
             startDate = new Date(selected.date.valueOf());
             startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())));
             $('#endDate').datepicker('setStartDate', startDate);
@@ -88,7 +142,9 @@
             }
         });
         $("#projectId").change(function () {
-
+            _loadData();
+        })
+        $("#userId").change(function () {
             _loadData();
         })
         loader();
@@ -113,16 +169,25 @@
                         var sDate = $("#startDate").val();
                         var eDate = $("#endDate").val();
                         var project = $("#projectId").val();
+                        var user = $("#userId").val();
                         aoData.push({ "name": "sortCol", "value": colName });
                         aoData.push({ "name": "sortDir", "value": sDir });
                         aoData.push({ "name": "startDate", "value": sDate });
                         aoData.push({ "name": "endDate", "value": eDate });
                         aoData.push({ "name": "projectId", "value": project });
+                        aoData.push({ "name": "userId", "value": user });
                         $.ajax({
                             type: "Get",
                             data: aoData,
                             url: sSource,
-                            success: fnCallback
+                            success: fnCallback,
+                            dataFilter: function (response) {
+                                debugger;
+                                var temp = JSON.parse(response);
+                                $("#hWorked").text(temp.totalHoursWorked);
+                                $("#hBilled").text(temp.totalHoursBilled);
+                                return response;
+                            }
                         })
                     },
                     "aoColumns": [
@@ -192,9 +257,26 @@
     };
 
     var clearFilters = function () {
-        $("#startDate").val("");
-        $("#endDate").val("");
+        var startDate = new Date(),
+            sYear = startDate.getFullYear(),
+            sMonth = startDate.getMonth() + 1,
+            sDate = 1;
+        var FromEndDate = new Date(),
+            eYear = FromEndDate.getFullYear(),
+            eMonth = FromEndDate.getMonth() + 2,
+            eDate = 0;
+        $('#endDate').datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "yyyy-mm-dd"
+        }).datepicker('setDate', eYear + '-' + eMonth + '-' + eDate);
+        $("#startDate").datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "yyyy-mm-dd"
+        }).datepicker('setDate', sYear + '-' + sMonth + '-' + sDate)
         $("#projectId").val("0");
+        $("#userId").val("");
         _loadData();
     }
 
@@ -331,6 +413,26 @@
                         project.append($("<option></option>").val(this['Value']).html(this['Text']));
                     });
 
+                }
+            },
+            error: function (result) {
+                notificationHelper.ShowError('Error');
+                removeLoader();
+            }
+        });
+    }
+    function BindUser() {
+        $.ajax({
+            type: "Get",
+            url: "/Working/GetUser",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                var user = $("#userId");
+                if (result.length > 0) {
+                    $.each(result, function () {
+                        user.append($("<option></option>").val(this['Value']).html(this['Text']));
+                    });
                 }
             },
             error: function (result) {

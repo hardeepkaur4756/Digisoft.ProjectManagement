@@ -39,5 +39,8 @@ namespace Digisoft.ProjectManagement.Models
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<State> States { get; set; }
         public virtual DbSet<UserDocument> UserDocuments { get; set; }
+        public virtual DbSet<Course> Courses { get; set; }
+        public virtual DbSet<UserEducation> UserEducations { get; set; }
+        public virtual DbSet<UserIncrement> UserIncrements { get; set; }
     }
 }

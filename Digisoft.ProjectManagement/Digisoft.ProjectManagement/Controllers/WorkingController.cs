@@ -19,7 +19,7 @@ namespace Digisoft.ProjectManagement.Controllers
         protected UserManager<ApplicationUser> UserManager { get; set; }
         private readonly WorkingService _workingService;
         private readonly ProjectService _projectService;
-
+        private readonly UserService _userService;
         #endregion
 
         public WorkingController()
@@ -28,6 +28,7 @@ namespace Digisoft.ProjectManagement.Controllers
             UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
             _workingService = new WorkingService();
             _projectService = new ProjectService();
+            _userService = new UserService();
         }
 
         // GET: Project
@@ -37,42 +38,47 @@ namespace Digisoft.ProjectManagement.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetList(DataTablesParam param, string sortDir, string sortCol, DateTime? startDate, DateTime? endDate,string projectId)
+        public JsonResult GetList(DataTablesParam param, string sortDir, string sortCol, DateTime? startDate, DateTime? endDate, string projectId, string userId)
         {
             var workingsVM = new List<WorkingViewModel>();
             int pageNo = 1;
             int project = int.Parse(projectId);
+            userId = string.IsNullOrEmpty(userId) ? null : userId;
             var user = UserManager.FindById(User.Identity.GetUserId());
 
             if (param.iDisplayStart >= param.iDisplayLength)
                 pageNo = (param.iDisplayStart / param.iDisplayLength) + 1;
 
             int totalCount = 0;
+            string totalHoursWorked = "";
+            var totalHoursBilled = "";
             if (param.sSearch != null)
             {
                 sortCol = sortCol == "CreatedByName" ? "CreatedBy" : sortCol;
-                workingsVM = _workingService.GetAllAfterSearch(param, startDate, endDate, project)
+                workingsVM = _workingService.GetAllAfterSearch(param, startDate, endDate, project, userId)
                 .OrderBy(x => x.Id).OrderBy(sortCol + " " + sortDir).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength)
                 .Select(x => new WorkingViewModel
                 {
                     Id = x.Id,
                     Description = x.Description,
-                    ProjectName=x.Project.Name,
+                    ProjectName = x.Project.Name,
                     HoursBilled = x.HoursBilled,
                     HoursWorked = x.HoursWorked,
-                    DateWorked=x.DateWorked,
+                    DateWorked = x.DateWorked,
                     CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
                     CreatedDate = x.CreatedDate,
                     IsCurrentUser = user.Id == x.CreatedBy ? true : false,
                     IsUnderDeleteTime = ((DateTime.Now - x.CreatedDate).TotalDays < 7) ? true : false
                 }).ToList();
                 totalCount = workingsVM.Count();
+                totalHoursWorked = workingsVM.Sum(x=> x.HoursWorked).ToString();
+                totalHoursBilled = workingsVM.Sum(x => x.HoursBilled).ToString();
             }
             else
             {
                 sortCol = sortCol == "CreatedByName" ? "CreatedBy" : sortCol;
-                totalCount = _workingService.GetAll(startDate, endDate, project).Count();
-                workingsVM = _workingService.GetAll(startDate, endDate, project).OrderBy(x => x.Id).OrderBy(sortCol + " " + sortDir)
+                totalCount = _workingService.GetAll(startDate, endDate, project, userId).Count();
+                workingsVM = _workingService.GetAll(startDate, endDate, project, userId).OrderBy(x => x.Id).OrderBy(sortCol + " " + sortDir)
                     .Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength)
                      .Select(x => new WorkingViewModel
                      {
@@ -88,13 +94,17 @@ namespace Digisoft.ProjectManagement.Controllers
                          IsUnderDeleteTime = ((DateTime.Now - x.CreatedDate).TotalDays < 7) ? true : false
                      })
                 .ToList();
+                totalHoursWorked = workingsVM.Sum(x => x.HoursWorked).ToString();
+                totalHoursBilled = workingsVM.Sum(x => x.HoursBilled).ToString();
             }
             return Json(new
             {
                 aaData = workingsVM,
                 sEcho = param.sEcho,
                 iTotalDisplayRecords = totalCount,
-                iTotalRecords = totalCount
+                iTotalRecords = totalCount,
+                totalHoursWorked= totalHoursWorked,
+                totalHoursBilled = totalHoursBilled,
             }, JsonRequestBehavior.AllowGet);
         }
 
@@ -175,13 +185,23 @@ namespace Digisoft.ProjectManagement.Controllers
         }
         public ActionResult GetProject()
         {
-            WorkingViewModel vm= new WorkingViewModel();
+            WorkingViewModel vm = new WorkingViewModel();
             var projects = _projectService.GetAllForFilter();
             vm.Projects = projects
                    .Select(x => new SelectListItem { Text = string.Format("{0}", x.Name), Value = x.Id.ToString() })
                    .OrderBy(x => x.Text)
                    .ToList();
             return Json(vm.Projects, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetUser()
+        {
+            UserViewModel vm = new UserViewModel();
+            var users = _userService.GetAllUser();
+            vm.Users = users
+                   .Select(x => new SelectListItem { Text = string.Format("{0}", x.FirstName + " " + x.LastName), Value = x.UserId.ToString() })
+                   .OrderBy(x => x.Text)
+                   .ToList();
+            return Json(vm.Users, JsonRequestBehavior.AllowGet);
         }
     }
 }

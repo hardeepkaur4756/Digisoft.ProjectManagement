@@ -35,14 +35,14 @@ namespace Digisoft.ProjectManagement.Service
         {
             return _workingRepository.GetAll();
         }
-        public IEnumerable<Working> GetAll(DateTime? startDate, DateTime? endDate, int projectId)
+        public IEnumerable<Working> GetAll(DateTime? startDate, DateTime? endDate, int projectId,string userId)
         {
-            return _workingRepository.GetAll(startDate, endDate,projectId);
+            return _workingRepository.GetAll(startDate, endDate,projectId,userId);
         }
 
-        public IEnumerable<Working> GetAllAfterSearch(DataTablesParam param, DateTime? startDate, DateTime? endDate, int projectId)
+        public IEnumerable<Working> GetAllAfterSearch(DataTablesParam param, DateTime? startDate, DateTime? endDate, int projectId,string userId)
         {
-            return _workingRepository.GetAllAfterSearch(param, startDate, endDate, projectId);
+            return _workingRepository.GetAllAfterSearch(param, startDate, endDate, projectId,userId);
         }
 
         /// <summary>

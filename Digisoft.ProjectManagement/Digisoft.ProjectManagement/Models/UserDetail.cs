@@ -48,6 +48,11 @@ namespace Digisoft.ProjectManagement.Models
         public string BloodGroup { get; set; }
         public Nullable<System.DateTime> Vaccination1stDoseDate { get; set; }
         public Nullable<System.DateTime> Vaccination2ndDoseDate { get; set; }
+        public Nullable<System.DateTime> DocumentDOB { get; set; }
+        public string SpouseName { get; set; }
+        public Nullable<System.DateTime> AnniversaryDate { get; set; }
+        public string Increment { get; set; }
+        public Nullable<decimal> PreviousSalary { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual Country Country { get; set; }

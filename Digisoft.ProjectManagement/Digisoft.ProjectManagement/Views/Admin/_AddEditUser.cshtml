@@ -38,6 +38,19 @@
                 </div>
             }
         </div>
+        if (Model.UserId == null)
+        {
+            <div class="form-group d-flex">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-sm-2" })
+                <div class="col-sm-4 text-break">
+                    @Html.TextBoxFor(modal => modal.Password, new { @class = "form-control", @type = "password", @onchange = "return CheckPassword();", @autocomplete = "new-password" })
+                </div>
+                <label class="control-label col-sm-2">Confirm Password</label>
+                <div class="col-sm-4 text-break">
+                    @Html.TextBoxFor(modal => modal.ConfirmPassword, new { @class = "form-control", @type = "password", @onchange = "return validateConfirmPassword();" })
+                </div>
+            </div>
+        }
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Father Name</label>
             <div class="col-sm-4 text-break">
@@ -58,58 +71,49 @@
                     <option value="Unmarried">Unmarried</option>
                 </select>
             </div>
-            <label class="control-label col-sm-2">Blood Group</label>
+            <label class="control-label col-sm-2">Spouse Name</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.BloodGroup, new { @class = "form-control", @type = "email", @onchange = "return validateEmail('Email');", })
+                @Html.TextBoxFor(modal => modal.SpouseName, new { @class = "form-control" })
             </div>
         </div>
-        if (Model.UserId == null)
-        {
-            <div class="form-group d-flex">
-                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-sm-2" })
-                <div class="col-sm-4 text-break">
-                    @Html.TextBoxFor(modal => modal.Password, new { @class = "form-control", @type = "password", @onchange = "return CheckPassword();", @autocomplete = "new-password" })
-                </div>
-                <label class="control-label col-sm-2">Confirm Password</label>
-                <div class="col-sm-4 text-break">
-                    @Html.TextBoxFor(modal => modal.ConfirmPassword, new { @class = "form-control", @type = "password", @onchange = "return validateConfirmPassword();" })
-                </div>
-            </div>
-        }
         <div class="form-group d-flex">
-            <label class="control-label col-sm-2">Date of Birth</label>
+            <label class="control-label col-sm-2">Anniversary Date</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.AnniversaryDate, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-sm-2">Celebrated DOB</label>
             <div class="col-sm-4 text-break">
                 @Html.TextBoxFor(modal => modal.DOB, new { @class = "form-control" })
-                @Html.ValidationMessageFor(modal => modal.DOB, "", new { @class = "text-danger" })
             </div>
-            <label class="control-label col-sm-2">Experience When Joined</label>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Documented DOB</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.ExpWhenJoined, new { @class = "form-control" })
-                @Html.ValidationMessageFor(modal => modal.ExpWhenJoined, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(modal => modal.DocumentDOB, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-sm-2">Blood Group</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.BloodGroup, new { @class = "form-control" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Department</label>
             <div class="col-sm-4 text-break">
                 @Html.DropDownListFor(modal => modal.DepartmentId, new SelectList(Model.Departments, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlDepartments" })
-                @Html.ValidationMessageFor(modal => modal.DepartmentId, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Skills</label>
             <div class="col-sm-4 text-break">
                 @Html.TextBoxFor(modal => modal.Skills, new { @class = "form-control" })
-                @Html.ValidationMessageFor(modal => modal.Skills, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Date of Joining</label>
             <div class="col-sm-4 text-break">
                 @Html.TextBoxFor(modal => modal.DateofJoining, new { @class = "form-control non-time-date" })
-                @Html.ValidationMessageFor(modal => modal.DateofJoining, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Date of Releiving</label>
             <div class="col-sm-4 text-break">
                 @Html.TextBoxFor(modal => modal.DateofRelieving, new { @class = "form-control" })
-                @Html.ValidationMessageFor(modal => modal.DateofRelieving, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group d-flex">
@@ -172,59 +176,73 @@
             </div>
         </div>
         <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Current Address</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextAreaFor(modal => modal.CurrentAddress, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.CurrentAddress, "", new { @class = "text-danger" })
+            </div>
             <label class="control-label col-sm-2">Current City</label>
             <div class="col-sm-4 text-break">
                 @Html.TextBoxFor(modal => modal.CurrentCity, new { @class = "form-control" })
                 @Html.ValidationMessageFor(modal => modal.CurrentCity, "", new { @class = "text-danger" })
             </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Current State</label>
             <div class="col-sm-4 text-break">
                 @Html.DropDownListFor(modal => modal.CurrentStateId, new SelectList(Model.States, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlCState" })
                 @Html.ValidationMessageFor(modal => modal.CurrentStateId, "", new { @class = "text-danger" })
             </div>
-        </div>
-        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Current Country</label>
             <div class="col-sm-4 text-break">
                 @Html.DropDownListFor(modal => modal.CurrentCountryId, new SelectList(Model.Countries, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlCCountry" })
                 @Html.ValidationMessageFor(modal => modal.CurrentCountryId, "", new { @class = "text-danger" })
             </div>
-            <label class="control-label col-sm-2">Current Address</label>
-            <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.CurrentAddress, new { @class = "form-control" })
-                @Html.ValidationMessageFor(modal => modal.CurrentAddress, "", new { @class = "text-danger" })
-            </div>
         </div>
         <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Permanent Address</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextAreaFor(modal => modal.PermanentAddress, new { @class = "form-control" })
+                @Html.ValidationMessageFor(modal => modal.PermanentAddress, "", new { @class = "text-danger" })
+            </div>
             <label class="control-label col-sm-2">Permanent City</label>
             <div class="col-sm-4 text-break">
                 @Html.TextBoxFor(modal => modal.PermanentCity, new { @class = "form-control" })
                 @Html.ValidationMessageFor(modal => modal.PermanentCity, "", new { @class = "text-danger" })
             </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent State</label>
             <div class="col-sm-4 text-break">
                 @Html.DropDownListFor(modal => modal.PermanentStateId, new SelectList(Model.States, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlPState" })
                 @Html.ValidationMessageFor(modal => modal.PermanentStateId, "", new { @class = "text-danger" })
             </div>
-        </div>
-        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Permanent Country</label>
             <div class="col-sm-4 text-break">
                 @Html.DropDownListFor(modal => modal.PermanentCountryId, new SelectList(Model.Countries, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlPCountry" })
                 @Html.ValidationMessageFor(modal => modal.PermanentCountryId, "", new { @class = "text-danger" })
             </div>
-            <label class="control-label col-sm-2">Permanent Address</label>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Previous Salary</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.PermanentAddress, new { @class = "form-control" })
-                @Html.ValidationMessageFor(modal => modal.PermanentAddress, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(modal => modal.PreviousSalary, new { @class = "form-control", @onchange = "return IsNumberOrDecimal('PreviousSalary');" })
+            </div>
+            <label class="control-label col-sm-2">Increment</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.Increment, new { @class = "form-control" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Salary</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.Salary, new { @class = "form-control", @onchange = "return IsNumeric();" })
-                @Html.ValidationMessageFor(modal => modal.Salary, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(modal => modal.Salary, new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Salary');" })
             </div>
+            <label class="control-label col-sm-2">Experience When Joined</label>
+            <div class="col-sm-4 text-break">
+                @Html.TextBoxFor(modal => modal.ExpWhenJoined, new { @class = "form-control" })
+            </div>
+
         </div>
         <div class="text-right mt-2">
             <div class="">
@@ -272,6 +290,11 @@
                     <option value="Offer Letter">Offer Letter</option>
                     <option value="Joining Letter">Joining Letter</option>
                     <option value="Covid-Vaccination Certificate">Covid-Vaccination Certificate</option>
+                    <option value="CV">CV</option>
+                    <option value="10th">10th</option>
+                    <option value="12th">12th</option>
+                    <option value="Graduate">Graduate</option>
+                    <option value="Post-Graduate">Post Graduate</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
@@ -304,29 +327,238 @@
             <tbody>
                 @if (Model != null)
                 {
-                    foreach (var item in Model.Documents)
+                    if (Model.Documents != null)
                     {
-                        <tr>
-                            <td>@item.Type</td>
-                            @if (item.Name.ToLower().Contains(".jpg") || item.Name.ToLower().Contains(".png") || item.Name.ToLower().Contains(".jpeg"))
-                            {
-                                <td><img src="@item.Name" height="50" width="50"></td>
-                            }
-                            else
-                            {
-                                <td><iframe src="https://docs.google.com/gview?url=@item.Name&embedded=true" height="50" width="50" target="_blank"></iframe></td>
-                            }
-                            <td>
-                                <a class='icon-style' href='javascript:void(0)' onclick="DeleteDocument(this,'@item.Id')"><i class='fa fa-trash-o' aria-hidden='true'></i></a>
-                                <a class='icon-style' href='@item.Name' download>
-                                    <i class='fa fa-download' aria-hidden='true'></i>
-                                </a>
-                            </td>
-                        </tr>
+                        foreach (var item in Model.Documents)
+                        {
+                            <tr>
+                                <td>@item.Type</td>
+                                @if (item.Name.ToLower().Contains(".jpg") || item.Name.ToLower().Contains(".png") || item.Name.ToLower().Contains(".jpeg"))
+                                {
+                                    <td><img src="@item.Name" height="50" width="50"></td>
+                                }
+                                else
+                                {
+                                    <td><iframe src='https://docs.google.com/gview?url=@item.Name&embedded=true' height="50" width="50"></iframe></td>
+                                }
+                                <td>
+                                    <a class='icon-style' href='javascript:void(0)' onclick="DeleteDocument(this,'@item.Id')"><i class='fa fa-trash-o' aria-hidden='true'></i></a>
+                                    <a class='icon-style' href='@item.Name' download>
+                                        <i class='fa fa-download' aria-hidden='true'></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
                     }
                 }
             </tbody>
         </table>
+    }
+    else if (Model.ViewType == "AddEducation")
+    {
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Course</label>
+            <div class="col-sm-9">
+                @Html.DropDownListFor(modal => modal.CourseId, new SelectList(Model.Courses, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlCourse" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Percentage</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.Percentage, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Percentage')" } })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Year Passed</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.YearPassed, new { htmlAttributes = new { @class = "form-control", @maxlength = "4", @onchange = "return IsNumber()" } })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Comment</label>
+            <div class="col-sm-9">
+                @Html.TextAreaFor(model => model.Comment, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                <input type="submit" value="Save" id="btnSaveEducation" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+    else if (Model.ViewType == "EditEducation")
+    {
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Course</label>
+            <div class="col-sm-9">
+                @Html.HiddenFor(model => model.Id)
+                @Html.DropDownListFor(modal => modal.CourseId, new SelectList(Model.Courses, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlCourse" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Percentage</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.Percentage, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Percentage')" } })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Year Passed</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.YearPassed, new { htmlAttributes = new { @class = "form-control", @maxlength = "4", @onchange = "return IsNumber()" } })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Comment</label>
+            <div class="col-sm-9">
+                @Html.TextAreaFor(model => model.Comment, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                <input type="submit" value="Update" id="btnSaveEducation" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+    else if (Model.ViewType == "AddIncrement")
+    {
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Date Of Increment</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.DateOfIncrement, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Salary</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Salary');" } })
+            </div>
+        </div>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                <input type="submit" value="Save" id="btnSaveIncrement" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+    else if (Model.ViewType == "EditIncrement")
+    {
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Date of Increment</label>
+            <div class="col-sm-9">
+                @Html.HiddenFor(model => model.Id)
+                @Html.EditorFor(model => model.DateOfIncrement, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Salary</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control", @onchange = "return IsNumberOrDecimal('Salary');" } })
+            </div>
+        </div>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                <input type="submit" value="Update" id="btnSaveIncrement" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+
+    else if (Model.ViewType == "ViewEducation")
+    {
+        <input type="button" id="btnAddDocument" class="btn btn-primary common-btn1" value="Add" data-isNew="false" onclick="AddEducation(this,'@Model.UserId')" />
+        <table class="table table-responsive table-hover" id="MyTable">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Course</th>
+                    <th>Percentage</th>
+                    <th>Year Passed</th>
+                    <th>Document Uploaded</th>
+                    <th>Comment</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    if (Model.Educations != null)
+                    {
+                        foreach (var item in Model.Educations)
+                        {
+                            <tr>
+                                <td>@item.CourseName</td>
+                                <td>@item.Percentage</td>
+                                <td>@item.YearPassed</td>
+                                @if (item.IsDocumentUploaded == true)
+                                {
+                                    <td><i class="fa fa-check" aria-hidden="true" style="color:green;font-size:14px"></i></td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                                <td>@item.Comment</td>
+                                <td>
+                                    <a class='icon-style' href='javascript:void(0)' onclick="EditEducation(this,'@item.Id')"><i class='fa fa-pencil' aria-hidden='true'></i></a>
+                                    <a class='icon-style' href='javascript:void(0)' onclick="DeleteEducation(this,'@item.Id')"><i class='fa fa-trash-o' aria-hidden='true'></i></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Close</a>
+            </div>
+        </div>
+
+    }
+    else if (Model.ViewType == "ViewIncrement")
+    {
+        <input type="button" id="btnAddIncrement" class="btn btn-primary common-btn1" value="Add" data-isNew="false" onclick="AddIncrement(this,'@Model.UserId')" />
+        <table class="table table-responsive table-hover" id="MyTable">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Date of Increment</th>
+                    <th>Previous Salary</th>
+                    <th>Current Salary</th>
+                    <th>Percentage</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    if (Model.Increments != null)
+                    {
+                        for (int i = Model.Increments.Count-1; i >= 0; --i)
+                        {
+                            <tr>
+                                <td>@Model.Increments[i].DateOfIncrement</td>
+                                <td>@Model.Increments[i].PreviousSalary</td>
+                                <td>@Model.Increments[i].CurrentSalary</td>
+                                <td>@Model.Increments[i].Percentage</td>
+                                <td>@Model.Increments[i].Amount</td>
+                                <td>
+                                    <a class='icon-style' href='javascript:void(0)' onclick="EditIncrement(this,'@Model.Increments[i].Id')"><i class='fa fa-pencil' aria-hidden='true'></i></a>
+                                    <a class='icon-style' href='javascript:void(0)' onclick="DeleteIncrement(this,'@Model.Increments[i].Id')"><i class='fa fa-trash-o' aria-hidden='true'></i></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+        <div class="text-right mt-2">
+            <div class="">
+                <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Close</a>
+            </div>
+        </div>
+
     }
     else
     {
@@ -365,26 +597,36 @@
 
         </div>
         <div class="form-group d-flex">
-
             <label class="control-label col-sm-2">Marrital Status</label>
             <div class="col-sm-4 text-break">
                 @Html.DisplayFor(modal => modal.MarritalStatus, new { @class = "form-control" })
             </div>
-            <label class="control-label col-sm-2">Blood Group</label>
+            <label class="control-label col-sm-2">Spouse Name</label>
             <div class="col-sm-4 text-break">
-                @Html.DisplayFor(modal => modal.BloodGroup, new { @class = "form-control" })
+                @Html.DisplayFor(modal => modal.SpouseName, new { @class = "form-control" })
             </div>
-
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-2">Date of Birth</label>
+            <label class="control-label col-sm-2">Anniversary Date</label>
+            <div class="col-sm-4 text-break">
+                @Html.HiddenFor(model => model.AnniversaryDate)
+                <label class="control-label" id="dateA"></label>
+            </div>
+            <label class="control-label col-sm-2">Celebrated DOB</label>
             <div class="col-sm-4 text-break">
                 @Html.HiddenFor(model => model.DOB)
                 <label class="control-label" id="date"></label>
             </div>
-            <label class="control-label col-sm-2">Experience When Joined</label>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Documented DOB</label>
             <div class="col-sm-4 text-break">
-                @Html.DisplayFor(modal => modal.ExpWhenJoined, new { @class = "form-control" })
+                @Html.HiddenFor(model => model.DocumentDOB)
+                <label class="control-label" id="dateD"></label>
+            </div>
+            <label class="control-label col-sm-2">Blood Group</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.BloodGroup, new { @class = "form-control" })
             </div>
         </div>
         <div class="form-group d-flex">
@@ -503,10 +745,26 @@
             </div>
         </div>
         <div class="form-group d-flex">
+            <label class="control-label col-sm-2">Previous Salary</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.PreviousSalary, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-sm-2">Increment</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.Increment, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Salary</label>
             <div class="col-sm-4 text-break">
-                @Html.DisplayFor(modal => modal.Salary, new { @class = "form-control", @onchange = "return IsNumeric();" })
+                @Html.DisplayFor(modal => modal.Salary, new { @class = "form-control" })
             </div>
+            <label class="control-label col-sm-2">Experience When Joined</label>
+            <div class="col-sm-4 text-break">
+                @Html.DisplayFor(modal => modal.ExpWhenJoined, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group d-flex">
             <label class="control-label col-sm-2">Active</label>
             <div class="col-sm-4 text-break">
                 @if (Model.Exclude == true)
@@ -531,6 +789,12 @@
         width: 50%;
         margin: 0 auto;
     }
+
+    .divedu {
+        width: 60%;
+        margin: 0 auto;
+    }
+
     .common-btn1 {
         z-index: 1;
         position: relative;
@@ -558,11 +822,31 @@
         v2nd = v2nd?.split(' ')[0];
         $("#Vaccination2ndDoseDate").val(v2nd);
         $("#dateV2").text(v2nd);
+        var aDate = $("#AnniversaryDate").val();
+        aDate = aDate?.split(' ')[0];
+        $("#AnniversaryDate").val(aDate);
+        $("#dateA").text(aDate);
+        var dDate = $("#DocumentDOB").val();
+        dDate = dDate?.split(' ')[0];
+        $("#DocumentDOB").val(dDate);
+        $("#dateD").text(dDate);
+        var dateOfIncrement = $("#DateOfIncrement").val();
+        dateOfIncrement = dateOfIncrement?.split(' ')[0];
+        $("#DateOfIncrement").val(dateOfIncrement);
         $("#DOB").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy",
-            endDate: "today"
+            format: "dd-mm-yyyy"
+        })
+        $("#DocumentDOB").datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "dd-mm-yyyy"
+        })
+        $("#AnniversaryDate").datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "dd-mm-yyyy"
         })
         $("#DateofJoining").datepicker({
             autoclose: true,
@@ -584,6 +868,11 @@
             minViewMode: 0,
             format: "dd-mm-yyyy"
         })
+        $("#DateOfIncrement").datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "dd-mm-yyyy"
+        })
         var status = $("#status").val();
         $("#MarritalStatus").val(status);
     });
@@ -599,12 +888,15 @@
         var fatherName = $("#FatherName").val();
         var motherName = $("#MotherName").val();
         var marritalStatus = $("#MarritalStatus :selected").val();
+        var spouseName = $("#SpouseName").val();
+        var anniversaryDate = $("#AnniversaryDate").val();
         var bloodGroup = $("#BloodGroup").val();
         var v1stdose = $("#Vaccination1stDoseDate").val();
         var v2nddose = $("#Vaccination2ndDoseDate").val();
         var personalEmailAddress = $("#PersonalEmailAddress").val();
         var dateofRelieving = $("#DateofRelieving").val();
         var dob = $("#DOB").val();
+        var dDob = $("#DocumentDOB").val();
         var departmentId = $("#ddlDepartments").val();
         var aadharNumber = $("#AadharNumber").val();
         var panNumber = $("#PanNumber").val();
@@ -620,6 +912,8 @@
         var alternatePhoneNumber = $("#AlternatePhoneNumber").val();
         var exp = $("#ExpWhenJoined").val();
         var salary = $("#Salary").val();
+        var pSalary = $("#PreviousSalary").val();
+        var increment = $("#Increment").val();
         var skills = $("#Skills").val();
         var emergencyContactName = $("#EmergencyContactName").val();
         var emergencyContactRelation = $("#EmergencyContactRelation").val();
@@ -641,6 +935,8 @@
         vm.FatherName = fatherName;
         vm.MotherName = motherName;
         vm.MarritalStatus = marritalStatus;
+        vm.SpouseName = spouseName;
+        vm.AnniversaryDate = anniversaryDate;
         vm.BloodGroup = bloodGroup;
         vm.Vaccination1stDoseDate = v1stdose;
         vm.Vaccination2ndDoseDate = v2nddose;
@@ -666,7 +962,11 @@
         vm.DateofJoining = dateOfJoining;
         vm.DateofRelieving = dateofRelieving;
         vm.DOB = dob;
+        debugger;
+        vm.DocumentDOB = dDob;
         vm.DepartmentId = $("#ddlDepartments :selected").val();
+        vm.PreviousSalary = pSalary;
+        vm.Increment = increment;
         var validate = true;
         if (first == undefined || first == "") {
             validate = false;
@@ -674,7 +974,6 @@
         } else {
             $("#FirstName").removeClass("error");
         }
-
         if (departmentId == undefined || departmentId == "") {
             validate = false;
             $("#ddlDepartments").addClass("error");
@@ -722,6 +1021,12 @@
             $("#DOB").addClass("error");
         } else {
             $("#DOB").removeClass("error");
+        }
+        if (dDob == undefined || dDob == "") {
+            validate = false;
+            $("#DocumentDOB").addClass("error");
+        } else {
+            $("#DocumentDOB").removeClass("error");
         }
         if (aadharNumber == undefined || aadharNumber == "") {
             validate = false;
@@ -862,17 +1167,42 @@
             return false;
         }
     }
-    function IsNumeric() {
-        var salary = $("#Salary").val();
+    function IsNumberOrDecimal(name) {
+        debugger;
+        var salary = $("#" + name + "").val();
         var RE = /^-{0,1}\d*\.{0,1}\d+$/;
         if (RE.test(salary)) {
-            $("#Salary").removeClass("error");
+            $("#" + name + "").removeClass("error");
             return true;
         }
         else {
-            $("#Salary").val('');
-            $("#Salary").addClass("error");
-            notificationHelper.ShowError("Invalid salary amount");
+            $("#" + name + "").val('');
+            $("#" + name + "").addClass("error");
+            notificationHelper.ShowError("Invalid");
+            return false;
+        }
+    }
+    function IsNumber() {
+        debugger;
+        var value = $('#YearPassed').val();
+        var regex = new RegExp(/^\+?[0-9(),.-]+$/);
+        if (value.match(regex)) {
+            var date = new Date().getFullYear();
+            if (parseInt(value) > parseInt(date)) {
+                $('#YearPassed').addClass("error");
+                notificationHelper.ShowError("Year can't be in the future");
+                $('#YearPassed').val("");
+                return false;
+            }
+            else {
+                $('#YearPassed').removeClass("error");
+                return true;
+            }
+        }
+        else {
+            $('#YearPassed').addClass("error");
+            notificationHelper.ShowError("Invalid year");
+            $('#YearPassed').val("");
             return false;
         }
     }
@@ -919,7 +1249,7 @@
         }
     }
     $("#btnChangePassword").click(function () {
-        var Id = $("#UserId").val();
+        var id = $("#UserId").val();
         var password = $("#Password").val();
         var cpass = $("#ConfirmPassword").val();
         var vm = {};
@@ -937,8 +1267,8 @@
         } else {
             $("#ConfirmPassword").removeClass("error");
         }
-        if (Id != null && Id != "") {
-            vm.UserId = Id;
+        if (id != null && id != "") {
+            vm.UserId = id;
         }
         if (validate == true) {
             loader();
@@ -975,7 +1305,7 @@
         }
     })
     $("#btnUpload").click(function () {
-        var Id = $("#UserId").val();
+        var id = $("#UserId").val();
         var type = $("#ddlType :selected").val();
         var fileInput = document.getElementById('FileName');
         var validate = true;
@@ -983,7 +1313,7 @@
         var allowedExtensions =
             /(\.jpg|\.jpeg|\.png|\.gif|\.pdf|\.docx|\.doc|\.docm)$/i;
         var vm = new FormData();
-        vm.append("UserId", Id);
+        vm.append("UserId", id);
         vm.append("Type", type);
         if (fileInput.files.length > 0) {
             for (i = 0; i < fileInput.files.length; i++) {
@@ -1002,7 +1332,7 @@
             notificationHelper.ShowError('Please choose any file');
         }
         if (type == undefined || type == "") {
-            validate = false; 
+            validate = false;
             $("#ddlType").addClass("error");
         } else {
             $("#ddlType").removeClass("error");
@@ -1021,11 +1351,9 @@
                 success: function (result) {
                     debugger;
                     if (result.Success == true) {
-                        $('#myModal').modal('hide');
-                        removeLoader();
                         notificationHelper.ShowSuccess(result.Message);
                         removeLoader();
-                        ViewDocument(event, Id);
+                        ViewDocument(id);
                     }
                     else if (result.Success == false) {
                         removeLoader();
@@ -1040,20 +1368,19 @@
                 failure: function (result) {
                     removeLoader();
                     notificationHelper.ShowError(result.responseText);
-                    notificationHelper.ShowError(result.responseText);
                 }
             });
         }
     })
     var AddDocument = function (event, Id) {
         debugger;
-        var Id = Id;
+        var id = Id;
         var viewType = "UploadDocument";
         loader();
         $.ajax({
             type: "Get",
             url: "/Admin/AddUser",
-            data: { id: Id, viewType: viewType },
+            data: { id: id, viewType: viewType },
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (response) {
@@ -1078,7 +1405,6 @@
                 removeLoader();
             }
         });
-
     }
     function DeleteDocument(event, Id) {
         var UserId = $("#UserId").val();
@@ -1095,7 +1421,7 @@
                         notificationHelper.ShowSuccess(result.Message);
                         removeLoader();
                         if (UserId != null && UserId != undefined) {
-                            ViewDocument(event, UserId);
+                            ViewDocument(UserId);
                         }
                     }
                     else {
@@ -1113,4 +1439,330 @@
             return false;
         }
     }
+    function DeleteEducation(event, Id) {
+        var UserId = $("#UserId").val();
+        if (confirm("Are you sure?")) {
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Admin/DeleteEducation",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: { Id: Id },
+                success: function (result) {
+                    if (result.Success) {
+                        notificationHelper.ShowSuccess(result.Message);
+                        removeLoader();
+                        if (UserId != null && UserId != undefined) {
+                            ViewEducation(UserId);
+                        }
+                    }
+                    else {
+                        notificationHelper.ShowError(result.Message);
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError('Error');
+                    removeLoader();
+                }
+            });
+        }
+        else {
+            return false;
+        }
+    }
+    var AddEducation = function (event, Id) {
+        debugger;
+        var id = Id;
+        var viewType = "AddEducation";
+        loader();
+        $.ajax({
+            type: "Get",
+            url: "/Admin/AddUser",
+            data: { id: id, viewType: viewType },
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response.Success) {
+                    debugger;
+                    if (Id != null && Id != "") {
+                        $('#myModal').find('#myModalLabel').html("Add " + response.UserName + "'s education");
+                    }
+                    $('#myModal').find('.modal-body').html(response.Html);
+                    $('#myModal').find('.btn-primary').addClass('saveBid');
+                    $('#myModal').modal('show');
+                    $('#myModal').find('.modal-content').addClass('divdoc');
+                    removeLoader();
+                }
+                else {
+                    notificationHelper.ShowError("Some thing went wrong !");
+                    removeLoader();
+                }
+            },
+            error: function (result) {
+                notificationHelper.ShowError(result.Message);
+
+                removeLoader();
+            }
+        });
+    }
+    var EditEducation = function (event, Id) {
+        debugger;
+        var id = Id;
+        var viewType = "EditEducation";
+        loader();
+        $.ajax({
+            type: "Get",
+            url: "/Admin/AddUser",
+            data: { id: id, viewType: viewType },
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response.Success) {
+                    debugger;
+                    if (Id != null && Id != "") {
+                        $('#myModal').find('#myModalLabel').html("Edit " + response.UserName + "'s education");
+                    }
+                    $('#myModal').find('.modal-body').html(response.Html);
+                    $('#myModal').find('.btn-primary').addClass('saveBid');
+                    $('#myModal').modal('show');
+                    $('#myModal').find('.modal-content').addClass('divdoc');
+                    removeLoader();
+                }
+                else {
+                    notificationHelper.ShowError("Some thing went wrong !");
+                    removeLoader();
+                }
+            },
+            error: function (result) {
+                notificationHelper.ShowError(result.Message);
+
+                removeLoader();
+            }
+        });
+    }
+    var AddIncrement = function (event, Id) {
+        debugger;
+        var id = Id;
+        var viewType = "AddIncrement";
+        loader();
+        $.ajax({
+            type: "Get",
+            url: "/Admin/AddUser",
+            data: { id: id, viewType: viewType },
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response.Success) {
+                    debugger;
+                    if (Id != null && Id != "") {
+                        $('#myModal').find('#myModalLabel').html("Add " + response.UserName + "'s increment");
+                    }
+                    $('#myModal').find('.modal-body').html(response.Html);
+                    $('#myModal').find('.btn-primary').addClass('saveBid');
+                    $('#myModal').modal('show');
+                    $('#myModal').find('.modal-content').addClass('divdoc');
+                    removeLoader();
+                }
+                else {
+                    notificationHelper.ShowError("Some thing went wrong !");
+                    removeLoader();
+                }
+            },
+            error: function (result) {
+                notificationHelper.ShowError(result.Message);
+
+                removeLoader();
+            }
+        });
+    }
+    var EditIncrement = function (event, Id) {
+        debugger;
+        var id = Id;
+        var viewType = "EditIncrement";
+        loader();
+        $.ajax({
+            type: "Get",
+            url: "/Admin/AddUser",
+            data: { id: id, viewType: viewType },
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response.Success) {
+                    debugger;
+                    if (Id != null && Id != "") {
+                        $('#myModal').find('#myModalLabel').html("Edit " + response.UserName + "'s increment");
+                    }
+                    $('#myModal').find('.modal-body').html(response.Html);
+                    $('#myModal').find('.btn-primary').addClass('saveBid');
+                    $('#myModal').modal('show');
+                    $('#myModal').find('.modal-content').addClass('divdoc');
+                    removeLoader();
+                }
+                else {
+                    notificationHelper.ShowError("Some thing went wrong !");
+                    removeLoader();
+                }
+            },
+            error: function (result) {
+                notificationHelper.ShowError(result.Message);
+
+                removeLoader();
+            }
+        });
+    }
+    function DeleteIncrement(event, Id) {
+        var UserId = $("#UserId").val();
+        if (confirm("Are you sure?")) {
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Admin/DeleteIncrement",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: { Id: Id },
+                success: function (result) {
+                    if (result.Success) {
+                        notificationHelper.ShowSuccess(result.Message);
+                        removeLoader();
+                        if (UserId != null && UserId != undefined) {
+                            ViewIncrement(UserId);
+                        }
+                    }
+                    else {
+                        notificationHelper.ShowError(result.Message);
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError('Error');
+                    removeLoader();
+                }
+            });
+        }
+        else {
+            return false;
+        }
+    }
+    $("#btnSaveEducation").click(function () {
+        debugger;
+        var userId = $("#UserId").val();
+        var id = $("#Id").val();
+        var courseId = $("#ddlCourse :selected").val();
+        var percentage = $("#Percentage").val();
+        var yearPassed = $("#YearPassed").val();
+        var comment = $("#Comment").val();
+        var validate = true;
+        var vm = {};
+        vm.Id = id;
+        vm.UserId = userId;
+        vm.CourseId = courseId;
+        vm.Percentage = percentage;
+        vm.YearPassed = yearPassed;
+        vm.Comment = comment;
+        if (courseId == undefined || courseId == "") {
+            validate = false;
+            $("#ddlCourse").addClass("error");
+        } else {
+            $("#ddlCourse").removeClass("error");
+        }
+        if (percentage == undefined || percentage == "") {
+            validate = false;
+            $("#Percentage").addClass("error");
+        } else {
+            $("#Percentage").removeClass("error");
+        }
+        if (yearPassed == undefined || yearPassed == "") {
+            validate = false;
+            $("#YearPassed").addClass("error");
+        } else {
+            $("#YearPassed").removeClass("error");
+        }
+        if (validate == true) {
+            loader();
+            $.ajax({
+                type: "Post",
+                url: "/Admin/SaveEducation",
+                dataType: 'json',
+                contentType: "application/json",
+                data: JSON.stringify(vm),
+                success: function (result) {
+                    debugger;
+                    if (result.Success == true) {
+                        notificationHelper.ShowSuccess(result.Message);
+                        removeLoader();
+                        ViewEducation(userId);
+                    }
+                    else if (result.Success == false) {
+                        removeLoader();
+                        notificationHelper.ShowError(result.Message);
+                    }
+                    else {
+                        removeLoader();
+                        notificationHelper.ShowError("Sorry, An error occurred!");
+                    }
+                },
+                failure: function (result) {
+                    removeLoader();
+                    notificationHelper.ShowError(result.responseText);
+                }
+            });
+        }
+    })
+    $("#btnSaveIncrement").click(function () {
+        debugger;
+        var userId = $("#UserId").val();
+        var id = $("#Id").val();
+        var dateOfIncrement = $("#DateOfIncrement").val();
+        var salary = $("#Salary").val();
+        var validate = true;
+        var vm = {};
+        vm.Id = id;
+        vm.UserId = userId;
+        vm.DateOfIncrement = dateOfIncrement;
+        vm.Salary = salary;
+        if (dateOfIncrement == undefined || dateOfIncrement == "") {
+            validate = false;
+            $("#DateOfIncrement").addClass("error");
+        } else {
+            $("#DateOfIncrement").removeClass("error");
+        }
+        if (salary == undefined || salary == "") {
+            validate = false;
+            $("#Salary").addClass("error");
+        } else {
+            $("#Salary").removeClass("error");
+        }
+        if (validate == true) {
+            loader();
+            $.ajax({
+                type: "Post",
+                url: "/Admin/SaveIncrement",
+                dataType: 'json',
+                contentType: "application/json",
+                data: JSON.stringify(vm),
+                success: function (result) {
+                    debugger;
+                    if (result.Success == true) {
+                        notificationHelper.ShowSuccess(result.Message);
+                        removeLoader();
+                        ViewIncrement(userId);
+                    }
+                    else if (result.Success == false) {
+                        removeLoader();
+                        notificationHelper.ShowError(result.Message);
+                    }
+                    else {
+                        removeLoader();
+                        notificationHelper.ShowError("Sorry, An error occurred!");
+                    }
+                },
+                failure: function (result) {
+                    removeLoader();
+                    notificationHelper.ShowError(result.responseText);
+                }
+            });
+        }
+    })
 </script>

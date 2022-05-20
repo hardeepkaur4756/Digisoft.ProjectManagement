@@ -41,6 +41,7 @@ namespace Digisoft.ProjectManagement.Service
             AutoMapper.Mapper.Map(user, userVM);
             return userVM;
         }
+       
         /// <summary>
         /// insert or update user
         /// </summary>
