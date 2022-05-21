@@ -42,5 +42,6 @@ namespace Digisoft.ProjectManagement.Models
         public virtual DbSet<Course> Courses { get; set; }
         public virtual DbSet<UserEducation> UserEducations { get; set; }
         public virtual DbSet<UserIncrement> UserIncrements { get; set; }
+        public virtual DbSet<UserAttendance> UserAttendances { get; set; }
     }
 }

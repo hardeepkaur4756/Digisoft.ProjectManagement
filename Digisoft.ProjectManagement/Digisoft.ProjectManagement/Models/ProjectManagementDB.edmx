@@ -133,6 +133,21 @@
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CountryId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="UserAttendance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="InTime" Type="time" Precision="7" />
+          <Property Name="OutTime" Type="time" Precision="7" />
+          <Property Name="OnLeave" Type="bit" />
+          <Property Name="LeaveApprovedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="UserDetail">
           <Key>
             <PropertyRef Name="Id" />
@@ -360,6 +375,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserAttendance_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="UserAttendance" Type="Self.UserAttendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserAttendance">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserDetail_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
           <End Role="UserDetail" Type="Self.UserDetail" Multiplicity="*" />
@@ -518,6 +545,7 @@
           <EntitySet Name="ErrorLog" EntityType="Self.ErrorLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Project" EntityType="Self.Project" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="State" EntityType="Self.State" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserAttendance" EntityType="Self.UserAttendance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserDetail" EntityType="Self.UserDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserDocument" EntityType="Self.UserDocument" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserEducation" EntityType="Self.UserEducation" Schema="dbo" store:Type="Tables" />
@@ -566,6 +594,10 @@
           <AssociationSet Name="FK_State_Country" Association="Self.FK_State_Country">
             <End Role="Country" EntitySet="Country" />
             <End Role="State" EntitySet="State" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAttendance_AspNetUsers" Association="Self.FK_UserAttendance_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="UserAttendance" EntitySet="UserAttendance" />
           </AssociationSet>
           <AssociationSet Name="FK_UserDetail_AspNetUsers" Association="Self.FK_UserDetail_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -688,6 +720,7 @@
           <NavigationProperty Name="Courses" Relationship="ProjectManagementModel.FK_Course_AspNetUsers" FromRole="AspNetUser" ToRole="Course" />
           <NavigationProperty Name="UserEducations" Relationship="ProjectManagementModel.FK_UserEducation_AspNetUsers" FromRole="AspNetUser" ToRole="UserEducation" />
           <NavigationProperty Name="UserIncrements" Relationship="ProjectManagementModel.FK_UserIncrement_AspNetUsers" FromRole="AspNetUser" ToRole="UserIncrement" />
+          <NavigationProperty Name="UserAttendances" Relationship="ProjectManagementModel.FK_UserAttendance_AspNetUsers" FromRole="AspNetUser" ToRole="UserAttendance" />
         </EntityType>
         <EntityType Name="Client">
           <Key>
@@ -1016,6 +1049,11 @@
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
             <End Role="UserIncrement" EntitySet="UserIncrements" />
           </AssociationSet>
+          <EntitySet Name="UserAttendances" EntityType="ProjectManagementModel.UserAttendance" />
+          <AssociationSet Name="FK_UserAttendance_AspNetUsers" Association="ProjectManagementModel.FK_UserAttendance_AspNetUsers">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="UserAttendance" EntitySet="UserAttendances" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Country">
           <Key>
@@ -1234,6 +1272,34 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="UserIncrement">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UserAttendance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="InTime" Type="Time" Precision="7" />
+          <Property Name="OutTime" Type="Time" Precision="7" />
+          <Property Name="OnLeave" Type="Boolean" />
+          <Property Name="LeaveApprovedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AspNetUser" Relationship="ProjectManagementModel.FK_UserAttendance_AspNetUsers" FromRole="UserAttendance" ToRole="AspNetUser" />
+        </EntityType>
+        <Association Name="FK_UserAttendance_AspNetUsers">
+          <End Type="ProjectManagementModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="ProjectManagementModel.UserAttendance" Role="UserAttendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserAttendance">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1468,6 +1534,22 @@
               <MappingFragment StoreEntitySet="UserIncrement">
                 <ScalarProperty Name="Salary" ColumnName="Salary" />
                 <ScalarProperty Name="DateOfIncrement" ColumnName="DateOfIncrement" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserAttendances">
+            <EntityTypeMapping TypeName="ProjectManagementModel.UserAttendance">
+              <MappingFragment StoreEntitySet="UserAttendance">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="LeaveApprovedBy" ColumnName="LeaveApprovedBy" />
+                <ScalarProperty Name="OnLeave" ColumnName="OnLeave" />
+                <ScalarProperty Name="OutTime" ColumnName="OutTime" />
+                <ScalarProperty Name="InTime" ColumnName="InTime" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

@@ -44,6 +44,8 @@
         <AssociationConnector Association="ProjectManagementModel.FK_UserEducation_Course" />
         <EntityTypeShape EntityType="ProjectManagementModel.UserIncrement" Width="1.5" PointX="5.25" PointY="0.75" />
         <AssociationConnector Association="ProjectManagementModel.FK_UserIncrement_AspNetUsers" />
+        <EntityTypeShape EntityType="ProjectManagementModel.UserAttendance" Width="1.5" PointX="5.25" PointY="28.625" />
+        <AssociationConnector Association="ProjectManagementModel.FK_UserAttendance_AspNetUsers" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

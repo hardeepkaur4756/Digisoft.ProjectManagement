@@ -1,0 +1,150 @@
+﻿@model Digisoft.ProjectManagement.Models.UserAttendanceViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4 class="panel-title">
+    Filters
+</h4>
+<div class="row">
+    <div class="col-sm-4">
+        <input type="text" class="form-control" id="date" autocomplete="off" placeholder="Select Date" />
+    </div>
+    <div class="col-sm-4">
+        @Html.DropDownListFor(x => Model.UserId, new SelectList(Model.Users, "Value", "Text", ""), "-Select-", htmlAttributes: new { @class = "form-control", id = "ddlUsers" })
+    </div>
+    <div class="col-sm-1">
+        <input type="button" id="" class="btn btn-primary" value="Clear" data-isNew="true" onclick="clearFilters(this)" />
+    </div>
+</div>
+
+<input type="button" id="btnMarkAttendance" class="btn btn-primary common-btn" value="Mark Today's Attendance" data-isNew="true" onclick="AddAttendance(this)" />
+<table class="table table-responsive table-hover" id="MyTable">
+    <thead class="thead-dark">
+        <tr>
+            <th>Name</th>
+            <th>Attendance</th>
+            <th>In Time</th>
+            <th>Out Time</th>
+            <th>On Leave</th>
+            <th>Leave Approved By</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    $(document).ready(function () {
+        var isFirstTime = true;
+        $('#date').datepicker({
+            autoclose: true,
+            minViewMode: 0,
+            format: "yyyy-mm-dd"
+        })
+        _loadData();
+    })
+    var clearFilters = function () {
+        $("#date").val("");
+        $("#userId").val("");
+        _loadData();
+    }
+    var AddAttendance = function (event) {
+        var isNew = event.getAttribute("data-isNew");
+        var Id = parseInt(event.getAttribute("data-Id"));
+        if (Id == null || Id == undefined) {
+            notificationHelper.ShowError("Some thing went wrong!");
+        }
+        else {
+            if (isNew) {
+                Id = 0;
+            }
+            loader();
+            $.ajax({
+                type: "Get",
+                url: "/Attendance/AddAttendance",
+                data: { id: Id },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.Success) {
+                        if (Id > 0) {
+                            $('#myModal').find('#myModalLabel').html('Update Attendance');
+                        }
+                        else {
+                            $('#myModal').find('#myModalLabel').html('Mark Attendance');
+                        }
+                        $('#myModal').find('.modal-content').removeClass('divdoc');
+                        $('#myModal').find('.modal-body').html(response.Html);
+                        $('#myModal').find('.btn-primary').addClass('saveBid');
+                        $('#myModal').modal('show');
+                        removeLoader();
+                    }
+                    else {
+                        notificationHelper.ShowError("Some thing went wrong !");
+                        removeLoader();
+                    }
+                },
+                error: function (result) {
+                    notificationHelper.ShowError(result.Message);
+                    removeLoader();
+                }
+            });
+        }
+    }
+    var _loadData = function (response) {
+        if ($.fn.DataTable.isDataTable("#MyTable")) {
+            oTable.draw();
+        }
+        else {
+            debugger;
+            oTable =
+                $('#MyTable').DataTable({
+                    "bServerSide": true,
+                    "sAjaxSource": "/Attendance/GetList",
+                    "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
+                        var colName = oSettings.aoColumns[oSettings.aaSorting[0][0]].mData;
+                        var sDir = oSettings.aaSorting[0][1];
+                        var date = $("#date").val();
+                        var user = $("#ddlUsers :selected").val();
+                        aoData.push({ "name": "sortDir", "value": sDir });
+                        aoData.push({ "name": "sortCol", "value": colName });
+                        aoData.push({ "name": "date", "value": date });
+                        aoData.push({ "name": "userId", "value": user });
+                        $.ajax({
+                            type: "Get",
+                            data: aoData,
+                            url: sSource,
+                            success: fnCallback
+                        })
+                    },
+                    "aoColumns": [
+                        { "mData": "UserName" },
+                        { "mData": "AttendanceStatus" },
+                        { "mData": "InTime" },
+                        { "mData": "OutTime" },
+                        { "mData": "OnLeave" },
+                        { "mData": "LeaveApprovedBy" },
+                        { "mData": "Comment" },
+                    ],
+                    "aoColumnDefs": [
+                        { "bSortable": false, "aTargets": [4] }
+                    ],
+                    "order": [[3, "desc"]],
+                    bProcessing: true,
+                    pageLength: 10,
+                    "paging": true,
+                    bSearching: false,
+                    bLengthChange: false,
+                    "language": {
+                        "zeroRecords": "Not found - Sorry",
+                        "info": "Page _PAGE_ of _PAGES_",
+                        "infoEmpty": "No records",
+                        "processing": "Processing... Please wait",
+                    },
+                });
+        }
+        removeLoader();
+    };
+</script>
+

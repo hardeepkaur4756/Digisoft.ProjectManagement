@@ -30,6 +30,7 @@ namespace Digisoft.ProjectManagement.Models
             this.Courses = new HashSet<Course>();
             this.UserEducations = new HashSet<UserEducation>();
             this.UserIncrements = new HashSet<UserIncrement>();
+            this.UserAttendances = new HashSet<UserAttendance>();
         }
     
         public string Id { get; set; }
@@ -71,5 +72,7 @@ namespace Digisoft.ProjectManagement.Models
         public virtual ICollection<UserEducation> UserEducations { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserIncrement> UserIncrements { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserAttendance> UserAttendances { get; set; }
     }
 }

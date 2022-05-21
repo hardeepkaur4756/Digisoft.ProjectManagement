@@ -1,0 +1,147 @@
+﻿@model Digisoft.ProjectManagement.Models.UserAttendanceViewModel
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+
+    @if (Model.ViewType == "Display")
+    {
+    }
+    else if (Model.ViewType == "Present")
+    {
+
+    }
+    else if (Model.ViewType == "Absent")
+    {
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">In Time</label>
+            <div class="col-sm-9 text-break">
+                @Html.EditorFor(model => model.InTime, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="control-label col-sm-3">Out Time</label>
+            <div class="col-sm-9 text-break">
+                @Html.EditorFor(model => model.OutTime, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+    }
+    else
+    {
+        @Html.HiddenFor(m => m.Date)
+        <div class="form-group">
+            <table class="table table-responsive table-hover" id="MyTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        if (Model.UserDetails != null)
+                        {
+                            foreach (var item in Model.UserDetails)
+                            {
+                                <tr>
+                                    <td>@item.FirstName @item.LastName</td>
+                                    <td>
+                                        <input type="button" id="btnPresent" class="btn btn-success" value="Present" onclick="return MarkAttendance('Present','@item.UserId');"/>
+                                        <input type="button" id="btnAbsent" class="btn btn-danger" value="Absent" />
+                                        <input type="button" id="btnPresent" class="btn btn-primary" value="Custom" />
+                                    </td>
+                                </tr>
+                            }
+
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+<script>
+    function MarkAttendance(Status, UserId) {
+        $.ajax({
+            type: "Get",
+            url: "/Attendance/AddAttendance",
+            data: { id: UserId, viewType: Status },
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response.Success) {
+                    $('#myModal').find('#myModalLabel').html('Mark Present');
+                    $('#myModal').find('.modal-content').removeClass('divdoc');
+                    $('#myModal').find('.modal-body').html(response.Html);
+                    $('#myModal').find('.btn-primary').addClass('saveBid');
+                    $('#myModal').modal('show');
+                    removeLoader();
+                }
+                else {
+                    notificationHelper.ShowError("Some thing went wrong !");
+                    removeLoader();
+                }
+            },
+            error: function (result) {
+                notificationHelper.ShowError(result.Message);
+                removeLoader();
+            }
+        });
+    }
+    function MarkAttendance(attendance, userId) {
+        debugger;
+        var validate = true;
+        var userId = userId;
+        var attendance = attendance;
+        var vm = {};
+        vm.UserId = userId;
+        vm.AttendanceStatus = attendance;
+        if (userId == undefined || userId == "") {
+            validate = false;
+            notificationHelper.ShowError("Some error occurred");
+        }
+        else {
+           
+        }
+        if (attendance == undefined || attendance == "") {
+            validate = false;
+            notificationHelper.ShowError("Please click on any button");
+        }
+        else {
+
+        }
+        if (validate == true) {
+            loader();
+            $.ajax({
+                type: "Post",
+                url: "/Attendance/MarkAttendance",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(vm),
+                success: function (result) {
+                    debugger;
+                    if (result.Success == true) {
+                        notificationHelper.ShowSuccess(result.Message);
+                        removeLoader();
+                        ViewDocument(id);
+                    }
+                    else if (result.Success == false) {
+                        removeLoader();
+                        notificationHelper.ShowError(result.Message);
+
+                    }
+                    else {
+                        removeLoader();
+                        notificationHelper.ShowError("Sorry, An error occurred!");
+                    }
+                },
+                failure: function (result) {
+                    removeLoader();
+                    notificationHelper.ShowError(result.responseText);
+                }
+            });
+        }
+    }
+</script>

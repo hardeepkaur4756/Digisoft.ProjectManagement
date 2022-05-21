@@ -25,7 +25,8 @@ namespace Digisoft.ProjectManagement.Configuration
             .ForMember(dest => dest.PermanentCountryName, opt => opt.MapFrom(src => src.Country1.Name))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.AspNetUser.Email));
             CreateMap<UserViewModel, UserDetail>();
-
+            CreateMap<UserAttendanceViewModel, UserAttendance>();
+            CreateMap<UserAttendance, UserAttendanceViewModel>();
         }
         #endregion
 

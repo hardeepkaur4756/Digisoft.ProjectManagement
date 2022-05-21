@@ -332,7 +332,7 @@ namespace Digisoft.ProjectManagement.Controllers
                             u.UserId = user.Id;
                             _userService.Insert(u);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             var us = _context.AspNetUsers.Where(x => x.Id == u.UserId).FirstOrDefault();
                             UserManager.RemoveFromRole(u.UserId, u.RoleId);
@@ -513,11 +513,6 @@ namespace Digisoft.ProjectManagement.Controllers
                 {
                     return Json(new { Message = "You cant'delete this id!", Success = true }, JsonRequestBehavior.AllowGet);
                 }
-                if (ud != null)
-                {
-                    _context.UserDetails.RemoveRange(ud);
-                    _context.SaveChanges();
-                }
                 if (w != null)
                 {
                     _context.Workings.RemoveRange(w);
@@ -535,6 +530,19 @@ namespace Digisoft.ProjectManagement.Controllers
                 }
                 if (doc != null)
                 {
+                    var projectDir = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
+                    System.IO.DirectoryInfo di = new DirectoryInfo(projectDir + "\\Documents");
+
+                    foreach (var item in doc)
+                    {
+                        foreach (FileInfo file in di.GetFiles())
+                        {
+                            if (item.Name == file.Name)
+                            {
+                                file.Delete();
+                            }
+                        }
+                    }
                     _context.UserDocuments.RemoveRange(doc);
                     _context.SaveChanges();
                 }
@@ -553,6 +561,11 @@ namespace Digisoft.ProjectManagement.Controllers
                     _context.UserIncrements.RemoveRange(inc);
                     _context.SaveChanges();
                 }
+                if (ud != null)
+                {
+                    _context.UserDetails.RemoveRange(ud);
+                    _context.SaveChanges();
+                }
                 if (d != null)
                 {
                     _context.AspNetUsers.RemoveRange(d);
@@ -560,9 +573,10 @@ namespace Digisoft.ProjectManagement.Controllers
                 }
                 return Json(new { Message = "User deleted successfully!", Success = true }, JsonRequestBehavior.AllowGet);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+
             }
         }
         [HttpPost]

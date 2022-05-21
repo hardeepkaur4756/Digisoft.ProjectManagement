@@ -194,6 +194,7 @@
     <Compile Include="Configuration\AutoMapperProfile.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AttendanceController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -263,6 +264,9 @@
     <Compile Include="Models\State.cs">
       <DependentUpon>ProjectManagementDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UserAttendance.cs">
+      <DependentUpon>ProjectManagementDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\UserDetail.cs">
       <DependentUpon>ProjectManagementDB.tt</DependentUpon>
     </Compile>
@@ -275,6 +279,7 @@
     <Compile Include="Models\UserIncrement.cs">
       <DependentUpon>ProjectManagementDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UserAttendanceViewModel.cs" />
     <Compile Include="Models\WorkingViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\Working.cs">
@@ -283,15 +288,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ClientRepository.cs" />
     <Compile Include="Repositories\Interface\IRepository.cs" />
+    <Compile Include="Repositories\UserAttendanceRepository.cs" />
     <Compile Include="Repositories\WorkingRepository.cs" />
     <Compile Include="Repositories\ProjectRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Service\ClientService.cs" />
     <Compile Include="Service\Interface\IClientService.cs" />
+    <Compile Include="Service\Interface\IUserAttendanceService.cs" />
     <Compile Include="Service\Interface\IWorkingService.cs" />
     <Compile Include="Service\Interface\IUserService.cs" />
     <Compile Include="Service\Interface\IProjectService.cs" />
     <Compile Include="Service\Interface\IService.cs" />
+    <Compile Include="Service\AttendanceService.cs" />
     <Compile Include="Service\WorkingService.cs" />
     <Compile Include="Service\UserService.cs" />
     <Compile Include="Service\ProjectService.cs" />
@@ -468,6 +476,8 @@
     <Content Include="Views\Admin\AddUser.cshtml" />
     <Content Include="Views\Working\Index.cshtml" />
     <Content Include="Views\Working\_AddEditWorking.cshtml" />
+    <Content Include="Views\Attendance\Index.cshtml" />
+    <Content Include="Views\Attendance\_AddEditAttendance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

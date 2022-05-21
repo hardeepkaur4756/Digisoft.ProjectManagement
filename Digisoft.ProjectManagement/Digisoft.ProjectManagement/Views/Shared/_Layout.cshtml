@@ -79,6 +79,9 @@
                         <li class='@Html.IsActive("Working", "Index")'>
                             @Html.ActionLink("Working", "Index", "Working", new { area = "" }, new { @class = "text-black-50 nav-link" })
                         </li>
+                        <li class='@Html.IsActive("Attendance", "Index")'>
+                            @Html.ActionLink("Attendance", "Index", "Attendance", new { area = "" }, new { @class = "text-black-50 nav-link" })
+                        </li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
