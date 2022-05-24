@@ -97,12 +97,12 @@
             oTable.draw();
         }
         else {
-            debugger;
             oTable =
                 $('#MyTable').DataTable({
                     "bServerSide": true,
                     "sAjaxSource": "/Attendance/GetList",
                     "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
+                        debugger;
                         var colName = oSettings.aoColumns[oSettings.aaSorting[0][0]].mData;
                         var sDir = oSettings.aaSorting[0][1];
                         var date = $("#date").val();
@@ -121,7 +121,14 @@
                     "aoColumns": [
                         { "mData": "UserName" },
                         { "mData": "AttendanceStatus" },
-                        { "mData": "InTime" },
+                        {
+                            "mData": "InTime",
+                            "render": function (row, type, full) {
+                                var inTime = JSON.stringify(full.InTime.Hours);
+                                return inTime;
+                            }
+
+                        },
                         { "mData": "OutTime" },
                         { "mData": "OnLeave" },
                         { "mData": "LeaveApprovedBy" },

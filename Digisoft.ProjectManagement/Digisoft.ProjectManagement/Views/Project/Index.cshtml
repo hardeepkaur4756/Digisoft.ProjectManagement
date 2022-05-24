@@ -97,6 +97,7 @@
                     "bServerSide": true,
                     "sAjaxSource": "/Project/GetList",
                     "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
+                        debugger;
                         var colName = oSettings.aoColumns[oSettings.aaSorting[0][0]].mData;
                         var sDir = oSettings.aaSorting[0][1];
                         var sDate = $("#startDate").val();
