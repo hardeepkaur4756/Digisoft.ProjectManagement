@@ -7,34 +7,34 @@
     @if (Model.ViewType == "Display")
     {
         <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Project Name</label>
-            <div class="col-sm-9 text-break">
+            <label class="control-label col-sm-4">Project Name</label>
+            <div class="col-sm-8 text-break">
                 
                 @Html.DisplayFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Hours Worked</label>
-            <div class="col-sm-9 text-break">
+            <label class="control-label col-sm-4">Hours Worked</label>
+            <div class="col-sm-8 text-break">
                 @Html.DisplayFor(model => model.HoursWorked, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Hours Billed</label>
-            <div class="col-sm-9 text-break">
+            <label class="control-label col-sm-4">Hours Billed</label>
+            <div class="col-sm-8 text-break">
                 @Html.DisplayFor(model => model.HoursBilled, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Date Worked</label>
-            <div class="col-sm-9 text-break">
+            <label class="control-label col-sm-4">Date Worked</label>
+            <div class="col-sm-8 text-break">
                 @Html.HiddenFor(model => model.DateWorked, new { htmlAttributes = new { @class = "form-control" } })
                 <label class="control-label" id="dateWork"></label>
             </div>
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Description</label>
-            <div class="col-sm-9 text-break">
+            <label class="control-label col-sm-4">Description</label>
+            <div class="col-sm-8 text-break">
                 @Html.DisplayFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
@@ -47,44 +47,44 @@
     else
     {
         <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Project</label>
+            <label class="control-label col-sm-4">Project</label>
             @if (Model.Id != 0)
             {
-        <div class="col-sm-9 text-break">
+        <div class="col-sm-8 text-break">
             @Html.HiddenFor(m => m.ProjectId)
             @Html.DisplayFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
         </div>
             }
             else
             {
-                <div class="col-sm-9 text-break">
+                <div class="col-sm-8 text-break">
                     @Html.DropDownListFor(x => Model.ProjectId, new SelectList(Model.Projects, "Value", "Text", ""), htmlAttributes: new { @class = "form-control", id = "ddlProject" })
                     @Html.ValidationMessageFor(model => model.ProjectId, "", new { @class = "text-danger" })
                 </div>
             }
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Hours Worked</label>
-            <div class="col-sm-9 text-break">
+            <label class="control-label col-sm-4">Hours Worked</label>
+            <div class="col-sm-8 text-break">
                 @Html.EditorFor(model => model.HoursWorked, new { htmlAttributes = new { @class = "form-control non-zero-num" , @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Hours Billed</label>
-            <div class="col-sm-9 text-break">
+            <label class="control-label col-sm-4">Hours Billed</label>
+            <div class="col-sm-8 text-break">
                 @Html.EditorFor(model => model.HoursBilled, new { htmlAttributes = new { @class = "form-control non-zero-num", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Date Worked</label>
-            <div class="col-sm-9 text-break">
+            <label class="control-label col-sm-4">Date Worked</label>
+            <div class="col-sm-8 text-break">
                 @Html.EditorFor(model => model.DateWorked, new { htmlAttributes = new { @class = "form-control", @id = "datew", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-9 text-break">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-sm-4" })
+            <div class="col-sm-8 text-break">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
 
@@ -105,12 +105,13 @@
         $("#datew").val(d);
         var date = $("#DateWorked").val();
         date = date?.split(' ')[0];
+        date = ConvertDateFormat(date);
         $("#dateWork").text(date);
         $("#datew").datepicker({
             autoclose: true,
             minViewMode: 0,
             //format: "dd/mm/yyyy"
-            format: "dd-mm-yyyy",
+            format: "yyyy-mm-dd",
             endDate: "today"
         })
         var id = $("#Id").val();
@@ -202,4 +203,14 @@
         }
 
     })
+    function ConvertDateFormat(input) {
+        debugger;
+        const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var formattedDate = new Date(input);
+        var d = formattedDate.getDate();
+        var m = month[formattedDate.getMonth()];
+        var y = formattedDate.getFullYear();
+        var date = d + " " + m + " " + y;
+        return date;
+    }
 </script>

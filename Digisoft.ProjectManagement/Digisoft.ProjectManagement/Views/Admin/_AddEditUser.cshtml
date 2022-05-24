@@ -10,7 +10,7 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">First Name</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.FirstName, new { @class = "form-control",@autocomplete="off" })
+                @Html.TextBoxFor(modal => modal.FirstName, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(modal => modal.FirstName, "", new { @class = "text-danger" })
             </div>
             <label class="control-label col-sm-2">Last Name</label>
@@ -32,10 +32,15 @@
             }
             else
             {
-                <label class="control-label col-sm-2">Active</label>
-                <div class="col-sm-4 text-break">
-                    @Html.CheckBoxFor(model => model.Exclude, new { htmlAttributes = new { @class = "form-control" } })
-                </div>
+                if (User.IsInRole("Admin"))
+                {
+                    <label class="control-label col-sm-2">Active</label>
+                    <div class="col-sm-4 text-break">
+
+                        @Html.CheckBoxFor(model => model.Exclude, new { htmlAttributes = new { @class = "form-control" } })
+
+                    </div>
+                }
             }
         </div>
         if (Model.UserId == null)
@@ -293,7 +298,7 @@
                     <option value="10th">10th</option>
                     <option value="12th">12th</option>
                     <option value="Graduate">Graduate</option>
-                    <option value="Post-Graduate">Post Graduate</option>
+                    <option value="Post Graduate">Post Graduate</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
@@ -336,9 +341,17 @@
                                 {
                                     <td><img src="@item.Name" height="50" width="50"></td>
                                 }
+                                else if (item.Name.ToLower().Contains(".pdf"))
+                                {
+                                    <td>
+                                        <embed src='@item.Name' height="50" width="50" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" />
+                                    </td>
+                                }
                                 else
                                 {
-                                    <td><iframe src='https://docs.google.com/gview?url=@item.Name&embedded=true' height="50" width="50"></iframe></td>
+                                    <td>
+                                        <iframe src='https://view.officeapps.live.com/op/embed.aspx?src=@item.Name&embedded=true' height="50" width="50" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" />
+                                    </td>
                                 }
                                 <td>
                                     <a class='icon-style' href='javascript:void(0)' onclick="DeleteDocument(this,'@item.Id')"><i class='fa fa-trash-o' aria-hidden='true'></i></a>
@@ -359,6 +372,12 @@
             <label class="control-label col-sm-3">Course</label>
             <div class="col-sm-9">
                 @Html.DropDownListFor(modal => modal.CourseId, new SelectList(Model.Courses, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlCourse" })
+            </div>
+        </div>
+        <div class="form-group" id="divCourseIn" style="display:none">
+            <label class="control-label col-sm-3">In</label>
+            <div class="col-sm-9">
+                @Html.EditorFor(model => model.CourseIn, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
             </div>
         </div>
         <div class="form-group d-flex">
@@ -395,6 +414,24 @@
                 @Html.DropDownListFor(modal => modal.CourseId, new SelectList(Model.Courses, "Value", "Text", ""), "--Select--", htmlAttributes: new { @class = "form-control chosen", @id = "ddlCourse" })
             </div>
         </div>
+        if (Model.CourseId == 3 || Model.CourseId == 4)
+        {
+            <div class="form-group d-flex" id="divCourseIn">
+                <label class="control-label col-sm-3">In</label>
+                <div class="col-sm-9">
+                    @Html.EditorFor(model => model.CourseIn, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group" id="divCourseIn" style="display:none">
+                <label class="control-label col-sm-3">In</label>
+                <div class="col-sm-9">
+                    @Html.EditorFor(model => model.CourseIn, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
+                </div>
+            </div>
+        }
         <div class="form-group d-flex">
             <label class="control-label col-sm-3">Percentage</label>
             <div class="col-sm-9">
@@ -486,7 +523,14 @@
                         foreach (var item in Model.Educations)
                         {
                             <tr>
-                                <td>@item.CourseName</td>
+                                @if (item.CourseName == "Graduate" || item.CourseName == "Post Graduate")
+                                {
+                                    <td>@item.CourseName in @item.CourseIn</td>
+                                }
+                                else
+                                {
+                                    <td>@item.CourseName</td>
+                                }
                                 <td>@item.Percentage</td>
                                 <td>@item.YearPassed</td>
                                 @if (item.IsDocumentUploaded == true)
@@ -534,8 +578,9 @@
                 {
                     if (Model.Increments != null)
                     {
-                        for (int i = Model.Increments.Count-1; i >= 0; --i)
+                        for (int i = Model.Increments.Count - 1; i >= 0; --i)
                         {
+                            var date = Model.Increments[i].DateOfIncrement;
                             <tr>
                                 <td>@Model.Increments[i].DateOfIncrement</td>
                                 <td>@Model.Increments[i].PreviousSalary</td>
@@ -805,75 +850,98 @@
         dateOfJoining = dateOfJoining?.split(' ')[0];
         $("#DateofJoining").val(dateOfJoining);
         $("#dateJ").text(dateOfJoining);
-        $("#dateR").text(dateofRelieving);
+        if (dateOfJoining != "" && dateOfJoining != undefined) {
+            debugger;
+            var date = ConvertDateFormat(dateOfJoining);
+            $("#dateJ").text(date);
+        }
         var dateofRelieving = $("#DateofRelieving").val();
         dateofRelieving = dateofRelieving?.split(' ')[0];
         $("#DateofRelieving").val(dateofRelieving);
-        $("#dateR").text(dateofRelieving);
+        if (dateofRelieving != "" && dateofRelieving != undefined) {
+            var date = ConvertDateFormat(dateofRelieving);
+            $("#dateR").text(date);
+        }
         var d = $("#DOB").val();
         d = d?.split(' ')[0];
-        $("#date").text(d);
         $("#DOB").val(d);
+        if (d != "" && d != undefined) {
+            var date = ConvertDateFormat(d);
+            $("#date").text(date);
+        }
         var v1st = $("#Vaccination1stDoseDate").val();
         v1st = v1st?.split(' ')[0];
         $("#Vaccination1stDoseDate").val(v1st);
-        $("#dateV1").text(v1st);
+        if (v1st != "" && v1st != undefined) {
+            var date = ConvertDateFormat(v1st);
+            $("#dateV1").text(date);
+        }
         var v2nd = $("#Vaccination2ndDoseDate").val();
         v2nd = v2nd?.split(' ')[0];
         $("#Vaccination2ndDoseDate").val(v2nd);
-        $("#dateV2").text(v2nd);
+        if (v2nd != "" && v2nd != undefined) {
+            var date = ConvertDateFormat(v2nd);
+            $("#dateV2").text(date);
+        }
         var aDate = $("#AnniversaryDate").val();
         aDate = aDate?.split(' ')[0];
         $("#AnniversaryDate").val(aDate);
-        $("#dateA").text(aDate);
+        if (aDate != "" && aDate != undefined) {
+            var date = ConvertDateFormat(aDate);
+            $("#dateA").text(date);
+        }
         var dDate = $("#DocumentDOB").val();
         dDate = dDate?.split(' ')[0];
         $("#DocumentDOB").val(dDate);
-        $("#dateD").text(dDate);
+        if (dDate != "" && dDate != undefined) {
+            var date = ConvertDateFormat(dDate);
+            $("#dateD").text(date);
+        }
         var dateOfIncrement = $("#DateOfIncrement").val();
         dateOfIncrement = dateOfIncrement?.split(' ')[0];
         $("#DateOfIncrement").val(dateOfIncrement);
+
         $("#DOB").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy",
-             endDate: "today"
+            format: "yyyy-mm-dd",
+            endDate: "today"
         })
         $("#DocumentDOB").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy",
+            format: "yyyy-mm-dd",
             endDate: "today"
         })
         $("#AnniversaryDate").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy"
+            format: "yyyy-mm-dd"
         })
         $("#DateofJoining").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy"
+            format: "yyyy-mm-dd"
         })
         $("#DateofRelieving").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy"
+            format: "yyyy-mm-dd"
         })
         $("#Vaccination1stDoseDate").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy"
+            format: "yyyy-mm-dd"
         })
         $("#Vaccination2ndDoseDate").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy"
+            format: "yyyy-mm-dd"
         })
         $("#DateOfIncrement").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "dd-mm-yyyy"
+            format: "yyyy-mm-dd"
         })
         var status = $("#status").val();
         $("#MarritalStatus").val(status);
@@ -964,7 +1032,6 @@
         vm.DateofJoining = dateOfJoining;
         vm.DateofRelieving = dateofRelieving;
         vm.DOB = dob;
-        debugger;
         vm.DocumentDOB = dDob;
         vm.DepartmentId = $("#ddlDepartments :selected").val();
         vm.PreviousSalary = pSalary;
@@ -1135,9 +1202,9 @@
                         notificationHelper.ShowError("Sorry, An error occurred!");
                     }
                 },
-                failure: function (result) {
+                error: function (result) {
                     removeLoader();
-                    notificationHelper.ShowError(result.responseText);
+                    notificationHelper.ShowError("Error");
                 }
             });
         }
@@ -1170,7 +1237,6 @@
         }
     }
     function IsNumberOrDecimal(name) {
-        debugger;
         var salary = $("#" + name + "").val();
         var RE = /^-{0,1}\d*\.{0,1}\d+$/;
         if (RE.test(salary)) {
@@ -1185,7 +1251,6 @@
         }
     }
     function IsNumber() {
-        debugger;
         var value = $('#YearPassed').val();
         var regex = new RegExp(/^\+?[0-9(),.-]+$/);
         if (value.match(regex)) {
@@ -1299,9 +1364,9 @@
                         notificationHelper.ShowError("Sorry, An error occurred!");
                     }
                 },
-                failure: function (result) {
+                error: function (result) {
                     removeLoader();
-                    notificationHelper.ShowError(result.responseText);
+                    notificationHelper.ShowError("Error");
                 }
             });
         }
@@ -1351,7 +1416,6 @@
                 cache: false,
                 data: vm,
                 success: function (result) {
-                    debugger;
                     if (result.Success == true) {
                         notificationHelper.ShowSuccess(result.Message);
                         removeLoader();
@@ -1367,7 +1431,7 @@
                         notificationHelper.ShowError("Sorry, An error occurred!");
                     }
                 },
-                failure: function (result) {
+                error: function (result) {
                     removeLoader();
                     notificationHelper.ShowError(result.responseText);
                 }
@@ -1375,7 +1439,6 @@
         }
     })
     var AddDocument = function (event, Id) {
-        debugger;
         var id = Id;
         var viewType = "UploadDocument";
         loader();
@@ -1387,7 +1450,6 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.Success) {
-                    debugger;
                     if (Id != null && Id != "") {
                         $('#myModal').find('#myModalLabel').html("Upload " + response.UserName + "'s Document");
                     }
@@ -1475,7 +1537,6 @@
         }
     }
     var AddEducation = function (event, Id) {
-        debugger;
         var id = Id;
         var viewType = "AddEducation";
         loader();
@@ -1487,7 +1548,6 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.Success) {
-                    debugger;
                     if (Id != null && Id != "") {
                         $('#myModal').find('#myModalLabel').html("Add " + response.UserName + "'s education");
                     }
@@ -1510,7 +1570,6 @@
         });
     }
     var EditEducation = function (event, Id) {
-        debugger;
         var id = Id;
         var viewType = "EditEducation";
         loader();
@@ -1522,7 +1581,6 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.Success) {
-                    debugger;
                     if (Id != null && Id != "") {
                         $('#myModal').find('#myModalLabel').html("Edit " + response.UserName + "'s education");
                     }
@@ -1545,7 +1603,6 @@
         });
     }
     var AddIncrement = function (event, Id) {
-        debugger;
         var id = Id;
         var viewType = "AddIncrement";
         loader();
@@ -1557,7 +1614,6 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.Success) {
-                    debugger;
                     if (Id != null && Id != "") {
                         $('#myModal').find('#myModalLabel').html("Add " + response.UserName + "'s increment");
                     }
@@ -1580,7 +1636,6 @@
         });
     }
     var EditIncrement = function (event, Id) {
-        debugger;
         var id = Id;
         var viewType = "EditIncrement";
         loader();
@@ -1592,7 +1647,6 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.Success) {
-                    debugger;
                     if (Id != null && Id != "") {
                         $('#myModal').find('#myModalLabel').html("Edit " + response.UserName + "'s increment");
                     }
@@ -1648,10 +1702,10 @@
         }
     }
     $("#btnSaveEducation").click(function () {
-        debugger;
         var userId = $("#UserId").val();
         var id = $("#Id").val();
         var courseId = $("#ddlCourse :selected").val();
+        var courseIn = $("#CourseIn").val();
         var percentage = $("#Percentage").val();
         var yearPassed = $("#YearPassed").val();
         var comment = $("#Comment").val();
@@ -1660,6 +1714,7 @@
         vm.Id = id;
         vm.UserId = userId;
         vm.CourseId = courseId;
+        vm.CourseIn = courseIn;
         vm.Percentage = percentage;
         vm.YearPassed = yearPassed;
         vm.Comment = comment;
@@ -1668,6 +1723,17 @@
             $("#ddlCourse").addClass("error");
         } else {
             $("#ddlCourse").removeClass("error");
+        }
+        if (courseId == 3 || courseId == 4) {
+            if (courseIn == undefined || courseIn == "") {
+                validate = false;
+                $("#CourseIn").addClass("error");
+            }
+            else {
+                $("#CourseIn").removeClass("error");
+            }
+        } else {
+            $("#CourseIn").removeClass("error");
         }
         if (percentage == undefined || percentage == "") {
             validate = false;
@@ -1690,7 +1756,6 @@
                 contentType: "application/json",
                 data: JSON.stringify(vm),
                 success: function (result) {
-                    debugger;
                     if (result.Success == true) {
                         notificationHelper.ShowSuccess(result.Message);
                         removeLoader();
@@ -1705,15 +1770,14 @@
                         notificationHelper.ShowError("Sorry, An error occurred!");
                     }
                 },
-                failure: function (result) {
+                error: function (result) {
                     removeLoader();
-                    notificationHelper.ShowError(result.responseText);
+                    notificationHelper.ShowError("Error");
                 }
             });
         }
     })
     $("#btnSaveIncrement").click(function () {
-        debugger;
         var userId = $("#UserId").val();
         var id = $("#Id").val();
         var dateOfIncrement = $("#DateOfIncrement").val();
@@ -1745,7 +1809,6 @@
                 contentType: "application/json",
                 data: JSON.stringify(vm),
                 success: function (result) {
-                    debugger;
                     if (result.Success == true) {
                         notificationHelper.ShowSuccess(result.Message);
                         removeLoader();
@@ -1762,9 +1825,28 @@
                 },
                 failure: function (result) {
                     removeLoader();
-                    notificationHelper.ShowError(result.responseText);
+                    notificationHelper.ShowError("Error");
                 }
             });
+        }
+    })
+    function ConvertDateFormat(input) {
+        debugger;
+        const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        input = input.split("/").reverse().join("-");
+        var formattedDate = new Date(input);
+        var d = formattedDate.getDate();
+        var m = month[formattedDate.getMonth()];
+        var y = formattedDate.getFullYear();
+        var date = d + " " + m + " " + y;
+        return date;
+    }
+    $("#ddlCourse").change(function () {
+        debugger;
+        var course = $("#ddlCourse :selected").text();
+        if (course == "Graduate" || course == "Post Graduate") {
+            $("#divCourseIn").removeAttr("style");
+            $("#divCourseIn").addClass("d-flex");
         }
     })
 </script>

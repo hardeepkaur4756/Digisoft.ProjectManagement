@@ -7,18 +7,17 @@
     @if (Model.ViewType == "Display")
     {
         <div class="form-group d-flex">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-9 text-break">
-                @Html.DisplayFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-            </div>
-        </div>
-        <div class="form-group d-flex">
-            <label class="control-label col-sm-3">Client Name</label>
-            <div class="col-sm-9 text-break">
+            <label class="control-label col-sm-4">Client</label>
+            <div class="col-sm-8 text-break">
                 @Html.DisplayFor(model => model.ClientName, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
-
+        <div class="form-group d-flex">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-sm-4" })
+            <div class="col-sm-8 text-break">
+                @Html.DisplayFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
         <div class="text-right mt-2">
             <div class="">
                 <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Close</a>
@@ -28,19 +27,20 @@
     else
     {
         <div class="form-group">
+            <label class="control-label">Client</label>
+            <div class="">
+                @Html.DropDownListFor(x => Model.ClientId, new SelectList(Model.Clients, "Value", "Text", ""), htmlAttributes: new { @class = "form-control client", id = "ddlClient" })
+                @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
             <div class="">
                 @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off" } })
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-sm-3">Client Name</label>
-            <div class="">
-                @Html.DropDownListFor(x => Model.ClientId, new SelectList(Model.Clients, "Value", "Text", ""), htmlAttributes: new { @class = "form-control client", id = "ddlClient" })
-                @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+
         <div class="text-right mt-2">
             <div class="">
                 <a href="#" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">Cancel</a>

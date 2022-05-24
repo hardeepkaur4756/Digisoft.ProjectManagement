@@ -121,9 +121,10 @@
                         {
                             "mData": "CreatedOn",
                             "render": function (row, type, full) {
+                                const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                                 var date = new Date(parseInt(full.CreatedOn.substr(6)));
-                                var month = date.getMonth() + 1;
-                                var formattedDate = date.getDate() + "/" + month + "/" + date.getFullYear();
+                                var monthName = month[date.getMonth()];
+                                var formattedDate = date.getDate() + " " + monthName + " " + date.getFullYear();
                                 return formattedDate;
                             }
                         },

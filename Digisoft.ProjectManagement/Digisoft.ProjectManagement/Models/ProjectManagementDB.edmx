@@ -196,6 +196,7 @@
           <Property Name="Percentage" Type="decimal" Precision="18" Scale="2" />
           <Property Name="YearPassed" Type="nvarchar" MaxLength="4" />
           <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="CourseIn" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="UserIncrement">
           <Key>
@@ -1179,6 +1180,7 @@
           <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetUser" Relationship="ProjectManagementModel.FK_UserEducation_AspNetUsers" FromRole="UserEducation" ToRole="AspNetUser" />
           <NavigationProperty Name="Course" Relationship="ProjectManagementModel.FK_UserEducation_Course" FromRole="UserEducation" ToRole="Course" />
+          <Property Name="CourseIn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_Course_AspNetUsers">
           <End Type="ProjectManagementModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
@@ -1454,6 +1456,7 @@
           <EntitySetMapping Name="UserEducations">
             <EntityTypeMapping TypeName="ProjectManagementModel.UserEducation">
               <MappingFragment StoreEntitySet="UserEducation">
+                <ScalarProperty Name="CourseIn" ColumnName="CourseIn" />
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="YearPassed" ColumnName="YearPassed" />
                 <ScalarProperty Name="Percentage" ColumnName="Percentage" />

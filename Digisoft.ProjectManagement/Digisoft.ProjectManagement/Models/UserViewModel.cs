@@ -86,6 +86,7 @@ namespace Digisoft.ProjectManagement.Models
         public int Id { get; set; }
         #region Course
         public int CourseId { get; set; }
+        public string CourseIn { get; set; }
         public string CourseName { get; set; }
         public decimal? Percentage { get; set; }
         public string YearPassed { get; set; }
@@ -107,11 +108,12 @@ namespace Digisoft.ProjectManagement.Models
         public string YearPassed { get; set; }
         public string Comment { get; set; }
         public string CourseName { get; set; }
+        public string CourseIn { get; set; }
         public bool IsDocumentUploaded { get; set; }
     }
     public class UserIncrementViewModel
     {
-        public string UserId { get; set;}
+        public string UserId { get; set; }
         public int Id { get; set; }
         public string DateOfIncrement { get; set; }
         public decimal? PreviousSalary { get; set; }

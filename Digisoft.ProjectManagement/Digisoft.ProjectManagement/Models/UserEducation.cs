@@ -20,6 +20,7 @@ namespace Digisoft.ProjectManagement.Models
         public Nullable<decimal> Percentage { get; set; }
         public string YearPassed { get; set; }
         public string Comment { get; set; }
+        public string CourseIn { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual Course Course { get; set; }
