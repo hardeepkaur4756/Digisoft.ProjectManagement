@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Web.Mvc;
@@ -52,6 +53,7 @@ namespace Digisoft.ProjectManagement.Controllers
             int totalCount = 0;
             string totalHoursWorked = "";
             var totalHoursBilled = "";
+            IFormatProvider culture = new CultureInfo("en-US", true);
             if (param.sSearch != null)
             {
                 sortCol = sortCol == "CreatedByName" ? "CreatedBy" : sortCol;

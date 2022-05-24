@@ -54,7 +54,7 @@ namespace Digisoft.ProjectManagement.Service
                 if (userVM != null)
                 {
                     UserDetail userEntity = new UserDetail();
-                    userVM.Exclude = userEntity.Exclude ?? false;
+                    userVM.Exclude = userEntity.Exclude ?? true;
                     AutoMapper.Mapper.Map(userVM, userEntity);
                     _userRepository.Insert(userEntity);
                     return userEntity;

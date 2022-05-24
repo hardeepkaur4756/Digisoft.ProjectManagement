@@ -182,7 +182,6 @@
                             url: sSource,
                             success: fnCallback,
                             dataFilter: function (response) {
-                                debugger;
                                 var temp = JSON.parse(response);
                                 $("#hWorked").text(temp.totalHoursWorked);
                                 $("#hBilled").text(temp.totalHoursBilled);
@@ -197,9 +196,10 @@
                         {
                             "mData": "DateWorked",
                             "render": function (row, type, full) {
+                                const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                                 var date = new Date(parseInt(full.DateWorked.substr(6)));
-                                var month = date.getMonth() + 1;
-                                var formattedDate = date.getDate() + "/" + month + "/" + date.getFullYear();
+                                var monthName = month[date.getMonth()];
+                                var formattedDate = date.getDate() + " " + monthName + " " + date.getFullYear();
                                 return formattedDate;
                             }
                         },
@@ -208,9 +208,10 @@
                         {
                             "mData": "CreatedDate",
                             "render": function (row, type, full) {
+                                const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                                 var date = new Date(parseInt(full.CreatedDate.substr(6)));
-                                var month = date.getMonth() + 1;
-                                var formattedDate = date.getDate() + "/" + month + "/" + date.getFullYear();
+                                var monthName = month[date.getMonth()];
+                                var formattedDate = date.getDate() + " " + monthName + " " + date.getFullYear();
                                 return formattedDate;
                             }
                         },
@@ -268,12 +269,12 @@
         $('#endDate').datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "yyyy-mm-dd"
+            format: "dd-mm-yyyy"
         }).datepicker('setDate', eYear + '-' + eMonth + '-' + eDate);
         $("#startDate").datepicker({
             autoclose: true,
             minViewMode: 0,
-            format: "yyyy-mm-dd"
+            format: "dd-mm-yyyy"
         }).datepicker('setDate', sYear + '-' + sMonth + '-' + sDate)
         $("#projectId").val("0");
         $("#userId").val("");

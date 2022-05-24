@@ -6,6 +6,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -235,6 +236,7 @@ namespace Digisoft.ProjectManagement.Controllers
                                           YearPassed = a.YearPassed,
                                           Comment = a.Comment,
                                           CourseName = a.Course.Name,
+                                          CourseIn = a.CourseIn,
                                       }).ToList();
                     foreach (var item in Educations)
                     {
@@ -245,6 +247,7 @@ namespace Digisoft.ProjectManagement.Controllers
                         model.YearPassed = item.YearPassed;
                         model.Comment = item.Comment;
                         model.CourseName = item.CourseName;
+                        model.CourseIn = item.CourseIn;
                         string isU = _context.UserDocuments.Where(x => x.UserId == item.UserId && x.Type == model.CourseName).Select(x => x.Id).FirstOrDefault().ToString();
                         model.IsDocumentUploaded = isU != "0" ? true : false;
                         lst.Add(model);
@@ -274,7 +277,7 @@ namespace Digisoft.ProjectManagement.Controllers
                         UserIncrementViewModel model = new UserIncrementViewModel();
                         model.UserId = item.UserId;
                         model.Id = item.Id;
-                        model.DateOfIncrement = item.DateOfIncrement == null ? null : item.DateOfIncrement.Value.ToString("dd-MM-yyyy");
+                        model.DateOfIncrement = item.DateOfIncrement == null ? null : item.DateOfIncrement.Value.ToString("dd MMMM yyyy");
                         model.CurrentSalary = item.CurrentSalary;
                         if (i == 1)
                         {
@@ -313,14 +316,36 @@ namespace Digisoft.ProjectManagement.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> AddUser(UserViewModel u)
         {
-
             try
             {
                 if (u.UserId == null)
                 {
-                    var Exist = _context.AspNetUsers.Where(x => x.Email == u.Email).FirstOrDefault();
-                    if (Exist == null)
+                    var emailExist = _context.AspNetUsers.Any(x => x.Email == u.Email);
+                    if (emailExist == false)
                     {
+                        var phoneNoExist = _context.UserDetails.Any(x => x.PhoneNumber == u.PhoneNumber);
+                        if (phoneNoExist == true)
+                        {
+                            return Json(new { Message = "Phone Number already exist", Success = false });
+                        }
+                        if (u.PersonalEmailAddress != "" && u.PersonalEmailAddress != null)
+                        {
+                            var personalEmailExist = _context.UserDetails.Any(x => x.PersonalEmailAddress == u.PersonalEmailAddress);
+                            if (personalEmailExist == true)
+                            {
+                                return Json(new { Message = "Personal email address already exist", Success = false });
+                            }
+                        }
+                        var aadharExist = _context.UserDetails.Any(x => x.AadharNumber == u.AadharNumber);
+                        if (aadharExist == true)
+                        {
+                            return Json(new { Message = "Aadhar Number already exist", Success = false });
+                        }
+                        var panExist = _context.UserDetails.Any(x => x.PanNumber == u.PanNumber);
+                        if (panExist == true)
+                        {
+                            return Json(new { Message = "Pan Number already exist", Success = false });
+                        }
                         var user = new ApplicationUser { UserName = u.Email, Email = u.Email };
                         var result = await UserManager.CreateAsync(user, u.Password);
                         if (result.Succeeded)
@@ -354,16 +379,40 @@ namespace Digisoft.ProjectManagement.Controllers
                     {
                         m = ctx.UserDetails.Where(s => s.UserId == u.UserId).FirstOrDefault();
                     }
+                    var phoneNoExist = _context.UserDetails.Where(x => x.UserId != u.UserId).Any(x => x.PhoneNumber == u.PhoneNumber);
+                    if (phoneNoExist == true)
+                    {
+                        return Json(new { Message = "Phone Number already exist", Success = false });
+                    }
+                    if (u.PersonalEmailAddress != "" && u.PersonalEmailAddress != null)
+                    {
+                        var personalEmailExist = _context.UserDetails.Where(x => x.UserId != u.UserId).Any(x => x.PersonalEmailAddress == u.PersonalEmailAddress);
+                        if (personalEmailExist == true)
+                        {
+                            return Json(new { Message = "Personal email address already exist", Success = false });
+                        }
+                    }
+
+                    var aadharExist = _context.UserDetails.Where(x => x.UserId != u.UserId).Any(x => x.AadharNumber == u.AadharNumber);
+                    if (aadharExist == true)
+                    {
+                        return Json(new { Message = "Aadhar Number already exist", Success = false });
+                    }
+                    var panExist = _context.UserDetails.Where(x => x.UserId != u.UserId).Any(x => x.PanNumber == u.PanNumber);
+                    if (panExist == true)
+                    {
+                        return Json(new { Message = "Pan Number already exist", Success = false });
+                    }
                     if (m != null)
                     {
                         m.Exclude = Convert.ToBoolean(u.Exclude);
                         m.FirstName = u.FirstName;
                         m.LastName = u.LastName;
                         m.UserId = u.UserId;
-                        string OldRoleName = UserManager.GetRoles(u.UserId).FirstOrDefault();
-                        if (OldRoleName != u.RoleId)
+                        string oldRoleName = UserManager.GetRoles(u.UserId).FirstOrDefault();
+                        if (oldRoleName != u.RoleId)
                         {
-                            UserManager.RemoveFromRole(m.UserId, OldRoleName);
+                            UserManager.RemoveFromRole(m.UserId, oldRoleName);
                             var r = UserManager.AddToRole(m.UserId, u.RoleId);
                         }
                         m.ExpWhenJoined = u.ExpWhenJoined;
@@ -376,6 +425,9 @@ namespace Digisoft.ProjectManagement.Controllers
                         m.SpouseName = u.SpouseName;
                         m.BloodGroup = u.BloodGroup;
                         m.DepartmentId = u.DepartmentId;
+                        //string dob = u.DOB.HasValue ? u.DOB.Value.ToString("yyyy-MM-dd") : null;
+                        //IFormatProvider culture = new CultureInfo("en-US", true);
+                        //DateTime dateVal = DateTime.ParseExact(dob, "yyyy-MM-dd", culture);
                         m.DOB = u.DOB;
                         m.AnniversaryDate = u.AnniversaryDate;
                         m.DocumentDOB = u.DocumentDOB;
@@ -449,15 +501,13 @@ namespace Digisoft.ProjectManagement.Controllers
         {
             try
             {
-                var Success = false;
-                var Message = "";
+                var success = false;
+                var message = "";
                 if (Request.Files.Count > 0)
                 {
                     for (int i = 0; i < Request.Files.Count; i++)
                     {
                         var file = Request.Files[i];
-                        //var random = new Random();
-                        //random.Next();
                         if (file != null && file.ContentLength > 0)
                         {
                             var fileName = Path.GetFileNameWithoutExtension(file.FileName) + "_" + Guid.NewGuid() + Path.GetExtension(file.FileName);
@@ -467,19 +517,28 @@ namespace Digisoft.ProjectManagement.Controllers
                                 Name = fileName,
                                 Type = userViewModel.Type
                             };
-                            var path = Path.Combine(Server.MapPath("~/Documents"), ud.Name);
-                            file.SaveAs(path);
-                            using (var dbCtx = new ProjectManagementEntities())
+                            string strFolder = Server.MapPath("/Documents");
+                            if (Directory.Exists(strFolder))
                             {
-                                dbCtx.Entry(ud).State = EntityState.Added;
-                                dbCtx.SaveChanges();
-                                Success = true;
-                                Message = "Document Uploaded Successfully";
+                                var path = Path.Combine(Server.MapPath("~/Documents"), ud.Name);
+                                file.SaveAs(path);
+                                using (var dbCtx = new ProjectManagementEntities())
+                                {
+                                    dbCtx.Entry(ud).State = EntityState.Added;
+                                    dbCtx.SaveChanges();
+                                    success = true;
+                                    message = "Document Uploaded Successfully";
+                                }
+                            }
+                            else
+                            {
+                                success = false;
+                                message = "Directory is not exist to save document file";
                             }
                         }
                     }
                 }
-                return Json(new { Message = Message, Success = Success }, JsonRequestBehavior.AllowGet);
+                return Json(new { Message = message, Success = success }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -584,8 +643,8 @@ namespace Digisoft.ProjectManagement.Controllers
         {
             try
             {
-                var Success = false;
-                var Message = "";
+                var success = false;
+                var message = "";
                 UserEducation ud = new UserEducation()
                 {
                     UserId = userViewModel.UserId,
@@ -593,19 +652,20 @@ namespace Digisoft.ProjectManagement.Controllers
                     Percentage = userViewModel.Percentage,
                     YearPassed = userViewModel.YearPassed,
                     Comment = userViewModel.Comment,
+                    CourseIn = userViewModel.CourseIn,
                     Id = userViewModel.Id,
                 };
                 if (userViewModel.Id == 0)
                 {
-                    var exists = _context.UserEducations.Where(x => x.UserId == userViewModel.UserId && x.CourseId == userViewModel.CourseId).FirstOrDefault();
-                    if (exists == null)
+                    var userExist = _context.UserEducations.Where(x => x.UserId == userViewModel.UserId && x.CourseId == userViewModel.CourseId).FirstOrDefault();
+                    if (userExist == null)
                     {
                         using (var dbCtx = new ProjectManagementEntities())
                         {
                             dbCtx.Entry(ud).State = EntityState.Added;
                             dbCtx.SaveChanges();
-                            Success = true;
-                            Message = "Education added successfully";
+                            success = true;
+                            message = "Education added successfully";
                         }
                     }
                     else
@@ -615,16 +675,16 @@ namespace Digisoft.ProjectManagement.Controllers
                 }
                 else
                 {
-                    var exists = _context.UserEducations.Where(x => x.UserId == userViewModel.UserId && x.CourseId == userViewModel.CourseId && x.Id != userViewModel.Id).FirstOrDefault();
-                    if (exists == null)
+                    var userExist = _context.UserEducations.Where(x => x.UserId == userViewModel.UserId && x.CourseId == userViewModel.CourseId && x.Id != userViewModel.Id).FirstOrDefault();
+                    if (userExist == null)
                     {
                         using (var dbCtx = new ProjectManagementEntities())
                         {
 
                             dbCtx.Entry(ud).State = EntityState.Modified;
                             dbCtx.SaveChanges();
-                            Success = true;
-                            Message = "Education updated successfully";
+                            success = true;
+                            message = "Education updated successfully";
                         }
                     }
                     else
@@ -632,7 +692,7 @@ namespace Digisoft.ProjectManagement.Controllers
                         return Json(new { Message = "Already exist", Success = false }, JsonRequestBehavior.AllowGet);
                     }
                 }
-                return Json(new { Message = Message, Success = Success }, JsonRequestBehavior.AllowGet);
+                return Json(new { Message = message, Success = success }, JsonRequestBehavior.AllowGet);
 
 
             }
@@ -646,8 +706,8 @@ namespace Digisoft.ProjectManagement.Controllers
         {
             try
             {
-                var Success = false;
-                var Message = "";
+                var success = false;
+                var message = "";
                 UserIncrement ud = new UserIncrement()
                 {
                     UserId = userViewModel.UserId,
@@ -704,8 +764,8 @@ namespace Digisoft.ProjectManagement.Controllers
                 }
                 if (userViewModel.Id == 0)
                 {
-                    var exists = _context.UserIncrements.Where(x => x.UserId == userViewModel.UserId && x.DateOfIncrement == userViewModel.DateOfIncrement).FirstOrDefault();
-                    if (exists == null)
+                    var userExist = _context.UserIncrements.Where(x => x.UserId == userViewModel.UserId && x.DateOfIncrement == userViewModel.DateOfIncrement).FirstOrDefault();
+                    if (userExist == null)
                     {
                         if (salary < userViewModel.Salary)
                         {
@@ -720,8 +780,8 @@ namespace Digisoft.ProjectManagement.Controllers
                             {
                                 dbCtx.Entry(ud).State = EntityState.Added;
                                 dbCtx.SaveChanges();
-                                Success = true;
-                                Message = "Increment added successfully";
+                                success = true;
+                                message = "Increment added successfully";
                             }
                         }
                         else
@@ -736,8 +796,8 @@ namespace Digisoft.ProjectManagement.Controllers
                 }
                 else
                 {
-                    var exists = _context.UserIncrements.Where(x => x.UserId == userViewModel.UserId && x.DateOfIncrement == userViewModel.DateOfIncrement && x.Id != userViewModel.Id).FirstOrDefault();
-                    if (exists == null)
+                    var userExist = _context.UserIncrements.Where(x => x.UserId == userViewModel.UserId && x.DateOfIncrement == userViewModel.DateOfIncrement && x.Id != userViewModel.Id).FirstOrDefault();
+                    if (userExist == null)
                     {
                         if (salary < userViewModel.Salary)
                         {
@@ -752,8 +812,8 @@ namespace Digisoft.ProjectManagement.Controllers
                             {
                                 dbCtx.Entry(ud).State = EntityState.Modified;
                                 dbCtx.SaveChanges();
-                                Success = true;
-                                Message = "Increment updated successfully";
+                                success = true;
+                                message = "Increment updated successfully";
                             }
                         }
                         else
@@ -766,7 +826,7 @@ namespace Digisoft.ProjectManagement.Controllers
                         return Json(new { Message = "Already exist", Success = false }, JsonRequestBehavior.AllowGet);
                     }
                 }
-                return Json(new { Message = Message, Success = Success }, JsonRequestBehavior.AllowGet);
+                return Json(new { Message = message, Success = success }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
