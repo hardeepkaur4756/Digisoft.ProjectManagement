@@ -84,17 +84,17 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Anniversary Date</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.AnniversaryDate, new { @class = "form-control", @autocomplete = "off" })
+                @Html.TextBoxFor(modal => modal.AnniversaryDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Celebrated DOB</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.DOB, new { @class = "form-control", @autocomplete = "off" })
+                @Html.TextBoxFor(modal => modal.DOB, "{0:yyyy-MM-dd}", new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Documented DOB</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.DocumentDOB, new { @class = "form-control", @autocomplete = "off" })
+                @Html.TextBoxFor(modal => modal.DocumentDOB, "{0:yyyy-MM-dd}", new { @class = "form-control", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Blood Group</label>
             <div class="col-sm-4 text-break">
@@ -114,21 +114,21 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Date of Joining</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.DateofJoining, new { @class = "form-control non-time-date", @autocomplete = "off" })
+                @Html.TextBoxFor(modal => modal.DateofJoining, "{0:yyyy-MM-dd}", new { @class = "form-control non-time-date", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Date of Releiving</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.DateofRelieving, new { @class = "form-control", @autocomplete = "off" })
+                @Html.TextBoxFor(modal => modal.DateofRelieving, "{0:yyyy-MM-dd}", new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Vaccination Date(1st Dose)</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.Vaccination1stDoseDate, new { @class = "form-control non-time-date", @autocomplete = "off" })
+                @Html.TextBoxFor(modal => modal.Vaccination1stDoseDate, "{0:yyyy-MM-dd}", new { @class = "form-control non-time-date", @autocomplete = "off" })
             </div>
             <label class="control-label col-sm-2">Vaccination Date(2nd Dose)</label>
             <div class="col-sm-4 text-break">
-                @Html.TextBoxFor(modal => modal.Vaccination2ndDoseDate, new { @class = "form-control non-time-date", @autocomplete = "off" })
+                @Html.TextBoxFor(modal => modal.Vaccination2ndDoseDate, "{0:yyyy-MM-dd}", new { @class = "form-control non-time-date", @autocomplete = "off" })
             </div>
         </div>
         <div class="form-group d-flex">
@@ -653,20 +653,17 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Anniversary Date</label>
             <div class="col-sm-4 text-break">
-                @Html.HiddenFor(model => model.AnniversaryDate)
-                <label class="control-label" id="dateA"></label>
+                <label class="control-label">@Model.DateOfAnniversary</label>
             </div>
             <label class="control-label col-sm-2">Celebrated DOB</label>
             <div class="col-sm-4 text-break">
-                @Html.HiddenFor(model => model.DOB)
-                <label class="control-label" id="date"></label>
+                <label class="control-label">@Model.CelebratedDateOfBirth</label>
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Documented DOB</label>
             <div class="col-sm-4 text-break">
-                @Html.HiddenFor(model => model.DocumentDOB)
-                <label class="control-label" id="dateD"></label>
+                <label class="control-label">@Model.DocumentedDateOfBirth</label>
             </div>
             <label class="control-label col-sm-2">Blood Group</label>
             <div class="col-sm-4 text-break">
@@ -686,25 +683,21 @@
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Date of Joining</label>
             <div class="col-sm-4 text-break">
-                @Html.HiddenFor(model => model.DateofJoining)
-                <label class="control-label" id="dateJ"></label>
+                <label class="control-label">@Model.JoiningDate</label>
             </div>
             <label class="control-label col-sm-2">Date of Releiving</label>
             <div class="col-sm-4 text-break">
-                @Html.HiddenFor(model => model.DateofRelieving)
-                <label class="control-label" id="dateR"></label>
+                <label class="control-label">@Model.RelievingDate</label>
             </div>
         </div>
         <div class="form-group d-flex">
             <label class="control-label col-sm-2">Vaccination Date(1st Dose)</label>
             <div class="col-sm-4 text-break">
-                @Html.HiddenFor(model => model.Vaccination1stDoseDate)
-                <label class="control-label" id="dateV1"></label>
+                <label class="control-label">@Model.Vaccination1stDate</label>
             </div>
             <label class="control-label col-sm-2">Vaccination Date(2nd Dose)</label>
             <div class="col-sm-4 text-break">
-                @Html.HiddenFor(model => model.Vaccination2ndDoseDate)
-                <label class="control-label" id="dateV2"></label>
+                <label class="control-label">@Model.Vaccination1stDate</label>
             </div>
         </div>
         <div class="form-group d-flex">
@@ -846,60 +839,60 @@
 </style>
 <script>
     $(document).ready(function () {
-        var dateOfJoining = $("#DateofJoining").val();
-        dateOfJoining = dateOfJoining?.split(' ')[0];
-        $("#DateofJoining").val(dateOfJoining);
-        $("#dateJ").text(dateOfJoining);
-        if (dateOfJoining != "" && dateOfJoining != undefined) {
-            debugger;
-            var date = ConvertDateFormat(dateOfJoining);
-            $("#dateJ").text(date);
-        }
-        var dateofRelieving = $("#DateofRelieving").val();
-        dateofRelieving = dateofRelieving?.split(' ')[0];
-        $("#DateofRelieving").val(dateofRelieving);
-        if (dateofRelieving != "" && dateofRelieving != undefined) {
-            var date = ConvertDateFormat(dateofRelieving);
-            $("#dateR").text(date);
-        }
-        var d = $("#DOB").val();
-        d = d?.split(' ')[0];
-        $("#DOB").val(d);
-        if (d != "" && d != undefined) {
-            var date = ConvertDateFormat(d);
-            $("#date").text(date);
-        }
-        var v1st = $("#Vaccination1stDoseDate").val();
-        v1st = v1st?.split(' ')[0];
-        $("#Vaccination1stDoseDate").val(v1st);
-        if (v1st != "" && v1st != undefined) {
-            var date = ConvertDateFormat(v1st);
-            $("#dateV1").text(date);
-        }
-        var v2nd = $("#Vaccination2ndDoseDate").val();
-        v2nd = v2nd?.split(' ')[0];
-        $("#Vaccination2ndDoseDate").val(v2nd);
-        if (v2nd != "" && v2nd != undefined) {
-            var date = ConvertDateFormat(v2nd);
-            $("#dateV2").text(date);
-        }
-        var aDate = $("#AnniversaryDate").val();
-        aDate = aDate?.split(' ')[0];
-        $("#AnniversaryDate").val(aDate);
-        if (aDate != "" && aDate != undefined) {
-            var date = ConvertDateFormat(aDate);
-            $("#dateA").text(date);
-        }
-        var dDate = $("#DocumentDOB").val();
-        dDate = dDate?.split(' ')[0];
-        $("#DocumentDOB").val(dDate);
-        if (dDate != "" && dDate != undefined) {
-            var date = ConvertDateFormat(dDate);
-            $("#dateD").text(date);
-        }
-        var dateOfIncrement = $("#DateOfIncrement").val();
-        dateOfIncrement = dateOfIncrement?.split(' ')[0];
-        $("#DateOfIncrement").val(dateOfIncrement);
+        //var dateOfJoining = $("#DateofJoining").val();
+        //dateOfJoining = dateOfJoining?.split(' ')[0];
+        //$("#DateofJoining").val(dateOfJoining);
+        //$("#dateJ").text(dateOfJoining);
+        //if (dateOfJoining != "" && dateOfJoining != undefined) {
+        //    debugger;
+        //    var date = ConvertDateFormat(dateOfJoining);
+        //    $("#dateJ").text(date);
+        //}
+        //var dateofRelieving = $("#DateofRelieving").val();
+        //dateofRelieving = dateofRelieving?.split(' ')[0];
+        //$("#DateofRelieving").val(dateofRelieving);
+        //if (dateofRelieving != "" && dateofRelieving != undefined) {
+        //    var date = ConvertDateFormat(dateofRelieving);
+        //    $("#dateR").text(date);
+        //}
+        //var d = $("#DOB").val();
+        //d = d?.split(' ')[0];
+        //$("#DOB").val(d);
+        //if (d != "" && d != undefined) {
+        //    var date = ConvertDateFormat(d);
+        //    $("#date").text(date);
+        //}
+        //var v1st = $("#Vaccination1stDoseDate").val();
+        //v1st = v1st?.split(' ')[0];
+        //$("#Vaccination1stDoseDate").val(v1st);
+        //if (v1st != "" && v1st != undefined) {
+        //    var date = ConvertDateFormat(v1st);
+        //    $("#dateV1").text(date);
+        //}
+        //var v2nd = $("#Vaccination2ndDoseDate").val();
+        //v2nd = v2nd?.split(' ')[0];
+        //$("#Vaccination2ndDoseDate").val(v2nd);
+        //if (v2nd != "" && v2nd != undefined) {
+        //    var date = ConvertDateFormat(v2nd);
+        //    $("#dateV2").text(date);
+        //}
+        //var aDate = $("#AnniversaryDate").val();
+        //aDate = aDate?.split(' ')[0];
+        //$("#AnniversaryDate").val(aDate);
+        //if (aDate != "" && aDate != undefined) {
+        //    var date = ConvertDateFormat(aDate);
+        //    $("#dateA").text(date);
+        //}
+        //var dDate = $("#DocumentDOB").val();
+        //dDate = dDate?.split(' ')[0];
+        //$("#DocumentDOB").val(dDate);
+        //if (dDate != "" && dDate != undefined) {
+        //    var date = ConvertDateFormat(dDate);
+        //    $("#dateD").text(date);
+        //}
+        //var dateOfIncrement = $("#DateOfIncrement").val();
+        //dateOfIncrement = dateOfIncrement?.split(' ')[0];
+        //$("#DateOfIncrement").val(dateOfIncrement);
 
         $("#DOB").datepicker({
             autoclose: true,

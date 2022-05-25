@@ -180,6 +180,13 @@ namespace Digisoft.ProjectManagement.Controllers
                 else if (viewType == "View")
                 {
                     vm = id != null ? _userService.GetByIDVM(id) : new UserViewModel();
+                    vm.CelebratedDateOfBirth = vm.DOB.Value.ToString("dd MMMM yyyy");
+                    vm.DocumentedDateOfBirth = vm.DocumentDOB.HasValue? vm.DocumentDOB.Value.ToString("dd MMMM yyyy"):"";
+                    vm.DateOfAnniversary = vm.AnniversaryDate.HasValue ? vm.AnniversaryDate.Value.ToString("dd MMMM yyyy") : ""; 
+                    vm.JoiningDate = vm.DateofJoining.HasValue ? vm.DateofJoining.Value.ToString("dd MMMM yyyy") : ""; 
+                    vm.RelievingDate = vm.DateofRelieving.HasValue ? vm.DateofRelieving.Value.ToString("dd MMMM yyyy") : "";
+                    vm.Vaccination1stDate = vm.Vaccination1stDoseDate.HasValue ? vm.Vaccination1stDoseDate.Value.ToString("dd MMMM yyyy") : "";
+                    vm.Vaccination2ndDate = vm.Vaccination2ndDoseDate.HasValue ? vm.Vaccination2ndDoseDate.Value.ToString("dd MMMM yyyy") : "";
                     vm.RoleName = role;
                     vm.ViewType = viewType;
                 }
