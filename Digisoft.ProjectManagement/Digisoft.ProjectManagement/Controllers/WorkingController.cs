@@ -118,6 +118,7 @@ namespace Digisoft.ProjectManagement.Controllers
             if (viewType == "Display")
             {
                 vm.ViewType = "Display";
+                vm.Working = vm.DateWorked.HasValue ? vm.DateWorked.Value.ToString("dd MMMM yyyy") : "";
             }
             else
             {

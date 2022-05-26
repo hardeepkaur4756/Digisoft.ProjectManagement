@@ -84,6 +84,13 @@ namespace Digisoft.ProjectManagement.Models
         public string Increment { get; set; }
         public decimal? PreviousSalary { get; set; }
         public int Id { get; set; }
+        public string CelebratedDateOfBirth { get; set; }
+        public string DocumentedDateOfBirth { get; set; }
+        public string JoiningDate { get; set; }
+        public string RelievingDate { get; set; }
+        public string DateOfAnniversary { get; set; }
+        public string Vaccination1stDate { get; set; }
+        public string Vaccination2ndDate { get; set; }
         #region Course
         public int CourseId { get; set; }
         public string CourseIn { get; set; }
