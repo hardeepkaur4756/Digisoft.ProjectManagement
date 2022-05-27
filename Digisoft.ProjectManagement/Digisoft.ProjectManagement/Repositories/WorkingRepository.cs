@@ -72,14 +72,19 @@ namespace Digisoft.ProjectManagement.Repositories
                       .Where(x => x.IsActive == true &&
                       (x.CreatedDate >= startDate && x.CreatedDate <= endDate) &&
                         (x.Description.Contains(sSearch)
+                      || x.Project.Name.ToLower().Contains(sSearch)
+                      || x.HoursWorked.ToString().ToLower().Contains(sSearch)
+                      || x.HoursBilled.ToString().ToLower().Contains(sSearch)
                       || x.AspNetUser.UserName.ToLower().Contains(sSearch))
-                      || x.CreatedDate.ToString().Contains(sSearch)
                       );
             }
             else
             {
                 return _context.Workings.Where(x =>
                          x.Description.Contains(sSearch)
+                         || x.Project.Name.ToLower().Contains(sSearch)
+                         || x.HoursWorked.ToString().ToLower().Contains(sSearch)
+                         || x.HoursBilled.ToString().ToLower().Contains(sSearch)
                          || x.AspNetUser.UserName.ToLower().Contains(sSearch) && x.IsActive == true
                          || x.ProjectId == projectId
                          || x.CreatedBy == (userId ?? x.CreatedBy)

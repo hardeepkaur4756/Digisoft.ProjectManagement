@@ -697,7 +697,7 @@
             </div>
             <label class="control-label col-sm-2">Vaccination Date(2nd Dose)</label>
             <div class="col-sm-4 text-break">
-                <label class="control-label">@Model.Vaccination1stDate</label>
+                <label class="control-label">@Model.Vaccination2ndDate</label>
             </div>
         </div>
         <div class="form-group d-flex">
@@ -839,61 +839,6 @@
 </style>
 <script>
     $(document).ready(function () {
-        //var dateOfJoining = $("#DateofJoining").val();
-        //dateOfJoining = dateOfJoining?.split(' ')[0];
-        //$("#DateofJoining").val(dateOfJoining);
-        //$("#dateJ").text(dateOfJoining);
-        //if (dateOfJoining != "" && dateOfJoining != undefined) {
-        //    debugger;
-        //    var date = ConvertDateFormat(dateOfJoining);
-        //    $("#dateJ").text(date);
-        //}
-        //var dateofRelieving = $("#DateofRelieving").val();
-        //dateofRelieving = dateofRelieving?.split(' ')[0];
-        //$("#DateofRelieving").val(dateofRelieving);
-        //if (dateofRelieving != "" && dateofRelieving != undefined) {
-        //    var date = ConvertDateFormat(dateofRelieving);
-        //    $("#dateR").text(date);
-        //}
-        //var d = $("#DOB").val();
-        //d = d?.split(' ')[0];
-        //$("#DOB").val(d);
-        //if (d != "" && d != undefined) {
-        //    var date = ConvertDateFormat(d);
-        //    $("#date").text(date);
-        //}
-        //var v1st = $("#Vaccination1stDoseDate").val();
-        //v1st = v1st?.split(' ')[0];
-        //$("#Vaccination1stDoseDate").val(v1st);
-        //if (v1st != "" && v1st != undefined) {
-        //    var date = ConvertDateFormat(v1st);
-        //    $("#dateV1").text(date);
-        //}
-        //var v2nd = $("#Vaccination2ndDoseDate").val();
-        //v2nd = v2nd?.split(' ')[0];
-        //$("#Vaccination2ndDoseDate").val(v2nd);
-        //if (v2nd != "" && v2nd != undefined) {
-        //    var date = ConvertDateFormat(v2nd);
-        //    $("#dateV2").text(date);
-        //}
-        //var aDate = $("#AnniversaryDate").val();
-        //aDate = aDate?.split(' ')[0];
-        //$("#AnniversaryDate").val(aDate);
-        //if (aDate != "" && aDate != undefined) {
-        //    var date = ConvertDateFormat(aDate);
-        //    $("#dateA").text(date);
-        //}
-        //var dDate = $("#DocumentDOB").val();
-        //dDate = dDate?.split(' ')[0];
-        //$("#DocumentDOB").val(dDate);
-        //if (dDate != "" && dDate != undefined) {
-        //    var date = ConvertDateFormat(dDate);
-        //    $("#dateD").text(date);
-        //}
-        //var dateOfIncrement = $("#DateOfIncrement").val();
-        //dateOfIncrement = dateOfIncrement?.split(' ')[0];
-        //$("#DateOfIncrement").val(dateOfIncrement);
-
         $("#DOB").datepicker({
             autoclose: true,
             minViewMode: 0,
