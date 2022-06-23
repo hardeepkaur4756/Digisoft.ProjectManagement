@@ -32,7 +32,7 @@
             }
             else
             {
-                if (User.IsInRole("Admin"))
+                if (User.IsInRole("Admin") || User.IsInRole("Operational Manager"))
                 {
                     <label class="control-label col-sm-2">Active</label>
                     <div class="col-sm-4 text-break">

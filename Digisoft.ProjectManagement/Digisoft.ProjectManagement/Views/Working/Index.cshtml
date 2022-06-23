@@ -37,7 +37,7 @@
             <th>Hours Worked</th>
             <th>Hours Billed</th>
             <th>Date Worked</th>
-            <th>Description</th>
+            @*<th>Description</th>*@
             <th>Created By</th>
             <th>Date</th>
             <th>Action</th>
@@ -52,7 +52,7 @@
         margin-left: 200px;
         z-index: 1;
         position: relative;
-        cursor: none;
+        cursor: default;
         outline: none;
         font-weight: bold;
     }
@@ -60,7 +60,7 @@
         margin-bottom: -56px;
         z-index: 1;
         position: relative;
-        cursor: none;
+        cursor: default;
         outline: none;
         font-weight: bold;
     }
@@ -68,18 +68,18 @@
         margin-bottom: -56px;
         z-index: 1;
         position: relative;
-        cursor: none;
+        cursor: default;
         outline: none;
     }
 
     .common-label:not(:disabled):not(.disabled) {
-        cursor: none;
+        cursor: default;
     }
     .common-label1:not(:disabled):not(.disabled) {
-        cursor: none;
+        cursor: default;
     }
     .common-value:not(:disabled):not(.disabled) {
-        cursor: none;
+        cursor: default;
     }
 </style>
 <script>
@@ -203,7 +203,6 @@
                                 return formattedDate;
                             }
                         },
-                        { "mData": "Description" },
                         { "mData": "CreatedByName" },
                         {
                             "mData": "CreatedDate",
@@ -244,7 +243,7 @@
                     bProcessing: true,
                     pageLength: 10,
                     "paging": true,
-                    bSearching: false,
+                    bSearching: true,
                     bLengthChange: false,
                     "language": {
                         "zeroRecords": "Not found - Sorry",

@@ -27,7 +27,7 @@ namespace Digisoft.ProjectManagement.Controllers
             _userService = new UserService();
             UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
         }
-        [Authorize(Roles = "Admin,HR")]
+        [Authorize(Roles = "Admin,HR,Operational Manager")]
         public ActionResult Index()
         {
             try
@@ -57,7 +57,7 @@ namespace Digisoft.ProjectManagement.Controllers
                     lst.Add(model);
                 }
 
-                if (User.IsInRole("Admin") || User.IsInRole("HR"))
+                if (User.IsInRole("Admin") || User.IsInRole("HR") || User.IsInRole("Operational Manager"))
                 {
                     return View(lst);
                 }
@@ -85,7 +85,18 @@ namespace Digisoft.ProjectManagement.Controllers
                 }
                 var vm = new UserViewModel();
                 vm.ViewType = viewType;
-                vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Text).ToList();
+                if (User.IsInRole("HR"))
+                {
+                    vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).Where(x => x.Text == "HR" || x.Text == "Employee").OrderBy(x => x.Text).ToList();
+                }
+                else if (User.IsInRole("Operational Manager"))
+                {
+                    vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).Where(x => x.Text != "Admin").OrderBy(x => x.Text).ToList();
+                }
+                else
+                {
+                    vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Text).ToList();
+                }
                 vm.States = _context.States.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
                 vm.Countries = _context.Countries.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
                 vm.Departments = _context.Departments.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
@@ -180,7 +191,7 @@ namespace Digisoft.ProjectManagement.Controllers
                 else if (viewType == "View")
                 {
                     vm = id != null ? _userService.GetByIDVM(id) : new UserViewModel();
-                    vm.CelebratedDateOfBirth = vm.DOB.HasValue ? vm.DOB.Value.ToString("dd MMMM yyyy"):"";
+                    vm.CelebratedDateOfBirth = vm.DOB.HasValue ? vm.DOB.Value.ToString("dd MMMM yyyy") : "";
                     vm.DocumentedDateOfBirth = vm.DocumentDOB.HasValue ? vm.DocumentDOB.Value.ToString("dd MMMM yyyy") : "";
                     vm.DateOfAnniversary = vm.AnniversaryDate.HasValue ? vm.AnniversaryDate.Value.ToString("dd MMMM yyyy") : "";
                     vm.JoiningDate = vm.DateofJoining.HasValue ? vm.DateofJoining.Value.ToString("dd MMMM yyyy") : "";
@@ -306,7 +317,18 @@ namespace Digisoft.ProjectManagement.Controllers
                     vm = id != null ? _userService.GetByIDVM(id) : new UserViewModel();
                     vm.RoleId = _context.AspNetRoles.Where(x => x.Name == role).Select(x => x.Id).FirstOrDefault();
                     vm.ViewType = viewType;
-                    vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Text).ToList();
+                    if (User.IsInRole("HR"))
+                    {
+                        vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).Where(x => x.Text == "HR" || x.Text == "Employee").OrderBy(x => x.Text).ToList();
+                    }
+                    else if (User.IsInRole("Operational Manager"))
+                    {
+                        vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).Where(x => x.Text != "Admin").OrderBy(x => x.Text).ToList();
+                    }
+                    else
+                    {
+                        vm.Users = _context.AspNetRoles.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Text).ToList();
+                    }
                     vm.States = _context.States.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
                     vm.Countries = _context.Countries.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();
                     vm.Departments = _context.Departments.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).OrderBy(x => x.Value).ToList();

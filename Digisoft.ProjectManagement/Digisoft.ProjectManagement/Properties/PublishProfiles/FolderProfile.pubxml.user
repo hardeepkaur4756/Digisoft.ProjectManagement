@@ -7,7 +7,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <_PublishTargetUrl>C:\Users\pc\source\repos\hardeepkaur4756\Digisoft.ProjectManagement\Digisoft.ProjectManagement\Digisoft.ProjectManagement\bin\Release\Publish</_PublishTargetUrl>
-    <History>True|2022-05-24T08:06:53.9488709Z;True|2022-05-20T14:41:34.1439870+05:30;True|2022-05-20T09:14:19.1394168+05:30;</History>
+    <History>True|2022-06-01T05:45:07.4982543Z;True|2022-05-27T10:36:04.1729969+05:30;True|2022-05-24T13:36:53.9488709+05:30;True|2022-05-20T14:41:34.1439870+05:30;True|2022-05-20T09:14:19.1394168+05:30;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/Antlr3.Runtime.dll">
@@ -32,10 +32,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/28/2018 20:13:52</publishTime>
     </File>
     <File Include="bin/Digisoft.ProjectManagement.dll">
-      <publishTime>05/24/2022 13:36:53</publishTime>
+      <publishTime>06/03/2022 15:39:21</publishTime>
     </File>
     <File Include="bin/Digisoft.ProjectManagement.pdb">
-      <publishTime>05/24/2022 13:36:53</publishTime>
+      <publishTime>06/03/2022 15:39:21</publishTime>
     </File>
     <File Include="bin/Digisoft.Sales.dll">
       <publishTime>09/14/2020 20:53:44</publishTime>
@@ -560,7 +560,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/04/2022 13:19:39</publishTime>
     </File>
     <File Include="Models/ProjectManagementDB.edmx.diagram">
-      <publishTime>05/24/2022 13:36:32</publishTime>
+      <publishTime>05/26/2022 12:18:13</publishTime>
     </File>
     <File Include="Models/SalesDB.edmx.diagram">
       <publishTime>09/03/2020 22:09:38</publishTime>
@@ -668,7 +668,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/24/2022 12:12:18</publishTime>
     </File>
     <File Include="Views/Admin/_AddEditUser.cshtml">
-      <publishTime>05/24/2022 12:12:18</publishTime>
+      <publishTime>05/26/2022 12:27:18</publishTime>
     </File>
     <File Include="Views/Bidding/Index.cshtml">
       <publishTime>09/05/2020 21:30:51</publishTime>
@@ -686,7 +686,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/04/2020 13:53:32</publishTime>
     </File>
     <File Include="Views/Client/Index.cshtml">
-      <publishTime>05/24/2022 12:12:18</publishTime>
+      <publishTime>05/26/2022 12:51:40</publishTime>
     </File>
     <File Include="Views/Client/_AddEditClient.cshtml">
       <publishTime>05/24/2022 12:12:18</publishTime>
@@ -728,7 +728,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/04/2022 13:14:50</publishTime>
     </File>
     <File Include="Views/Project/Index.cshtml">
-      <publishTime>05/24/2022 13:36:32</publishTime>
+      <publishTime>05/26/2022 12:18:13</publishTime>
     </File>
     <File Include="Views/Project/_AddEditProject.cshtml">
       <publishTime>05/24/2022 12:12:18</publishTime>
@@ -740,7 +740,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/04/2022 10:17:51</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>05/24/2022 13:36:32</publishTime>
+      <publishTime>05/26/2022 12:54:36</publishTime>
     </File>
     <File Include="Views/Shared/_LoginPartial.cshtml">
       <publishTime>05/04/2022 10:17:51</publishTime>
@@ -749,10 +749,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/04/2022 13:02:07</publishTime>
     </File>
     <File Include="Views/Working/Index.cshtml">
-      <publishTime>05/24/2022 12:12:18</publishTime>
+      <publishTime>06/02/2022 12:17:43</publishTime>
     </File>
     <File Include="Views/Working/_AddEditWorking.cshtml">
-      <publishTime>05/24/2022 12:12:18</publishTime>
+      <publishTime>05/26/2022 10:52:17</publishTime>
     </File>
     <File Include="Views/_ViewStart.cshtml">
       <publishTime>05/04/2022 10:17:51</publishTime>

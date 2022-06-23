@@ -61,20 +61,23 @@
                     {
                         <td>No</td>
                     }
-                    <td>
-                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDetail(this,'@item.UserId')" title="View"><i class='fa fa-info-circle' aria-hidden='true'></i></a>
-                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="AddOrEdit(this,'@item.UserId')" title="Edit"><i class='fa fa-pencil' aria-hidden='true'></i></a>
-                        @if (User.Identity.Name == "parampreet@digisoftsolution.net")
-                        {
-                            <a class='icon-style' href='javascript:void(0)' onclick="return ChangePassword(this,'@item.UserId')" title="Change Password"><i class='fa fa-key' aria-hidden='true'></i></a>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a class='icon-style' href='javascript:void(0)' onclick="return DeleteUser(this,'@item.UserId')"><i class='fa fa-trash-o' aria-hidden='true' title="Delete"></i></a>
-                        }
-                        <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDocument('@item.UserId')" title="Document"><i class='fa fa-upload' aria-hidden='true'></i></a>
-                        <a class='icon-style' href='javascript:void(0)' onclick="return ViewEducation('@item.UserId')" title="Education"><i class='fa fa-graduation-cap' aria-hidden='true'></i></a>
+                <td>
+                    <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDetail(this,'@item.UserId')" title="View"><i class='fa fa-info-circle' aria-hidden='true'></i></a>
+                    <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="AddOrEdit(this,'@item.UserId')" title="Edit"><i class='fa fa-pencil' aria-hidden='true'></i></a>
+                    @if (User.Identity.Name == "parampreet@digisoftsolution.net")
+                    {
+                        <a class='icon-style' href='javascript:void(0)' onclick="return ChangePassword(this,'@item.UserId')" title="Change Password"><i class='fa fa-key' aria-hidden='true'></i></a>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class='icon-style' href='javascript:void(0)' onclick="return DeleteUser(this,'@item.UserId')"><i class='fa fa-trash-o' aria-hidden='true' title="Delete"></i></a>
+                    }
+                    <a class='icon-style' href='javascript:void(0)' data-Id="@item.UserId" onclick="ViewDocument('@item.UserId')" title="Document"><i class='fa fa-upload' aria-hidden='true'></i></a>
+                    <a class='icon-style' href='javascript:void(0)' onclick="return ViewEducation('@item.UserId')" title="Education"><i class='fa fa-graduation-cap' aria-hidden='true'></i></a>
+                    @if (!User.IsInRole("HR"))
+                    {
                         <a class='icon-style' href='javascript:void(0)' onclick="return ViewIncrement('@item.UserId')" title="Increment"><i class='fa fa-money' aria-hidden='true'></i></a>
+                    }
                     </td>
                 </tr>
                 i++;

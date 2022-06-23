@@ -56,32 +56,8 @@ namespace Digisoft.ProjectManagement.Controllers
             IFormatProvider culture = new CultureInfo("en-US", true);
             if (param.sSearch != null)
             {
-                sortCol = sortCol == "CreatedByName" ? "CreatedBy" : sortCol;
-                workingsVM = _workingService.GetAllAfterSearch(param, startDate, endDate, project, userId)
-                .OrderBy(x => x.Id).OrderBy(sortCol + " " + sortDir).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength)
-                .Select(x => new WorkingViewModel
-                {
-                    Id = x.Id,
-                    Description = x.Description,
-                    ProjectName = x.Project.Name,
-                    HoursBilled = x.HoursBilled,
-                    HoursWorked = x.HoursWorked,
-                    DateWorked = x.DateWorked,
-                    CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
-                    CreatedDate = x.CreatedDate,
-                    IsCurrentUser = user.Id == x.CreatedBy ? true : false,
-                    IsUnderDeleteTime = ((DateTime.Now - x.CreatedDate).TotalDays < 7) ? true : false
-                }).ToList();
-                totalCount = workingsVM.Count();
-                totalHoursWorked = workingsVM.Sum(x=> x.HoursWorked).ToString();
-                totalHoursBilled = workingsVM.Sum(x => x.HoursBilled).ToString();
-            }
-            else
-            {
-                sortCol = sortCol == "CreatedByName" ? "CreatedBy" : sortCol;
-                totalCount = _workingService.GetAll(startDate, endDate, project, userId).Count();
-                workingsVM = _workingService.GetAll(startDate, endDate, project, userId).OrderBy(x => x.Id).OrderBy(sortCol + " " + sortDir)
-                    .Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength)
+                sortCol = sortCol == "CreatedByName" ? "CreatedByName" : sortCol;
+                var working = _workingService.GetAllAfterSearch(param, startDate, endDate, project, userId).OrderBy(x => x.Id)
                      .Select(x => new WorkingViewModel
                      {
                          Id = x.Id,
@@ -93,11 +69,36 @@ namespace Digisoft.ProjectManagement.Controllers
                          CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
                          CreatedDate = x.CreatedDate,
                          IsCurrentUser = user.Id == x.CreatedBy ? true : false,
-                         IsUnderDeleteTime = ((DateTime.Now - x.CreatedDate).TotalDays < 7) ? true : false
+                         IsUnderDeleteTime = ((DateTime.Now - x.DateWorked).TotalDays < 7) ? true : false
                      })
                 .ToList();
+                workingsVM = working.OrderBy(sortCol + " " + sortDir).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                totalCount = workingsVM.Count();
                 totalHoursWorked = workingsVM.Sum(x => x.HoursWorked).ToString();
                 totalHoursBilled = workingsVM.Sum(x => x.HoursBilled).ToString();
+            }
+            else
+            {
+                sortCol = sortCol == "CreatedByName" ? "CreatedByName" : sortCol;
+                totalCount = _workingService.GetAll(startDate, endDate, project, userId).Count();
+                var working = _workingService.GetAll(startDate, endDate, project, userId).OrderBy(x => x.Id)
+                     .Select(x => new WorkingViewModel
+                     {
+                         Id = x.Id,
+                         Description = x.Description,
+                         ProjectName = x.Project.Name,
+                         HoursBilled = x.HoursBilled,
+                         HoursWorked = x.HoursWorked,
+                         DateWorked = x.DateWorked,
+                         CreatedByName = x.AspNetUser?.UserDetails?.Max(s => (string.Format("{0} {1}", s.FirstName, s.LastName))),
+                         CreatedDate = x.CreatedDate,
+                         IsCurrentUser = user.Id == x.CreatedBy ? true : false,
+                         IsUnderDeleteTime = ((DateTime.Now - x.DateWorked).TotalDays < 7) ? true : false
+                     })
+                .ToList();
+                workingsVM = working.OrderBy(sortCol + " " + sortDir).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                totalHoursWorked = working.Sum(x => x.HoursWorked).ToString();
+                totalHoursBilled = working.Sum(x => x.HoursBilled).ToString();
             }
             return Json(new
             {
@@ -105,7 +106,7 @@ namespace Digisoft.ProjectManagement.Controllers
                 sEcho = param.sEcho,
                 iTotalDisplayRecords = totalCount,
                 iTotalRecords = totalCount,
-                totalHoursWorked= totalHoursWorked,
+                totalHoursWorked = totalHoursWorked,
                 totalHoursBilled = totalHoursBilled,
             }, JsonRequestBehavior.AllowGet);
         }

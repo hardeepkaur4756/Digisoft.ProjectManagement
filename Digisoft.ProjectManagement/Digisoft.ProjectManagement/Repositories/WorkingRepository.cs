@@ -24,43 +24,21 @@ namespace Digisoft.ProjectManagement.Repositories
         }
         public IEnumerable<Working> GetAll(DateTime? startDate, DateTime? endDate, int projectId, string userId)
         {
-            if (startDate.HasValue && endDate.HasValue && projectId != 0)
+            var workings = _context.Workings.Where(x => x.IsActive == true).AsQueryable();
+            if (startDate.HasValue && endDate.HasValue)
             {
-                return _context.Workings.Where(x =>
-                (x.CreatedDate.Day >= ((DateTime)startDate).Day
-                && x.CreatedDate.Month >= ((DateTime)startDate).Month
-                && x.CreatedDate.Year >= ((DateTime)startDate).Year)
-                &&
-                (x.CreatedDate.Day <= ((DateTime)endDate).Day
-                && x.CreatedDate.Month <= ((DateTime)endDate).Month
-                && x.CreatedDate.Year <= ((DateTime)endDate).Year)
-                && x.IsActive == true
-                && x.ProjectId == projectId
-                && x.CreatedBy == (userId ?? x.CreatedBy)
-                );
+                workings = workings.Where(x => x.DateWorked >= (DateTime)startDate
+                && x.DateWorked <= (DateTime)endDate);
             }
-            else if (startDate.HasValue && endDate.HasValue && projectId == 0)
+            if (projectId != 0)
             {
-                return _context.Workings.Where(x =>
-                (x.CreatedDate.Day >= ((DateTime)startDate).Day
-                && x.CreatedDate.Month >= ((DateTime)startDate).Month
-                && x.CreatedDate.Year >= ((DateTime)startDate).Year)
-                &&
-                (x.CreatedDate.Day <= ((DateTime)endDate).Day
-                && x.CreatedDate.Month <= ((DateTime)endDate).Month
-                && x.CreatedDate.Year <= ((DateTime)endDate).Year)
-                && x.IsActive == true
-                && x.CreatedBy == (userId ?? x.CreatedBy)
-                );
+                workings = workings.Where(x => x.ProjectId == projectId);
             }
-            else if (projectId != 0)
+            if (!string.IsNullOrEmpty(userId))
             {
-                return _context.Workings.Where(x => x.IsActive == true && x.ProjectId == projectId && x.CreatedBy == (userId ?? x.CreatedBy));
+                workings = workings.Where(x => x.CreatedBy == userId);
             }
-            else
-            {
-                return _context.Workings.Where(x => x.IsActive == true && x.CreatedBy == (userId ?? x.CreatedBy));
-            }
+            return workings.AsEnumerable();
         }
 
         public IEnumerable<Working> GetAllAfterSearch(DataTablesParam param, DateTime? startDate, DateTime? endDate, int projectId, string userId)
@@ -70,7 +48,7 @@ namespace Digisoft.ProjectManagement.Repositories
             {
                 return _context.Workings
                       .Where(x => x.IsActive == true &&
-                      (x.CreatedDate >= startDate && x.CreatedDate <= endDate) &&
+                      (x.DateWorked >= startDate && x.DateWorked <= endDate) &&
                         (x.Description.Contains(sSearch)
                       || x.Project.Name.ToLower().Contains(sSearch)
                       || x.HoursWorked.ToString().ToLower().Contains(sSearch)

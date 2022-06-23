@@ -64,21 +64,27 @@
                         <li class='@Html.IsActive("Home", "Index")'>
                             @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "text-black-50 nav-link" })
                         </li>
-                        <li class='@Html.IsActive("Client", "Index")'>
-                            @Html.ActionLink("Client", "Index", "Client", new { area = "" }, new { @class = "text-black-50 nav-link" })
-                        </li>
-                        <li class='@Html.IsActive("Project", "Index")'>
-                            @Html.ActionLink("Project", "Index", "Project", new { area = "" }, new { @class = "text-black-50 nav-link" })
-                        </li>
-                        if (User.IsInRole("Admin") || User.IsInRole("HR"))
+                        if (!User.IsInRole("HR"))
+                        {
+                            <li class='@Html.IsActive("Client", "Index")'>
+                                @Html.ActionLink("Client", "Index", "Client", new { area = "" }, new { @class = "text-black-50 nav-link" })
+                            </li>
+                            <li class='@Html.IsActive("Project", "Index")'>
+                                @Html.ActionLink("Project", "Index", "Project", new { area = "" }, new { @class = "text-black-50 nav-link" })
+                            </li>
+                        }
+                        if (User.IsInRole("Admin") || User.IsInRole("HR") || User.IsInRole("Operational Manager"))
                         {
                             <li class='@Html.IsActive("Admin", "Index")'>
                                 @Html.ActionLink("Employee", "Index", "Admin", new { area = "" }, new { @class = "text-black-50 nav-link" })
                             </li>
                         }
-                        <li class='@Html.IsActive("Working", "Index")'>
-                            @Html.ActionLink("Working", "Index", "Working", new { area = "" }, new { @class = "text-black-50 nav-link" })
-                        </li>
+                        if (!User.IsInRole("HR"))
+                        {
+                            <li class='@Html.IsActive("Working", "Index")'>
+                                @Html.ActionLink("Working", "Index", "Working", new { area = "" }, new { @class = "text-black-50 nav-link" })
+                            </li>
+                        }
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
